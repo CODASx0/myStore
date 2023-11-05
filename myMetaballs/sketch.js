@@ -1,6 +1,7 @@
 let dpr = 4;
 
 
+
 function setup() {
 	createCanvas(400, 400);
 }
