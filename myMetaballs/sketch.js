@@ -19,9 +19,9 @@ class circleDraw {
 
 //在屏幕上把点阵画出来
 function drawSketchPoint(x, y) {
-	for (let i = 0; i < x; i++) {
-		for (let j = 0; j < y; j++) {
-			for (let n = 0; n < circle0.length; n++) {
+	for (let n = 0; n < circle0.length; n++) {
+		for (let i = 0; i < x; i++) {
+			for (let j = 0; j < y; j++) {
 
 			}
 		}
