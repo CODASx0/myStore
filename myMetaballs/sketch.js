@@ -17,11 +17,12 @@ class circleDraw {
 	}
 }
 
-//在屏幕上把点阵画出来
-function drawSketchPoint(x, y) {
+//把点阵上的数值计算后视觉化呈现出来
+function drawSketchPoint(W, H) {
+	//把第一类圆形的数值叠加后计算出来
 	for (let n = 0; n < circle0.length; n++) {
-		for (let i = 0; i < x; i++) {
-			for (let j = 0; j < y; j++) {
+		for (let i = 0; i < W; i++) {
+			for (let j = 0; j < H; j++) {
 
 			}
 		}
