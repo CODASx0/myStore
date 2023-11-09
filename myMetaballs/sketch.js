@@ -2,11 +2,17 @@
 let dpr = 10;
 //画布上出现的第一类圆型
 let circle0 = [];
+
+
+//let fillCol0 = color('rgb(0,0,200)');
+//let strokeCol0 = color('rgb(0,0,20)');
+
+
 //初始化几个后面会用到的参数
 let xNum = 0;
 let yNum = 0;
 
-//设置阈值（失效，待研究）
+//设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 1;
 //定义画布
 let canvas;
@@ -42,16 +48,16 @@ function drawSketchPoint(W, H) {
 			var ne = inputValue[i + 1][j];
 			var se = inputValue[i + 1][j + 1];
 			var sw = inputValue[i][j + 1];
-			var a = [i * dpr + dpr * myLerp(1, nw, ne), j * dpr];
+			var a = [i * dpr + dpr * myLerp(lim, nw, ne), j * dpr];
 			var b = [
 				i * dpr + dpr,
-				j * dpr + dpr * myLerp(1, ne, se)
+				j * dpr + dpr * myLerp(lim, ne, se)
 			];
 			var c = [
-				i * dpr + dpr * myLerp(1, sw, se),
+				i * dpr + dpr * myLerp(lim, sw, se),
 				j * dpr + dpr
 			];
-			var d = [i * dpr, j * dpr + dpr * myLerp(1, nw, sw)];
+			var d = [i * dpr, j * dpr + dpr * myLerp(lim, nw, sw)];
 
 			/*noStroke();
 			fill(inputValue[i][j] * 100);
@@ -64,10 +70,14 @@ function drawSketchPoint(W, H) {
 				inputValue[i][j + 1] > lim
 			)
 
-			stroke(255);
+			stroke(200);
 			switch (gridValue[i][j]) {
 				case 1:
 				case 14:
+					//noStroke();
+					//fill(fillCol0);
+					triangle(d[0], d[1], c[0], c[1], d[0], c[1]);
+					//stroke(strokeCol0);
 					line(d[0], d[1], c[0], c[1]);
 					break;
 
@@ -140,8 +150,8 @@ function setup() {
 
 
 	circle0[1] = new circleDraw(width * 0.5, height * 0.5, 50);
-	/*circle0[2] = new circleDraw(600, 200, 100);
-	circle0[3] = new circleDraw(900, 200, 100);
+	circle0[2] = new circleDraw(600, 200, 20);
+	/*circle0[3] = new circleDraw(900, 200, 100);
 	circle0[4] = new circleDraw(1200, 200, 100);
 	circle0[5] = new circleDraw(900, 400, 100);
 	circle0[6] = new circleDraw(1200, 400, 100);*/
@@ -151,7 +161,7 @@ function setup() {
 function draw() {
 	background(0, 0, 0);
 
-	circle0[0] = new circleDraw(mouseX, mouseY, 100);
+	circle0[0] = new circleDraw(mouseX, mouseY, 60);
 
 	drawSketchPoint(xNum, yNum);
 
