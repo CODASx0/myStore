@@ -1,5 +1,5 @@
 //设置精度
-let dpr = 20;
+let dpr = 15;
 //画布上出现的第一类圆型
 let circle0 = [];
 //初始化几个后面会用到的参数
@@ -23,15 +23,16 @@ function drawSketchPoint(W, H) {
 	for (let i = 0; i < W + 1; i++) {
 		for (let j = 0; j < H + 1; j++) {
 			//储存到圆心距离的倒数
-			pointVolume[i + j * i] = circle0[0].r / sqrt(sq(circle0[0].x - i * dpr) + sq(circle0[0].y - j * dpr));
+			pointVolume[i + j * W] = circle0[0].r / sqrt(sq(circle0[0].x - i * dpr) + sq(circle0[0].y - j * dpr));
 			for (let n = 1; n < circle0.length; n++) {
-				pointVolume[i + j * i] += circle0[n].r / sqrt(sq(circle0[n].x - i * dpr) + sq(circle0[n].y - j * dpr));
+				pointVolume[i + j * W] += circle0[n].r / sqrt(sq(circle0[n].x - i * dpr) + sq(circle0[n].y - j * dpr));
 			}
-			noStroke();
+		}
+	}
 
-			fill(100, 200, 200, 255);
+	for (let i = 0; i < W; i++) {
+		for (let j = 0; j < H; j++) {
 
-			ellipse(i * dpr, j * dpr, pointVolume[i + j * i], pointVolume[i + j * i]);
 		}
 	}
 
@@ -39,8 +40,8 @@ function drawSketchPoint(W, H) {
 
 function setup() {
 	createCanvas(1600, 800);
-	xNum = parseInt(width / dpr);
-	yNum = parseInt(height / dpr);
+	xNum = width / dpr | 0;
+	yNum = height / dpr | 0;
 
 	circle0[1] = new circleDraw(300, 200, 100);
 	circle0[2] = new circleDraw(600, 200, 100);
