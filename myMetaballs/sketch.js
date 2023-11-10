@@ -70,13 +70,15 @@ function drawSketchPoint(W, H) {
 				inputValue[i][j + 1] > lim
 			)
 
+			//gridValue[i][j] 
+
 			stroke(200);
 			switch (gridValue[i][j]) {
 				case 1:
 				case 14:
 					//noStroke();
 					//fill(fillCol0);
-					triangle(d[0], d[1], c[0], c[1], d[0], c[1]);
+					//triangle(d[0], d[1], c[0], c[1], d[0], c[1]);
 					//stroke(strokeCol0);
 					line(d[0], d[1], c[0], c[1]);
 					break;
@@ -140,27 +142,22 @@ function setup() {
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 
-	//初始化二维数组
+}
+
+function draw() {
+	//动态响应
+	xNum = width / dpr | 0;
+	yNum = height / dpr | 0;
+	//动态初始化二维数组
 	inputValue = new Array(xNum + 1);
 	gridValue = new Array(xNum + 1);
 	for (let i = 0; i <= xNum; i++) {
 		inputValue[i] = new Array(yNum + 1);
 		gridValue[i] = new Array(yNum + 1);
 	}
-
-
-	circle0[1] = new circleDraw(width * 0.5, height * 0.5, 50);
-	circle0[2] = new circleDraw(600, 200, 20);
-	/*circle0[3] = new circleDraw(900, 200, 100);
-	circle0[4] = new circleDraw(1200, 200, 100);
-	circle0[5] = new circleDraw(900, 400, 100);
-	circle0[6] = new circleDraw(1200, 400, 100);*/
-
-}
-
-function draw() {
 	background(0, 0, 0);
 
+	circle0[1] = new circleDraw(width * 0.5, height * 0.5, 50);
 	circle0[0] = new circleDraw(mouseX, mouseY, 60);
 
 	drawSketchPoint(xNum, yNum);
