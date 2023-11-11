@@ -157,7 +157,7 @@ function draw() {
 	}
 	background(0, 0, 0);
 
-	circle0[1] = new circleDraw(width * 0.5, height * 0.5, 50);
+	circle0[1] = new circleDraw(width * 0.5, height * 0.5, 60);
 	circle0[0] = new circleDraw(mouseX, mouseY, 60);
 
 	drawSketchPoint(xNum, yNum);
