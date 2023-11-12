@@ -1,5 +1,5 @@
 //设置精度
-let dpr = 8;
+let dpr = 10;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 2;
@@ -276,8 +276,12 @@ function draw() {
 	background(255);
 
 	//动态写入圆的属性
-	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 60);
-	circleArray[0][0] = new circleDraw(mouseX, mouseY, 60);
+	
+	circleArray[0][0] = new circleDraw(mouseX, mouseY, 100);
+	circleArray[0][1] = new circleDraw(width * 0.7, height * 0.5, 50);
+	circleArray[0][2] = new circleDraw(width * 0.5, height * 0.5, 50);
+	circleArray[0][3] = new circleDraw(width * 0.3, height * 0.5, 50);
+	//circleArray[0][2] = new circleDraw(mouseX*2, mouseY, 60);
 
 	drawSketchPoint(xNum, yNum, zNum);
 
