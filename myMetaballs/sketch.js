@@ -260,8 +260,9 @@ function draw() {
 	//动态响应
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
-	zNum = 1;
-	//动态初始化二维数组
+	zNum = 1;//限定显示的图层数量
+
+	//动态初始化三维数组
 	inputValue = new Array(xNum + 1);
 	gridValue = new Array(xNum + 1);
 	for (let i = 0; i <= xNum; i++) {
@@ -274,6 +275,7 @@ function draw() {
 	}
 	background(255);
 
+	//动态写入圆的属性
 	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 60);
 	circleArray[0][0] = new circleDraw(mouseX, mouseY, 60);
 
