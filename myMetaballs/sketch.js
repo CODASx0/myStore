@@ -2,13 +2,14 @@
 let dpr = 10;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
-let lim = 2;
+let lim = 1;
 
 
 //初始化画布的宽、高、图层数量
 let xNum = 0;
 let yNum = 0;
 let zNum = 1;
+let circleLim = new Array(zNum);
 
 //初始化不同图层上的圆
 circleArray = new Array(zNum);
@@ -51,33 +52,34 @@ function drawSketchPoint(W, H, Z) {
 				var ne = inputValue[i + 1][j][z];
 				var se = inputValue[i + 1][j + 1][z];
 				var sw = inputValue[i][j + 1][z];
-				var a = [i * dpr + dpr * myLerp(lim, nw, ne), j * dpr];
+				var a = [i * dpr + dpr * myLerp(lim * circleLim[z], nw, ne), j * dpr];
 				var b = [
 					i * dpr + dpr,
-					j * dpr + dpr * myLerp(lim, ne, se)
+					j * dpr + dpr * myLerp(lim * circleLim[z], ne, se)
 				];
 				var c = [
-					i * dpr + dpr * myLerp(lim, sw, se),
+					i * dpr + dpr * myLerp(lim * circleLim[z], sw, se),
 					j * dpr + dpr
 				];
-				var d = [i * dpr, j * dpr + dpr * myLerp(lim, nw, sw)];
+				var d = [i * dpr, j * dpr + dpr * myLerp(lim * circleLim[z], nw, sw)];
 
 				gridValue[i][j][z] = binaryToType(
-					inputValue[i][j][z] > lim,
-					inputValue[i + 1][j][z] > lim,
-					inputValue[i + 1][j + 1][z] > lim,
-					inputValue[i][j + 1][z] > lim
+					inputValue[i][j][z] > lim * circleLim[z],
+					inputValue[i + 1][j][z] > lim * circleLim[z],
+					inputValue[i + 1][j + 1][z] > lim * circleLim[z],
+					inputValue[i][j + 1][z] > lim * circleLim[z]
 				)
 
 
 				noStroke();
+				//stroke(255);
 				fill("#F0E7E4");
 				//绘制 Metaballs
 				switch (gridValue[i][j][z]) {
 					case 1:
 					case 14:
 						//line(d[0], d[1], c[0], c[1]);
-						if (inputValue[i][j + 1][z] > lim) {
+						if (inputValue[i][j + 1][z] > lim * circleLim[z]) {
 							triangle(d[0], d[1], c[0], c[1], d[0], c[1]);
 						} else {
 
@@ -93,7 +95,7 @@ function drawSketchPoint(W, H, Z) {
 					case 2:
 					case 13:
 						//line(b[0], b[1], c[0], c[1]);
-						if (inputValue[i + 1][j + 1][z] > lim) {
+						if (inputValue[i + 1][j + 1][z] > lim * circleLim[z]) {
 							triangle(b[0], b[1], c[0], c[1], b[0], c[1])
 						} else {
 							beginShape();
@@ -109,7 +111,7 @@ function drawSketchPoint(W, H, Z) {
 					case 3:
 					case 12:
 						//line(d[0], d[1], b[0], b[1]);
-						if (inputValue[i][j][z] > lim) {
+						if (inputValue[i][j][z] > lim * circleLim[z]) {
 							beginShape();
 							vertex(d[0], a[1]);
 							vertex(b[0], a[1]);
@@ -129,7 +131,7 @@ function drawSketchPoint(W, H, Z) {
 					case 11:
 					case 4:
 						//line(a[0], a[1], b[0], b[1]);
-						if (inputValue[i + 1][j][z] > lim) {
+						if (inputValue[i + 1][j][z] > lim * circleLim[z]) {
 							triangle(a[0], a[1], b[0], b[1], b[0], a[1]);
 						} else {
 							beginShape();
@@ -145,7 +147,7 @@ function drawSketchPoint(W, H, Z) {
 					case 5:
 						//line(d[0], d[1], a[0], a[1]);
 						//line(c[0], c[1], b[0], b[1]);
-						if (inputValue[i][j][z] > lim) {
+						if (inputValue[i][j][z] > lim * circleLim[z]) {
 							beginShape(TRIANGLES);
 							vertex(d[0], a[1]);
 							vertex(a[0], a[1]);
@@ -168,7 +170,7 @@ function drawSketchPoint(W, H, Z) {
 					case 6:
 					case 9:
 						//line(c[0], c[1], a[0], a[1]);
-						if (inputValue[i][j][z] > lim) {
+						if (inputValue[i][j][z] > lim * circleLim[z]) {
 							beginShape();
 							vertex(d[0], a[1]);
 							vertex(a[0], a[1]);
@@ -188,7 +190,7 @@ function drawSketchPoint(W, H, Z) {
 					case 7:
 					case 8:
 						//line(d[0], d[1], a[0], a[1]);
-						if (inputValue[i][j][z] > lim) {
+						if (inputValue[i][j][z] > lim * circleLim[z]) {
 							triangle(d[0], a[1], a[0], a[1], d[0], d[1]);
 						} else {
 							beginShape();
@@ -204,7 +206,7 @@ function drawSketchPoint(W, H, Z) {
 					case 10:
 						//line(a[0], a[1], b[0], b[1]);
 						//line(c[0], c[1], d[0], d[1]);
-						if (inputValue[i][j][z] > lim) {
+						if (inputValue[i][j][z] > lim * circleLim[z]) {
 							beginShape();
 							vertex(d[0], a[1]);
 							vertex(a[0], a[1]);
@@ -262,6 +264,7 @@ function draw() {
 	yNum = height / dpr | 0;
 	zNum = 1;//限定显示的图层数量
 
+
 	//动态初始化三维数组
 	inputValue = new Array(xNum + 1);
 	gridValue = new Array(xNum + 1);
@@ -276,7 +279,7 @@ function draw() {
 	background(255);
 
 	//动态写入圆的属性
-	
+	circleLim[0] = 1;
 	circleArray[0][0] = new circleDraw(mouseX, mouseY, 100);
 	circleArray[0][1] = new circleDraw(width * 0.7, height * 0.5, 50);
 	circleArray[0][2] = new circleDraw(width * 0.5, height * 0.5, 50);
