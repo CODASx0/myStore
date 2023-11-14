@@ -279,11 +279,11 @@ function draw() {
 	background(255);
 
 	//动态写入圆的属性
-	circleLim[0] = 1;
+	circleLim[0] = 2;
 	circleArray[0][0] = new circleDraw(mouseX, mouseY, 100);
-	circleArray[0][1] = new circleDraw(width * 0.7, height * 0.5, 50);
+	circleArray[0][1] = new circleDraw(width * 0.65, height * 0.5, 50);
 	circleArray[0][2] = new circleDraw(width * 0.5, height * 0.5, 50);
-	circleArray[0][3] = new circleDraw(width * 0.3, height * 0.5, 50);
+	circleArray[0][3] = new circleDraw(width * 0.35, height * 0.5, 50);
 	//circleArray[0][2] = new circleDraw(mouseX*2, mouseY, 60);
 
 	drawSketchPoint(xNum, yNum, zNum);
