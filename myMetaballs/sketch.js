@@ -73,7 +73,7 @@ function drawSketchPoint(W, H, Z) {
 
 				noStroke();
 				//stroke(255);
-				fill("#F0E7E4");
+				fill("#F7F4F4");
 				//绘制 Metaballs
 				switch (gridValue[i][j][z]) {
 					case 1:
@@ -280,7 +280,7 @@ function draw() {
 
 	//动态写入圆的属性
 	circleLim[0] = 2;
-	circleArray[0][0] = new circleDraw(mouseX, mouseY, 100);
+	circleArray[0][0] = new circleDraw(mouseX, mouseY, 50);
 	circleArray[0][1] = new circleDraw(width * 0.65, height * 0.5, 50);
 	circleArray[0][2] = new circleDraw(width * 0.5, height * 0.5, 50);
 	circleArray[0][3] = new circleDraw(width * 0.35, height * 0.5, 50);
