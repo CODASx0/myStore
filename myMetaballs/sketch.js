@@ -1,5 +1,5 @@
 //设置精度
-let dpr = 16;
+let dpr = 14;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 1;
@@ -267,11 +267,11 @@ function setup() {
 
 	circleLim[0] = 2;
 	circleLim[1] = 2.4;
-	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 50, 0.2);
-	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.02);
-	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 50, 0.06);
+	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.2);
+	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.018);
+	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.1);
 
-	circleArray[1][0] = new circleDraw(width * 0.35, height * 0.5, 30, 0.2);
+	circleArray[1][0] = new circleDraw(width * 0.35, height * 0.5, 30, 0.1);
 
 
 }
