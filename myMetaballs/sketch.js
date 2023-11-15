@@ -1,5 +1,5 @@
 //设置精度
-let dpr = 10;
+let dpr = 12;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 1;
@@ -22,10 +22,15 @@ let canvas;
 
 //定义类：画在上面的圆
 class circleDraw {
-	constructor(posX, posY, radius) {
+	constructor(posX, posY, radius,speed) {
 		this.x = posX;
 		this.y = posY;
 		this.r = radius;
+		this.s = speed;
+	}
+	update() {
+		this.x += (mouseX - this.x) * this.s;
+		this.y += (mouseY - this.y) * this.s;
 	}
 }
 
@@ -72,7 +77,7 @@ function drawSketchPoint(W, H, Z) {
 
 
 				noStroke();
-				//stroke(255);
+				//stroke(0);
 				fill("#F7F4F4");
 				//绘制 Metaballs
 				switch (gridValue[i][j][z]) {
@@ -256,6 +261,13 @@ function setup() {
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 
+	circleLim[0] = 2;
+	
+	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 50,0.2);
+	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50,0.03);
+	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 50, 0.06);
+	
+
 }
 
 function draw() {
@@ -279,13 +291,13 @@ function draw() {
 	background(255);
 
 	//动态写入圆的属性
-	circleLim[0] = 2;
-	circleArray[0][0] = new circleDraw(mouseX, mouseY, 50);
-	circleArray[0][1] = new circleDraw(width * 0.65, height * 0.5, 50);
-	circleArray[0][2] = new circleDraw(width * 0.5, height * 0.5, 50);
-	circleArray[0][3] = new circleDraw(width * 0.35, height * 0.5, 50);
-	//circleArray[0][2] = new circleDraw(mouseX*2, mouseY, 60);
 
+	//circleArray[0][0].update();
+	for (i = 0; i < circleArray.length; i++) {
+		for (j = 0; j < circleArray[i].length; j++) {
+			circleArray[i][j].update();
+		}
+	}
 	drawSketchPoint(xNum, yNum, zNum);
 
 }
