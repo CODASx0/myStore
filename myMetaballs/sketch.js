@@ -22,18 +22,26 @@ let canvas;
 
 //定义类：画在上面的圆
 class circleDraw {
-	constructor(posX, posY, radius, speed) {
+
+	constructor(posX, posY, radius, speed, moveRadius) {
 		this.inputX = posX;
 		this.inputY = posY;
 		this.inputR = radius;
+		this.inputMR = moveRadius;
 		this.x = posX;
 		this.y = posY;
 		this.r = radius;
 		this.s = speed;
+		this.mr = moveRadius;
 	}
 	normalUpdate() {
-		this.x += (mouseX - this.x) * this.s;
-		this.y += (mouseY - this.y) * this.s;
+		let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.0015;
+		this.r = this.inputR * (-scaleDis + 1);
+		this.mr = this.inputMR * (scaleDis + 1);
+		this.inputX += (mouseX - this.inputX) * this.s;
+		this.inputY += (mouseY - this.inputY) * this.s;
+		this.x = this.inputX + Math.cos(frameCount * this.s * 0.2) * this.mr;
+		this.y = this.inputY + Math.sin(frameCount * this.s * 0.2) * this.mr;
 	}
 }
 
@@ -272,11 +280,11 @@ function setup() {
 
 	circleLim[0] = 2;
 	circleLim[1] = 1;
-	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.2);
-	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.018);
-	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.1);
+	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.16, 20);
+	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.02, 20);
+	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.1, 10);
 
-	circleArray[1][0] = new circleDraw(width * 0.35, height * 0.5, 30, 0.1);
+	circleArray[1][0] = new circleDraw(width * 0.35, height * 0.5, 30, 0.1, 0);
 
 
 }
