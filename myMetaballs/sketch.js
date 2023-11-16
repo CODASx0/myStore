@@ -1,8 +1,8 @@
 //设置精度
-let dpr = 14;
+let dpr = 12;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
-let lim = 1;
+let lim = 1.2;
 
 
 //初始化画布的宽、高、图层数量
@@ -242,7 +242,7 @@ function drawSketchPoint(W, H, Z) {
 			}
 		} else if (z == 1) {
 			fill("#ECCCCC");
-			ellipse(circleArray[z][0].x, circleArray[z][0].y, circleArray[z][0].r, circleArray[z][0].r)
+			ellipse(circleArray[z][0].x, circleArray[z][0].y, circleArray[z][0].r / (lim * circleLim[z]), circleArray[z][0].r / (lim * circleLim[z]))
 		}
 	}
 }
@@ -266,7 +266,7 @@ function setup() {
 	yNum = height / dpr | 0;
 
 	circleLim[0] = 2;
-	circleLim[1] = 2.4;
+	circleLim[1] = 1;
 	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.2);
 	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.018);
 	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.1);
