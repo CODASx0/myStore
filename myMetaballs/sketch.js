@@ -42,9 +42,11 @@ function drawSketchPoint(W, H, Z) {
 		for (let i = 0; i < W + 1; i++) {
 			for (let j = 0; j < H + 1; j++) {
 				//储存到圆心距离的倒数
+
 				inputValue[i][j][z] = circleArray[z][0].r / sqrt(sq(circleArray[z][0].x - i * dpr) + sq(circleArray[z][0].y - j * dpr));
 				for (let n = 1; n < circleArray[z].length; n++) {
-					inputValue[i][j][z] += circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
+					let dt = circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
+					inputValue[i][j][z] += dt;
 				}
 			}
 		}
