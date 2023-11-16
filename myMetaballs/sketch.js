@@ -23,6 +23,9 @@ let canvas;
 //定义类：画在上面的圆
 class circleDraw {
 	constructor(posX, posY, radius, speed) {
+		this.inputX = posX;
+		this.inputY = posY;
+		this.inputR = radius;
 		this.x = posX;
 		this.y = posY;
 		this.r = radius;
