@@ -43,7 +43,7 @@ class circleDraw {
 	}
 	normalUpdate() {
 		let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
-		this.r = this.inputR * (-scaleDis * 0.5 + 1);
+		this.r = this.inputR * (-scaleDis * 1.6 + 1);
 		this.mr = this.inputMR * (scaleDis + 1);
 		this.inputX += (mouseX - this.inputX) * this.s;
 		this.inputY += (mouseY - this.inputY) * this.s;
@@ -289,7 +289,7 @@ function setup() {
 	circleLim[1] = 1;
 	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.2, 20);
 	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.02, 20);
-	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.1, 10);
+	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.05, 10);
 
 	circleArray[1][0] = new circleDraw(width * 0.35, height * 0.5, 30, 0.1, 0);
 
