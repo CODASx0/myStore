@@ -1,3 +1,4 @@
+var elem = document.getElementById('myElement');
 //设置精度
 let dpr = 12;
 
@@ -20,10 +21,16 @@ for (z = 0; z < zNum; z++) {
 //定义画布
 let canvas;
 
+function hideMouseCursor() {
+	var elem = document.body; //获取页面body元素
+	elem.style.cursor = 'none'; //隐藏鼠标指针
+}
+
 //定义类：画在上面的圆
 class circleDraw {
 
 	constructor(posX, posY, radius, speed, moveRadius) {
+
 		this.inputX = posX;
 		this.inputY = posY;
 		this.inputR = radius;
@@ -35,12 +42,12 @@ class circleDraw {
 		this.mr = moveRadius;
 	}
 	normalUpdate() {
-		let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.0015;
-		this.r = this.inputR * (-scaleDis + 1);
+		let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
+		this.r = this.inputR * (-scaleDis * 0.5 + 1);
 		this.mr = this.inputMR * (scaleDis + 1);
 		this.inputX += (mouseX - this.inputX) * this.s;
 		this.inputY += (mouseY - this.inputY) * this.s;
-		this.x = this.inputX + Math.cos(frameCount * this.s * 0.2) * this.mr;
+		this.x = this.inputX + Math.cos(frameCount * this.s * 0.28) * this.mr;
 		this.y = this.inputY + Math.sin(frameCount * this.s * 0.2) * this.mr;
 	}
 }
@@ -280,7 +287,7 @@ function setup() {
 
 	circleLim[0] = 2;
 	circleLim[1] = 1;
-	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.16, 20);
+	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.2, 20);
 	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.02, 20);
 	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.1, 10);
 
@@ -290,6 +297,8 @@ function setup() {
 }
 
 function draw() {
+	//隐藏鼠标指针
+	hideMouseCursor();
 	//动态响应
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
