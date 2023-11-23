@@ -29,7 +29,7 @@ function hideMouseCursor() {
 //定义类：画在上面的圆
 class circleDraw {
 
-	constructor(posX, posY, radius, speed, moveRadius) {
+	constructor(stability, posX, posY, radius, speed, moveRadius) {
 
 		this.inputX = posX;
 		this.inputY = posY;
@@ -40,15 +40,25 @@ class circleDraw {
 		this.r = radius;
 		this.s = speed;
 		this.mr = moveRadius;
+		this.stability = stability;
 	}
 	normalUpdate() {
-		let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
-		this.r = this.inputR * (-scaleDis * 1.6 + 1);
-		this.mr = this.inputMR * (scaleDis + 1);
-		this.inputX += (mouseX - this.inputX) * this.s;
-		this.inputY += (mouseY - this.inputY) * this.s;
-		this.x = this.inputX + Math.cos(frameCount * this.s * 0.28) * this.mr;
-		this.y = this.inputY + Math.sin(frameCount * this.s * 0.2) * this.mr;
+		if (this.stability == 1) {
+			let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
+			this.r = this.inputR * (-scaleDis * 1.6 + 1);
+			this.mr = this.inputMR * (scaleDis + 1);
+			this.inputX += (mouseX - this.inputX) * this.s;
+			this.inputY += (mouseY - this.inputY) * this.s;
+			this.x = this.inputX + Math.cos(frameCount * this.s * 0.18) * this.mr;
+			this.y = this.inputY + Math.sin(frameCount * this.s * 0.1) * this.mr;
+		} else if (this.stability == 0.5) {
+			let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
+			this.r = this.inputR * (-scaleDis * 0.1 + 1);
+			this.mr = this.inputMR * (scaleDis + 1);
+
+			this.x = this.inputX + Math.cos(frameCount * this.s * 0.1) * this.mr;
+			this.y = this.inputY + Math.sin(frameCount * this.s * 0.1) * this.mr;
+		}
 	}
 }
 
@@ -287,11 +297,14 @@ function setup() {
 
 	circleLim[0] = 2;
 	circleLim[1] = 1;
-	circleArray[0][0] = new circleDraw(width * 0.65, height * 0.5, 40, 0.2, 20);
-	circleArray[0][1] = new circleDraw(width * 0.5, height * 0.5, 50, 0.02, 20);
-	circleArray[0][2] = new circleDraw(width * 0.35, height * 0.5, 70, 0.05, 10);
-
-	circleArray[1][0] = new circleDraw(width * 0.35, height * 0.5, 30, 0.1, 0);
+	//circleArray[][](stability, posX, posY, radius, speed, moveRadius) 
+	circleArray[0][0] = new circleDraw(1, width * 0.65, height * 0.5, 40, 0.2, 20);
+	circleArray[0][1] = new circleDraw(1, width * 0.5, height * 0.5, 50, 0.02, 20);
+	circleArray[0][2] = new circleDraw(1, width * 0.35, height * 0.5, 70, 0.05, 10);
+	circleArray[0][3] = new circleDraw(0, width * 0.35, height * 0.5, 70, 0.05, 10);
+	circleArray[0][4] = new circleDraw(0, width * 0.65, height * 0.5, 70, 0.05, 10);
+	circleArray[0][5] = new circleDraw(0, width * 0.5, height * 0.65, 70, 0.05, 10);
+	circleArray[1][0] = new circleDraw(1, width * 0.35, height * 0.5, 30, 0.1, 0);
 
 
 }
