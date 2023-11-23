@@ -1,9 +1,16 @@
 var elem = document.getElementById('myElement');
 //设置精度
-let dpr = 12;
+let dpr = 14;
+
+//设置显示模式
+let displayMode = 1;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 1.2;
+
+//设置鼠标滚轮初始值
+let mouseWheelValue = 50;
+let mouseWheelValueTarget = 50;
 
 
 //初始化画布的宽、高、图层数量
@@ -42,17 +49,17 @@ class circleDraw {
 		this.mr = moveRadius;
 		this.stability = stability;
 	}
-	normalUpdate() {
-		if (this.stability == 1) {
-			let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
-			this.r = this.inputR * (-scaleDis * 1.6 + 1);
+	normalUpdate(targetX, targetY) {
+		if (this.stability == 0) {
+			let scaleDis = sqrt(sq(this.x - targetX) + sq(this.y - targetY)) * 0.001;
+			this.r = this.inputR * (-scaleDis * 1.2 + 1);
 			this.mr = this.inputMR * (scaleDis + 1);
-			this.inputX += (mouseX - this.inputX) * this.s;
-			this.inputY += (mouseY - this.inputY) * this.s;
+			this.inputX += (targetX - this.inputX) * this.s;
+			this.inputY += (targetY - this.inputY) * this.s;
 			this.x = this.inputX + Math.cos(frameCount * this.s * 0.18) * this.mr;
 			this.y = this.inputY + Math.sin(frameCount * this.s * 0.1) * this.mr;
 		} else if (this.stability == 0.5) {
-			let scaleDis = sqrt(sq(this.x - mouseX) + sq(this.y - mouseY)) * 0.001;
+			let scaleDis = sqrt(sq(this.x - targetX) + sq(this.y - targetY)) * 0.001;
 			this.r = this.inputR * (-scaleDis * 0.1 + 1);
 			this.mr = this.inputMR * (scaleDis + 1);
 
@@ -60,6 +67,10 @@ class circleDraw {
 			this.y = this.inputY + Math.sin(frameCount * this.s * 0.1) * this.mr;
 		}
 	}
+	radiusUpdate(radiusValue) {
+		this.inputR = radiusValue;
+	}
+
 }
 
 //把点阵上的数值计算后视觉化呈现出来
@@ -108,17 +119,17 @@ function drawSketchPoint(W, H, Z) {
 
 					noStroke();
 					//stroke(0);
-					fill("#F7F4F4");
+					strokeWeight(3);
+					//noFill();
+					fill(250, 250, 250, 200);
 					//绘制 Metaballs
 
 					switch (gridValue[i][j][z]) {
 						case 1:
 						case 14:
-							//line(d[0], d[1], c[0], c[1]);
 							if (inputValue[i][j + 1][z] > lim * circleLim[z]) {
 								triangle(d[0], d[1], c[0], c[1], d[0], c[1]);
 							} else {
-
 								beginShape();
 								vertex(d[0], d[1]);
 								vertex(c[0], c[1]);
@@ -130,7 +141,6 @@ function drawSketchPoint(W, H, Z) {
 							break;
 						case 2:
 						case 13:
-							//line(b[0], b[1], c[0], c[1]);
 							if (inputValue[i + 1][j + 1][z] > lim * circleLim[z]) {
 								triangle(b[0], b[1], c[0], c[1], b[0], c[1])
 							} else {
@@ -143,10 +153,8 @@ function drawSketchPoint(W, H, Z) {
 								endShape(CLOSE);
 							}
 							break;
-
 						case 3:
 						case 12:
-							//line(d[0], d[1], b[0], b[1]);
 							if (inputValue[i][j][z] > lim * circleLim[z]) {
 								beginShape();
 								vertex(d[0], a[1]);
@@ -163,10 +171,8 @@ function drawSketchPoint(W, H, Z) {
 								endShape(CLOSE);
 							}
 							break;
-
 						case 11:
 						case 4:
-							//line(a[0], a[1], b[0], b[1]);
 							if (inputValue[i + 1][j][z] > lim * circleLim[z]) {
 								triangle(a[0], a[1], b[0], b[1], b[0], a[1]);
 							} else {
@@ -179,10 +185,7 @@ function drawSketchPoint(W, H, Z) {
 								endShape(CLOSE);
 							}
 							break;
-
 						case 5:
-							//line(d[0], d[1], a[0], a[1]);
-							//line(c[0], c[1], b[0], b[1]);
 							if (inputValue[i][j][z] > lim * circleLim[z]) {
 								beginShape(TRIANGLES);
 								vertex(d[0], a[1]);
@@ -205,7 +208,6 @@ function drawSketchPoint(W, H, Z) {
 							break;
 						case 6:
 						case 9:
-							//line(c[0], c[1], a[0], a[1]);
 							if (inputValue[i][j][z] > lim * circleLim[z]) {
 								beginShape();
 								vertex(d[0], a[1]);
@@ -222,10 +224,8 @@ function drawSketchPoint(W, H, Z) {
 								endShape(CLOSE);
 							}
 							break;
-
 						case 7:
 						case 8:
-							//line(d[0], d[1], a[0], a[1]);
 							if (inputValue[i][j][z] > lim * circleLim[z]) {
 								triangle(d[0], a[1], a[0], a[1], d[0], d[1]);
 							} else {
@@ -238,10 +238,7 @@ function drawSketchPoint(W, H, Z) {
 								endShape(CLOSE);
 							}
 							break;
-
 						case 10:
-							//line(a[0], a[1], b[0], b[1]);
-							//line(c[0], c[1], d[0], d[1]);
 							if (inputValue[i][j][z] > lim * circleLim[z]) {
 								beginShape();
 								vertex(d[0], a[1]);
@@ -263,19 +260,88 @@ function drawSketchPoint(W, H, Z) {
 							break;
 						case 15:
 							rect(d[0], a[1], dpr, dpr);
-
 						default:
 							break;
+					}
+
+					if (displayMode == 1) {
+						stroke(240, 240, 240, 200);
+						switch (gridValue[i][j][z]) {
+							case 1:
+							case 14:
+								line(d[0], d[1], c[0], c[1]);
+								break;
+							case 2:
+							case 13:
+								line(b[0], b[1], c[0], c[1]);
+								break;
+							case 3:
+							case 12:
+								line(d[0], d[1], b[0], b[1]);
+								break;
+							case 11:
+							case 4:
+								line(a[0], a[1], b[0], b[1]);
+								break;
+							case 5:
+								line(d[0], d[1], a[0], a[1]);
+								line(c[0], c[1], b[0], b[1]);
+								break;
+							case 6:
+							case 9:
+								line(c[0], c[1], a[0], a[1]);
+								break;
+							case 7:
+							case 8:
+								line(d[0], d[1], a[0], a[1]);
+								break;
+							case 10:
+								line(a[0], a[1], b[0], b[1]);
+								line(c[0], c[1], d[0], d[1]);
+								break;
+							case 15:
+							default:
+								break;
+						}
 					}
 
 				}
 			}
 		} else if (z == 1) {
-			fill("#ECCCCC");
+			noFill();
+			for (n = 1; n < circleArray[z].length; n++) {
+				stroke(0, 0, 0, 20);
+				fill(255);
+				ellipse(circleArray[z][n].x, circleArray[z][n].y, circleArray[z][n].r / (lim * circleLim[z]), circleArray[z][n].r / (lim * circleLim[z]))
+			}
+			stroke("#ECCCCC");
+			fill(255);
 			ellipse(circleArray[z][0].x, circleArray[z][0].y, circleArray[z][0].r / (lim * circleLim[z]), circleArray[z][0].r / (lim * circleLim[z]))
 		}
 	}
 }
+
+//鼠标滚轮事件
+function mouseWheel(event) {
+	mouseWheelValueTarget += -event.delta * 0.2;
+	if (mouseWheelValueTarget < 20) {
+		mouseWheelValueTarget = 20;
+	} else if (mouseWheelValueTarget > 100) {
+		mouseWheelValueTarget = 100;
+	}
+
+}
+//鼠标滚轮数值平滑
+function mouseWheelValueSmooth(value) {
+	mouseWheelValue += (mouseWheelValueTarget - mouseWheelValue) * value;
+}
+
+//鼠标点击事件
+function mouseClicked() {
+	circleArray[0][circleArray[0].length] = new circleDraw(1, mouseX, mouseY, mouseWheelValue, 0.05, 0);
+	circleArray[1][circleArray[1].length] = new circleDraw(1, mouseX, mouseY, mouseWheelValue, 0.05, 0);
+}
+
 
 function myLerp(x, x0, x1, y0 = 0, y1 = 1) {
 	if (x0 === x1) {
@@ -295,16 +361,24 @@ function setup() {
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 
-	circleLim[0] = 2;
+	circleLim[0] = 2.4;
 	circleLim[1] = 1;
+	circleLim[2] = 2;
+
 	//circleArray[][](stability, posX, posY, radius, speed, moveRadius) 
-	circleArray[0][0] = new circleDraw(1, width * 0.65, height * 0.5, 40, 0.2, 20);
-	circleArray[0][1] = new circleDraw(1, width * 0.5, height * 0.5, 50, 0.02, 20);
-	circleArray[0][2] = new circleDraw(1, width * 0.35, height * 0.5, 70, 0.05, 10);
-	circleArray[0][3] = new circleDraw(0, width * 0.35, height * 0.5, 70, 0.05, 10);
-	circleArray[0][4] = new circleDraw(0, width * 0.65, height * 0.5, 70, 0.05, 10);
-	circleArray[0][5] = new circleDraw(0, width * 0.5, height * 0.65, 70, 0.05, 10);
-	circleArray[1][0] = new circleDraw(1, width * 0.35, height * 0.5, 30, 0.1, 0);
+	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 40, 0.2, 5);
+
+
+	circleArray[0][1] = new circleDraw(0, width * 0.5, height * 0.5, 50, 0.02, 20);
+
+	circleArray[0][2] = new circleDraw(0, width * 0.35, height * 0.5, 70, 0.05, 10);
+	/*
+		
+		circleArray[0][3] = new circleDraw(1, width * 0.35, height * 0.5, 30, 0.05, 10);
+		circleArray[0][4] = new circleDraw(1, width * 0.65, height * 0.5, 30, 0.05, 10);
+		circleArray[0][5] = new circleDraw(1, width * 0.5, height * 0.65, 30, 0.05, 10);
+		*/
+	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 0.16, 0);
 
 
 }
@@ -316,7 +390,7 @@ function draw() {
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 	zNum = 2;//限定显示的图层数量
-	let circleLim = new Array(zNum);
+	//let circleLim = new Array(zNum);
 
 	//动态初始化三维数组
 	inputValue = new Array(xNum + 1);
@@ -331,15 +405,22 @@ function draw() {
 	}
 	background(255);
 
+	//鼠标滚轮平滑
+	mouseWheelValueSmooth(0.1);
+
+	//暂时这样
+	circleArray[0][0].radiusUpdate(mouseWheelValue + 20);
+	circleArray[1][0].radiusUpdate(mouseWheelValue);
+
 	//更新圆的属性
 	for (i = 0; i < zNum; i++) {
 		for (j = 0; j < circleArray[i].length; j++) {
-			circleArray[i][j].normalUpdate();
+			circleArray[i][j].normalUpdate(mouseX, mouseY);
 		}
 	}
 	drawSketchPoint(xNum, yNum, zNum);
+	//circleLim[0] += (-circleLim[0] + 0.3 * circleArray[0].length  ) * 0.01;
 
 }
 
 function windowResized() { resizeCanvas(windowWidth, windowHeight); }
-
