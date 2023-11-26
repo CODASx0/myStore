@@ -8,9 +8,12 @@ let displayMode = 1;
 //设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 1.2;
 
+//设置圆的属性
+let putMode = 1;
+
 //设置鼠标滚轮初始值
-let mouseWheelValue = 50;
-let mouseWheelValueTarget = 50;
+let mouseWheelValue = 20;
+let mouseWheelValueTarget = 20;
 
 
 //初始化画布的宽、高、图层数量
@@ -56,15 +59,15 @@ class circleDraw {
 			this.mr = this.inputMR * (scaleDis + 1);
 			this.inputX += (targetX - this.inputX) * this.s;
 			this.inputY += (targetY - this.inputY) * this.s;
-			this.x = this.inputX + Math.cos(frameCount * this.s * 0.18) * this.mr;
-			this.y = this.inputY + Math.sin(frameCount * this.s * 0.1) * this.mr;
+			this.x = this.inputX + Math.cos(frameCount * this.s * 0.28) * this.mr;
+			this.y = this.inputY + Math.sin(frameCount * this.s * 0.2) * this.mr;
 		} else if (this.stability == 0.5) {
 			let scaleDis = sqrt(sq(this.x - targetX) + sq(this.y - targetY)) * 0.001;
 			this.r = this.inputR * (-scaleDis * 0.1 + 1);
 			this.mr = this.inputMR * (scaleDis + 1);
 
-			this.x = this.inputX + Math.cos(frameCount * this.s * 0.1) * this.mr;
-			this.y = this.inputY + Math.sin(frameCount * this.s * 0.1) * this.mr;
+			this.x = this.inputX + Math.cos(frameCount * this.s * 0.28) * this.mr;
+			this.y = this.inputY + Math.sin(frameCount * this.s * 0.2) * this.mr;
 		}
 	}
 	radiusUpdate(radiusValue) {
@@ -265,7 +268,7 @@ function drawSketchPoint(W, H, Z) {
 					}
 
 					if (displayMode == 1) {
-						stroke(240, 240, 240, 200);
+						stroke(240, 240, 240);
 						switch (gridValue[i][j][z]) {
 							case 1:
 							case 14:
@@ -311,11 +314,11 @@ function drawSketchPoint(W, H, Z) {
 			noFill();
 			for (n = 1; n < circleArray[z].length; n++) {
 				stroke(0, 0, 0, 20);
-				fill(255);
+				fill(255, 100);
 				ellipse(circleArray[z][n].x, circleArray[z][n].y, circleArray[z][n].r / (lim * circleLim[z]), circleArray[z][n].r / (lim * circleLim[z]))
 			}
 			stroke("#ECCCCC");
-			fill(255);
+			fill(255, 200);
 			ellipse(circleArray[z][0].x, circleArray[z][0].y, circleArray[z][0].r / (lim * circleLim[z]), circleArray[z][0].r / (lim * circleLim[z]))
 		}
 	}
@@ -338,8 +341,9 @@ function mouseWheelValueSmooth(value) {
 
 //鼠标点击事件
 function mouseClicked() {
-	circleArray[0][circleArray[0].length] = new circleDraw(1, mouseX, mouseY, mouseWheelValue, 0.05, 0);
-	circleArray[1][circleArray[1].length] = new circleDraw(1, mouseX, mouseY, mouseWheelValue, 0.05, 0);
+	let randomValue = 0.2 * random(0.1, 1)
+	circleArray[0][circleArray[0].length] = new circleDraw(putMode, mouseX, mouseY, mouseWheelValue * 0.6 + 25, randomValue, random(1, 10));
+	circleArray[1][circleArray[1].length] = new circleDraw(putMode, mouseX, mouseY, mouseWheelValue, randomValue, random(1, 5));
 }
 
 
@@ -357,28 +361,28 @@ function binaryToType(nw, ne, se, sw) {
 }
 
 function setup() {
-	canvas = createCanvas(windowWidth, windowHeight);
+	canvas = createCanvas(windowWidth - 20, windowHeight - 20);
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 
-	circleLim[0] = 2.4;
+	circleLim[0] = 2;
 	circleLim[1] = 1;
 	circleLim[2] = 2;
 
 	//circleArray[][](stability, posX, posY, radius, speed, moveRadius) 
-	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 40, 0.2, 5);
+	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 40, 0.15, 5);
 
-
-	circleArray[0][1] = new circleDraw(0, width * 0.5, height * 0.5, 50, 0.02, 20);
-
-	circleArray[0][2] = new circleDraw(0, width * 0.35, height * 0.5, 70, 0.05, 10);
 	/*
+		circleArray[0][1] = new circleDraw(0, width * 0.5, height * 0.5, 50, 0.05, 20);
 		
-		circleArray[0][3] = new circleDraw(1, width * 0.35, height * 0.5, 30, 0.05, 10);
-		circleArray[0][4] = new circleDraw(1, width * 0.65, height * 0.5, 30, 0.05, 10);
-		circleArray[0][5] = new circleDraw(1, width * 0.5, height * 0.65, 30, 0.05, 10);
-		*/
-	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 0.16, 0);
+			circleArray[0][2] = new circleDraw(0, width * 0.35, height * 0.5, 70, 0.02, 10);
+			
+				
+				circleArray[0][3] = new circleDraw(1, width * 0.35, height * 0.5, 30, 0.05, 10);
+				circleArray[0][4] = new circleDraw(1, width * 0.65, height * 0.5, 30, 0.05, 10);
+				circleArray[0][5] = new circleDraw(1, width * 0.5, height * 0.65, 30, 0.05, 10);
+				*/
+	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 0.5, 0);
 
 
 }
@@ -418,9 +422,33 @@ function draw() {
 			circleArray[i][j].normalUpdate(mouseX, mouseY);
 		}
 	}
+	circleLim[0] += (-circleLim[0] + 0.2 * circleArray[0].length + 0.5) * 0.06;
+
+	if (keyIsPressed === true) {
+		putMode = 0;
+	} else {
+		putMode = 1;
+	}
+	//削减数列长度
+	deleteArray(8);
+
+
 	drawSketchPoint(xNum, yNum, zNum);
-	//circleLim[0] += (-circleLim[0] + 0.3 * circleArray[0].length  ) * 0.01;
+
 
 }
 
-function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+//删减数列
+function deleteArray(num) {
+	if (circleArray[0].length > num) {
+		for (i = 0; i < circleArray[0].length - 2; i++) {
+			circleArray[0][i + 1] = circleArray[0][i + 2];
+			circleArray[1][i + 1] = circleArray[1][i + 2];
+		}
+		circleArray[0].length--;
+		circleArray[1].length--;
+	}
+}
+
+
+function windowResized() { resizeCanvas(windowWidth - 20, windowHeight - 20); }
