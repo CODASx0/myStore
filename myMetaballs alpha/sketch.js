@@ -3,7 +3,7 @@ var elem = document.getElementById('myElement');
 let dpr = 14;
 
 //设置显示模式
-let displayMode = 1;
+let displayMode = 0;
 
 //设置全局阈值，相当于统一调整半径，非必要不调整
 let lim = 1.2;
@@ -88,7 +88,7 @@ function drawSketchPoint(W, H, Z) {
 				inputValue[i][j][z] = circleArray[z][0].r / sqrt(sq(circleArray[z][0].x - i * dpr) + sq(circleArray[z][0].y - j * dpr));
 				for (let n = 1; n < circleArray[z].length; n++) {
 					let dt = circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
-					inputValue[i][j][z] += dt;
+					inputValue[i][j][z] += dt * dt;
 				}
 			}
 		}
@@ -121,10 +121,10 @@ function drawSketchPoint(W, H, Z) {
 
 
 					noStroke();
-					//stroke(0);
+					//stroke(250);
 					strokeWeight(3);
 					//noFill();
-					fill(250, 250, 250, 200);
+					fill(246, 243, 243, 200);
 					//绘制 Metaballs
 
 					switch (gridValue[i][j][z]) {
@@ -329,8 +329,8 @@ function mouseWheel(event) {
 	mouseWheelValueTarget += -event.delta * 0.2;
 	if (mouseWheelValueTarget < 20) {
 		mouseWheelValueTarget = 20;
-	} else if (mouseWheelValueTarget > 100) {
-		mouseWheelValueTarget = 100;
+	} else if (mouseWheelValueTarget > 200) {
+		mouseWheelValueTarget = 200;
 	}
 
 }
@@ -422,7 +422,7 @@ function draw() {
 			circleArray[i][j].normalUpdate(mouseX, mouseY);
 		}
 	}
-	circleLim[0] += (-circleLim[0] + 0.2 * circleArray[0].length + 0.5) * 0.06;
+	//circleLim[0] += (-circleLim[0] + 0.2 * circleArray[0].length ) * 0.06;
 
 	if (keyIsPressed === true) {
 		putMode = 0;
@@ -430,7 +430,7 @@ function draw() {
 		putMode = 1;
 	}
 	//削减数列长度
-	deleteArray(8);
+	//deleteArray(8);
 
 
 	drawSketchPoint(xNum, yNum, zNum);
