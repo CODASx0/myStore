@@ -9,7 +9,7 @@ let displayMode = 0;
 let lim = 1.2;
 
 //设置圆的属性
-let putMode = 1;
+let putMode = 0;
 
 //设置鼠标滚轮初始值
 let mouseWheelValue = 20;
@@ -430,11 +430,9 @@ function draw() {
 		putMode = 1;
 	}
 	//削减数列长度
-	//deleteArray(8);
-
+	deleteArray(8);
 
 	drawSketchPoint(xNum, yNum, zNum);
-
 
 }
 
