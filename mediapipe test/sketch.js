@@ -15,7 +15,7 @@ let sketch = function (p) {
         if (detections != undefined) {
             if (detections.multiHandLandmarks != undefined) {
                 //p.drawHands();
-                // p.drawParts();
+                //p.drawParts();
 
                 p.drawLines([0, 5, 9, 13, 17, 0]);//palm
                 p.drawLines([0, 1, 2, 3, 4]);//thumb
@@ -59,7 +59,7 @@ let sketch = function (p) {
                 let y = detections.multiHandLandmarks[i][j].y * p.height;
                 // let z = detections.multiHandLandmarks[i][j].z;
                 p.stroke(hue, 40, 255);
-                p.point(x, y);
+                p.point(x*0.5, y*0.5);
             }
         }
     }
