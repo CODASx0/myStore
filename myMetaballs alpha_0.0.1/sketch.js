@@ -88,7 +88,7 @@ function drawSketchPoint(W, H, Z) {
 				inputValue[i][j][z] = circleArray[z][0].r / sqrt(sq(circleArray[z][0].x - i * dpr) + sq(circleArray[z][0].y - j * dpr));
 				for (let n = 1; n < circleArray[z].length; n++) {
 					let dt = circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
-					inputValue[i][j][z] += dt * dt*dt;
+					inputValue[i][j][z] += dt * dt * dt;
 				}
 			}
 		}
@@ -361,7 +361,7 @@ function binaryToType(nw, ne, se, sw) {
 }
 
 function setup() {
-	canvas = createCanvas(windowWidth - 20, windowHeight - 20);
+	canvas = createCanvas(windowWidth, windowHeight);
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 
@@ -386,6 +386,7 @@ function setup() {
 
 
 }
+
 
 function draw() {
 	//隐藏鼠标指针
@@ -449,8 +450,8 @@ function deleteArray(num) {
 }
 
 
-function windowResized() { resizeCanvas(windowWidth - 20, windowHeight - 20); }
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
 
-function myDelay(targetValue,startTime,currentTime) {
-	
+function myDelay(targetValue, startTime, currentTime) {
+
 }

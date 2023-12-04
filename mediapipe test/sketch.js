@@ -59,7 +59,7 @@ let sketch = function (p) {
                 let y = detections.multiHandLandmarks[i][j].y * p.height;
                 // let z = detections.multiHandLandmarks[i][j].z;
                 p.stroke(hue, 40, 255);
-                p.point(x*0.5, y*0.5);
+                p.point(x, y);
             }
         }
     }
