@@ -88,7 +88,7 @@ function drawSketchPoint(W, H, Z) {
 				inputValue[i][j][z] = circleArray[z][0].r / sqrt(sq(circleArray[z][0].x - i * dpr) + sq(circleArray[z][0].y - j * dpr));
 				for (let n = 1; n < circleArray[z].length; n++) {
 					let dt = circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
-					inputValue[i][j][z] += dt * dt;
+					inputValue[i][j][z] += dt * dt*dt;
 				}
 			}
 		}
@@ -124,7 +124,7 @@ function drawSketchPoint(W, H, Z) {
 					//stroke(250);
 					strokeWeight(3);
 					//noFill();
-					fill(246, 243, 243, 200);
+					fill(246, 243, 243, 255);
 					//绘制 Metaballs
 
 					switch (gridValue[i][j][z]) {
@@ -430,7 +430,7 @@ function draw() {
 		putMode = 1;
 	}
 	//削减数列长度
-	deleteArray(8);
+	deleteArray(40);
 
 	drawSketchPoint(xNum, yNum, zNum);
 
@@ -450,3 +450,7 @@ function deleteArray(num) {
 
 
 function windowResized() { resizeCanvas(windowWidth - 20, windowHeight - 20); }
+
+function myDelay() {
+	
+}
