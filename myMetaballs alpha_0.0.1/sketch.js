@@ -451,6 +451,6 @@ function deleteArray(num) {
 
 function windowResized() { resizeCanvas(windowWidth - 20, windowHeight - 20); }
 
-function myDelay() {
+function myDelay(targetValue,startTime,currentTime) {
 	
 }
