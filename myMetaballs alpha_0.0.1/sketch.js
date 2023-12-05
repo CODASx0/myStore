@@ -31,10 +31,16 @@ for (z = 0; z < zNum; z++) {
 //定义画布
 let canvas;
 
+
 function hideMouseCursor() {
 	var elem = document.body; //获取页面body元素
 	elem.style.cursor = 'none'; //隐藏鼠标指针
 }
+
+
+//定义悬浮触控的输入点
+let touchInputX;
+let touchInputY;
 
 //定义类：画在上面的圆
 class circleDraw {
@@ -360,8 +366,11 @@ function binaryToType(nw, ne, se, sw) {
 	return a.reduce((res, x) => (res << 1) | x);
 }
 
+//初始化画布
 function setup() {
 	canvas = createCanvas(windowWidth, windowHeight);
+	touchInputX = width / 2;
+	touchInputY = height / 2;
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
 
@@ -390,7 +399,8 @@ function setup() {
 
 function draw() {
 	//隐藏鼠标指针
-	hideMouseCursor();
+	//hideMouseCursor();
+
 	//动态响应
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
@@ -409,6 +419,7 @@ function draw() {
 		}
 	}
 	background(255);
+	touchInput();
 
 	//鼠标滚轮平滑
 	mouseWheelValueSmooth(0.1);
@@ -420,7 +431,8 @@ function draw() {
 	//更新圆的属性
 	for (i = 0; i < zNum; i++) {
 		for (j = 0; j < circleArray[i].length; j++) {
-			circleArray[i][j].normalUpdate(mouseX, mouseY);
+			//circleArray[i][j].normalUpdate(mouseX, mouseY);
+			circleArray[i][j].normalUpdate(touchInputX, touchInputY);
 		}
 	}
 	//circleLim[0] += (-circleLim[0] + 0.2 * circleArray[0].length ) * 0.06;
@@ -454,4 +466,17 @@ function windowResized() { resizeCanvas(windowWidth, windowHeight); }
 
 function myDelay(targetValue, startTime, currentTime) {
 
+}
+
+function touchInput() {
+	if (detections != undefined) {
+		if (detections.multiHandLandmarks != undefined) {
+			for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
+				touchInputX = width - detections.multiHandLandmarks[i][8].x * width;
+				touchInputY = detections.multiHandLandmarks[i][8].y * height;
+				//console.log(touchInputX, touchInputY);
+				//console.log(detections.multiHandLandmarks[0][8].x, detections.multiHandLandmarks[0][8].y);
+			}
+		}
+	}
 }
