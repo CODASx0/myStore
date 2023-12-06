@@ -479,4 +479,10 @@ function touchInput() {
 			}
 		}
 	}
+	/*
+	touchInputX = mouseX;
+	touchInputY = mouseY;
+	*/
+
+	
 }
