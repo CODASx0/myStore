@@ -42,6 +42,57 @@ function hideMouseCursor() {
 let touchInputX;
 let touchInputY;
 
+function touchInput() {
+	if (detections != undefined) {
+		if (detections.multiHandLandmarks != undefined) {
+			for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
+				touchInputX = width - detections.multiHandLandmarks[i][8].x * width;
+				touchInputY = detections.multiHandLandmarks[i][8].y * height;
+				//console.log(touchInputX, touchInputY);
+				//console.log(detections.multiHandLandmarks[0][8].x, detections.multiHandLandmarks[0][8].y);
+			}
+		}
+	}
+	/*
+	touchInputX = mouseX;
+	touchInputY = mouseY;
+	*/
+}
+
+class VideoInterface {
+	constructor(speed) {
+		this.targetPosX = width / 2;
+		this.targetPosY = height / 2;
+		this.nowPosX = width / 2;
+		this.nowPosY = height / 2;
+		this.targetRadius = 1;
+		this.nowRadius = 1;
+		this.speed = speed;
+	}
+	update() {
+		if (detections != undefined) {
+			if (detections.multiHandLandmarks != undefined) {
+				for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
+					let indexFingerX = width - detections.multiHandLandmarks[i][8].x * width;
+					let indexFingerY = detections.multiHandLandmarks[i][8].y * height;
+					let thumbFingerX = width - detections.multiHandLandmarks[i][4].x * width;
+					let thumbFingerY = detections.multiHandLandmarks[i][4].y * height;
+					this.targetRadius = sqrt(sq(indexFingerX - thumbFingerX) + sq(indexFingerY - thumbFingerY)) * 0.5;
+
+					this.targetPosX = (indexFingerX + thumbFingerX) * 0.5;
+					this.targetPosY = (indexFingerY + thumbFingerY) * 0.5;
+					this.nowPosX += (this.targetPosX - this.nowPosX) * this.speed;
+					this.nowPosY += (this.targetPosY - this.nowPosY) * this.speed;
+					this.nowRadius += (this.targetRadius - this.nowRadius) * this.speed;
+					//console.log(touchInputX, touchInputY);
+					//console.log(detections.multiHandLandmarks[0][8].x, detections.multiHandLandmarks[0][8].y);
+				}
+			}
+		}
+
+	}
+}
+
 //定义类：画在上面的圆
 class circleDraw {
 
@@ -366,6 +417,9 @@ function binaryToType(nw, ne, se, sw) {
 	return a.reduce((res, x) => (res << 1) | x);
 }
 
+//初始化视频接口
+let videoInterface;
+
 //初始化画布
 function setup() {
 	canvas = createCanvas(windowWidth, windowHeight);
@@ -373,6 +427,7 @@ function setup() {
 	touchInputY = height / 2;
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
+	videoInterface = new VideoInterface(0.1);
 
 	circleLim[0] = 2;
 	circleLim[1] = 1;
@@ -401,6 +456,9 @@ function draw() {
 	//隐藏鼠标指针
 	//hideMouseCursor();
 
+	//更新视频接口
+	videoInterface.update();
+
 	//动态响应
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
@@ -419,20 +477,20 @@ function draw() {
 		}
 	}
 	background(255);
-	touchInput();
+	//touchInput();
 
 	//鼠标滚轮平滑
 	mouseWheelValueSmooth(0.1);
 
 	//暂时这样
-	circleArray[0][0].radiusUpdate(mouseWheelValue + 20);
-	circleArray[1][0].radiusUpdate(mouseWheelValue);
+	circleArray[0][0].radiusUpdate(videoInterface.nowRadius + 20);
+	circleArray[1][0].radiusUpdate(videoInterface.nowRadius);
 
 	//更新圆的属性
 	for (i = 0; i < zNum; i++) {
 		for (j = 0; j < circleArray[i].length; j++) {
 			//circleArray[i][j].normalUpdate(mouseX, mouseY);
-			circleArray[i][j].normalUpdate(touchInputX, touchInputY);
+			circleArray[i][j].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
 		}
 	}
 	//circleLim[0] += (-circleLim[0] + 0.2 * circleArray[0].length ) * 0.06;
@@ -468,21 +526,3 @@ function myDelay(targetValue, startTime, currentTime) {
 
 }
 
-function touchInput() {
-	if (detections != undefined) {
-		if (detections.multiHandLandmarks != undefined) {
-			for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
-				touchInputX = width - detections.multiHandLandmarks[i][8].x * width;
-				touchInputY = detections.multiHandLandmarks[i][8].y * height;
-				//console.log(touchInputX, touchInputY);
-				//console.log(detections.multiHandLandmarks[0][8].x, detections.multiHandLandmarks[0][8].y);
-			}
-		}
-	}
-	/*
-	touchInputX = mouseX;
-	touchInputY = mouseY;
-	*/
-
-	
-}
