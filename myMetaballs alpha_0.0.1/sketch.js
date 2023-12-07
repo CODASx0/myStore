@@ -1,6 +1,6 @@
 var elem = document.getElementById('myElement');
 //设置精度
-let dpr = 16;
+let dpr = 14;
 
 //设置显示模式
 let displayMode = 0;
@@ -107,7 +107,7 @@ class VideoInterface {
 
 					this.nowPosX = (this.indexFingerX + this.thumbFingerX) * 0.5;
 					this.nowPosY = (this.indexFingerY + this.thumbFingerY) * 0.5;
-					this.nowRadius = sqrt(sq(this.indexFingerX - this.thumbFingerX) + sq(this.indexFingerY - this.thumbFingerY));
+					this.nowRadius = sqrt(sq(this.indexFingerX - this.thumbFingerX) + sq(this.indexFingerY - this.thumbFingerY)) * 0.5;
 
 					//console.log(touchInputX, touchInputY);
 					//console.log(detections.multiHandLandmarks[0][8].x, detections.multiHandLandmarks[0][8].y);
@@ -407,7 +407,7 @@ function drawSketchPoint(W, H, Z) {
 				ellipse(circleArray[z][n].x, circleArray[z][n].y, circleArray[z][n].r / (lim * circleLim[z]), circleArray[z][n].r / (lim * circleLim[z]))
 			}
 			stroke("#ECCCCC");
-			fill(255, 200);
+			fill(255, 100);
 			ellipse(circleArray[z][0].x, circleArray[z][0].y, circleArray[z][0].r / (lim * circleLim[z]), circleArray[z][0].r / (lim * circleLim[z]))
 		}
 	}
@@ -429,11 +429,13 @@ function mouseWheelValueSmooth(value) {
 }
 
 //鼠标点击事件
+/*
 function mouseClicked() {
 	let randomValue = 0.2 * random(0.1, 1)
 	circleArray[0][circleArray[0].length] = new circleDraw(putMode, mouseX, mouseY, mouseWheelValue * 0.6 + 25, randomValue, random(1, 10));
 	circleArray[1][circleArray[1].length] = new circleDraw(putMode, mouseX, mouseY, mouseWheelValue, randomValue, random(1, 5));
 }
+*/
 
 
 function myLerp(x, x0, x1, y0 = 0, y1 = 1) {
@@ -460,10 +462,10 @@ function setup() {
 	touchInputY = height / 2;
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
-	videoInterface = new VideoInterface(0.05);
+	videoInterface = new VideoInterface(0.1);
 
-	circleLim[0] = 2;
-	circleLim[1] = 1;
+	circleLim[0] = 1;
+	circleLim[1] = 0.6;
 	circleLim[2] = 2;
 
 	//circleArray[][](stability, posX, posY, radius, speed, moveRadius) 
@@ -514,7 +516,7 @@ function draw() {
 	mouseWheelValueSmooth(0.1);
 
 	//暂时这样
-	circleArray[0][4].radiusUpdate(videoInterface.nowRadius*0.65);
+	circleArray[0][4].radiusUpdate(videoInterface.nowRadius * 1.2);
 	circleArray[1][0].radiusUpdate(videoInterface.nowRadius);
 
 	//更新圆的属性
@@ -522,7 +524,7 @@ function draw() {
 	circleArray[0][1].normalUpdate(videoInterface.indexFingerTargetX, videoInterface.indexFingerTargetY);
 	circleArray[0][2].normalUpdate(videoInterface.middleFingerTargetX, videoInterface.middleFingerTargetY);
 	circleArray[0][3].normalUpdate(videoInterface.ringFingerTargetX, videoInterface.ringFingerTargetY);
-	circleArray[0][4].normalUpdate(videoInterface.nowPosX,videoInterface.nowPosY)
+	circleArray[0][4].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY)
 	//类似于指示器
 	circleArray[1][0].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
 	//circleArray[0][3].normalUpdate(videoInterface.pinkyTargetX, videoInterface.pinkyTargetY);
@@ -546,7 +548,7 @@ function draw() {
 	*/
 	putMode = 1;
 	//削减数列长度
-	deleteArray(20);
+	deleteArray(24);
 
 	drawSketchPoint(xNum, yNum, zNum);
 
@@ -571,6 +573,13 @@ function deleteArray(num) {
 }
 
 
+function keyPressed() {
+	if (keyCode === RETURN) {
+		let randomValue = 0.2 * random(0.1, 1)
+		circleArray[0][circleArray[0].length] = new circleDraw(putMode, videoInterface.nowPosX, videoInterface.nowPosY, videoInterface.nowRadius * 0.6 + 25, randomValue, random(1, 10));
+		circleArray[1][circleArray[1].length] = new circleDraw(putMode, videoInterface.nowPosX, videoInterface.nowPosY, videoInterface.nowRadius, randomValue, random(1, 5));
+	}
+}
 function windowResized() { resizeCanvas(windowWidth, windowHeight); }
 
 function myDelay(targetValue, startTime, currentTime) {

@@ -24,12 +24,14 @@ let sketch = function (p) {
                 p.drawLines([13, 14, 15, 16]);//ring finger
                 p.drawLines([17, 18, 19, 20]);//pinky
 
-                p.drawLandmarks([0, 1], 0);//palm base
-                p.drawLandmarks([1, 5], 60);//thumb
-                p.drawLandmarks([5, 9], 120);//index finger
-                p.drawLandmarks([9, 13], 180);//middle finger
-                p.drawLandmarks([13, 17], 240);//ring finger
-                p.drawLandmarks([17, 21], 300);//pinky
+                p.drawLandmarks([0, 1], 300);//palm base
+                p.drawLandmarks([1, 5], 240);//thumb
+                p.drawLandmarks([5, 9], 180);//index finger
+                p.drawLandmarks([9, 13], 120);//middle finger
+                p.drawLandmarks([13, 17], 60);//ring finger
+                p.drawLandmarks([17, 21], 0);//pinky
+
+
             }
         }
     }
@@ -58,7 +60,7 @@ let sketch = function (p) {
                 let x = detections.multiHandLandmarks[i][j].x * p.width;
                 let y = detections.multiHandLandmarks[i][j].y * p.height;
                 // let z = detections.multiHandLandmarks[i][j].z;
-                p.stroke(hue, 40, 255);
+                p.stroke(hue, 0, 255);
                 p.point(x, y);
             }
         }
@@ -68,6 +70,7 @@ let sketch = function (p) {
         p.stroke(0, 0, 255);
         p.strokeWeight(3);
         for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
+            /*
             for (let j = 0; j < index.length - 1; j++) {
                 let x = detections.multiHandLandmarks[i][index[j]].x * p.width;
                 let y = detections.multiHandLandmarks[i][index[j]].y * p.height;
@@ -78,6 +81,13 @@ let sketch = function (p) {
                 // let _z = detections.multiHandLandmarks[i][index[j+1]].z;
                 p.line(x, y, _x, _y);
             }
+            */
+            //绘制半径连线
+            let x = detections.multiHandLandmarks[i][4].x * p.width;
+            let y = detections.multiHandLandmarks[i][4].y * p.height;
+            let _x = detections.multiHandLandmarks[i][8].x * p.width;
+            let _y = detections.multiHandLandmarks[i][8].y * p.height;
+            p.line(x, y, _x, _y);
         }
     }
 }
