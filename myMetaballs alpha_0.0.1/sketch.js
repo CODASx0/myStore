@@ -548,7 +548,7 @@ function draw() {
 	*/
 	putMode = 1;
 	//削减数列长度
-	deleteArray(24);
+	deleteArray(30);
 
 	drawSketchPoint(xNum, yNum, zNum);
 
