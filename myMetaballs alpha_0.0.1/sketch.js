@@ -1,6 +1,6 @@
 var elem = document.getElementById('myElement');
 //设置精度
-let dpr = 14;
+let dpr = 15;
 
 //设置显示模式
 let displayMode = 0;
