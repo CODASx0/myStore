@@ -61,31 +61,68 @@ function touchInput() {
 
 class VideoInterface {
 	constructor(speed) {
-		this.targetPosX = width / 2;
-		this.targetPosY = height / 2;
 		this.nowPosX = width / 2;
 		this.nowPosY = height / 2;
-		this.targetRadius = 1;
+
 		this.nowRadius = 1;
 		this.speed = speed;
+
+		this.thumbFingerX = width / 2;
+		this.thumbFingerY = height / 2;
+		this.thumbFingerTargetX = width / 2;
+		this.thumbFingerTargetY = height / 2;
+		this.indexFingerX = width / 2;
+		this.indexFingerY = height / 2;
+		this.indexFingerTargetX = width / 2;
+		this.indexFingerTargetY = height / 2;
+		//其他手指
+		this.middleFingerX = width / 2;
+		this.middleFingerY = height / 2;
+		this.middleFingerTargetX = width / 2;
+		this.middleFingerTargetY = height / 2;
+		this.ringFingerX = width / 2;
+		this.ringFingerY = height / 2;
+		this.ringFingerTargetX = width / 2;
+		this.ringFingerTargetY = height / 2;
+		this.pinkyX = width / 2;
+		this.pinkyY = height / 2;
+		this.pinkyTargetX = width / 2;
+		this.pinkyTargetY = height / 2;
 	}
 	update() {
 		if (detections != undefined) {
 			if (detections.multiHandLandmarks != undefined) {
 				for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
-					let indexFingerX = width - detections.multiHandLandmarks[i][8].x * width;
-					let indexFingerY = detections.multiHandLandmarks[i][8].y * height;
-					let thumbFingerX = width - detections.multiHandLandmarks[i][4].x * width;
-					let thumbFingerY = detections.multiHandLandmarks[i][4].y * height;
-					this.targetRadius = sqrt(sq(indexFingerX - thumbFingerX) + sq(indexFingerY - thumbFingerY)) * 0.5;
+					this.indexFingerTargetX = width - detections.multiHandLandmarks[i][8].x * width;
+					this.indexFingerTargetY = detections.multiHandLandmarks[i][8].y * height;
+					this.thumbFingerTargetX = width - detections.multiHandLandmarks[i][4].x * width;
+					this.thumbFingerTargetY = detections.multiHandLandmarks[i][4].y * height;
 
-					this.targetPosX = (indexFingerX + thumbFingerX) * 0.5;
-					this.targetPosY = (indexFingerY + thumbFingerY) * 0.5;
-					this.nowPosX += (this.targetPosX - this.nowPosX) * this.speed;
-					this.nowPosY += (this.targetPosY - this.nowPosY) * this.speed;
-					this.nowRadius += (this.targetRadius - this.nowRadius) * this.speed;
+
+
+					this.indexFingerX += (this.indexFingerTargetX - this.indexFingerX) * this.speed;
+					this.indexFingerY += (this.indexFingerTargetY - this.indexFingerY) * this.speed;
+					this.thumbFingerX += (this.thumbFingerTargetX - this.thumbFingerX) * this.speed;
+					this.thumbFingerY += (this.thumbFingerTargetY - this.thumbFingerY) * this.speed;
+
+					this.nowPosX = (this.indexFingerX + this.thumbFingerX) * 0.5;
+					this.nowPosY = (this.indexFingerY + this.thumbFingerY) * 0.5;
+					this.nowRadius = sqrt(sq(this.indexFingerX - this.thumbFingerX) + sq(this.indexFingerY - this.thumbFingerY));
+
 					//console.log(touchInputX, touchInputY);
 					//console.log(detections.multiHandLandmarks[0][8].x, detections.multiHandLandmarks[0][8].y);
+					this.middleFingerTargetX = width - detections.multiHandLandmarks[i][12].x * width;
+					this.middleFingerTargetY = detections.multiHandLandmarks[i][12].y * height;
+					this.middleFingerX += (this.middleFingerTargetX - this.middleFingerX) * this.speed;
+					this.middleFingerY += (this.middleFingerTargetY - this.middleFingerY) * this.speed;
+					this.pinkyTargetX = width - detections.multiHandLandmarks[i][20].x * width;
+					this.pinkyTargetY = detections.multiHandLandmarks[i][20].y * height;
+					this.pinkyX += (this.pinkyTargetX - this.pinkyX) * this.speed;
+					this.pinkyY += (this.pinkyTargetY - this.pinkyY) * this.speed;
+					this.ringFingerTargetX = width - detections.multiHandLandmarks[i][16].x * width;
+					this.ringFingerTargetY = detections.multiHandLandmarks[i][16].y * height;
+					this.ringFingerX += (this.ringFingerTargetX - this.ringFingerX) * this.speed;
+					this.ringFingerY += (this.ringFingerTargetY - this.ringFingerY) * this.speed;
 				}
 			}
 		}
@@ -427,26 +464,21 @@ function setup() {
 	touchInputY = height / 2;
 	xNum = width / dpr | 0;
 	yNum = height / dpr | 0;
-	videoInterface = new VideoInterface(0.1);
+	videoInterface = new VideoInterface(0.05);
 
 	circleLim[0] = 2;
 	circleLim[1] = 1;
 	circleLim[2] = 2;
 
 	//circleArray[][](stability, posX, posY, radius, speed, moveRadius) 
-	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 40, 0.15, 5);
+	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 50, 0.15, 0);
+	circleArray[0][1] = new circleDraw(0, width * 0.65, height * 0.5, 50, 0.23, 0);
+	circleArray[0][2] = new circleDraw(0, width * 0.65, height * 0.5, 40, 0.18, 0);
+	circleArray[0][3] = new circleDraw(0, width * 0.65, height * 0.5, 36, 0.15, 0);
+	//circleArray[0][3] = new circleDraw(0, width * 0.65, height * 0.5, 34, 0.1, 0);
 
-	/*
-		circleArray[0][1] = new circleDraw(0, width * 0.5, height * 0.5, 50, 0.05, 20);
-		
-			circleArray[0][2] = new circleDraw(0, width * 0.35, height * 0.5, 70, 0.02, 10);
-			
-				
-				circleArray[0][3] = new circleDraw(1, width * 0.35, height * 0.5, 30, 0.05, 10);
-				circleArray[0][4] = new circleDraw(1, width * 0.65, height * 0.5, 30, 0.05, 10);
-				circleArray[0][5] = new circleDraw(1, width * 0.5, height * 0.65, 30, 0.05, 10);
-				*/
-	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 0.5, 0);
+
+	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 1, 0);
 
 
 }
@@ -483,11 +515,19 @@ function draw() {
 	mouseWheelValueSmooth(0.1);
 
 	//暂时这样
-	circleArray[0][0].radiusUpdate(videoInterface.nowRadius + 20);
+	//circleArray[0][0].radiusUpdate(videoInterface.nowRadius + 20);
 	circleArray[1][0].radiusUpdate(videoInterface.nowRadius);
 
 	//更新圆的属性
-	for (i = 0; i < zNum; i++) {
+	circleArray[0][0].normalUpdate(videoInterface.thumbFingerTargetX, videoInterface.thumbFingerTargetY);
+	circleArray[0][1].normalUpdate(videoInterface.indexFingerTargetX, videoInterface.indexFingerTargetY);
+	circleArray[0][2].normalUpdate(videoInterface.middleFingerTargetX, videoInterface.middleFingerTargetY);
+	circleArray[0][3].normalUpdate(videoInterface.ringFingerTargetX, videoInterface.ringFingerTargetY);
+	//circleArray[0][3].normalUpdate(videoInterface.pinkyTargetX, videoInterface.pinkyTargetY);
+	for (j = 4; j < circleArray[0].length; j++) {
+		circleArray[0][j].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
+	}
+	for (i = 1; i < zNum; i++) {
 		for (j = 0; j < circleArray[i].length; j++) {
 			//circleArray[i][j].normalUpdate(mouseX, mouseY);
 			circleArray[i][j].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
@@ -508,14 +548,15 @@ function draw() {
 }
 
 //删减数列
+//-----待修改-----未排除[0][x]开头的元素
 function deleteArray(num) {
 	if (circleArray[0].length > num) {
-		for (i = 0; i < circleArray[0].length - 2; i++) {
-			circleArray[0][i + 1] = circleArray[0][i + 2];
-			circleArray[1][i + 1] = circleArray[1][i + 2];
+		for (z = 0; z < zNum; z++) {
+			for (i = 0; i < circleArray[z].length - 2; i++) {
+				circleArray[z][i + 1] = circleArray[z][i + 2];
+			}
+			circleArray[z].length--;
 		}
-		circleArray[0].length--;
-		circleArray[1].length--;
 	}
 }
 
