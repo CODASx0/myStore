@@ -1,5 +1,5 @@
 body {
-    background-color: #ffffff;
+    background-color: #f1f1f1;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -9,12 +9,30 @@ body {
     position: absolute;
     top: 0px;
     left: 0px;
-    z-index: 1;
+    z-index: 3;
     overflow: hidden;
 }
 
-
+#canvas2 {
+    position: absolute;
+    transform: scaleX(-1) scale(0.5);
+    transform-origin: 0 0;
+    top: 18px;
+    left: 658px;
+    z-index: 2;
+    
+    overflow: hidden;
+}
 
 #video {
-    display: none;
+    position: absolute;
+    transform: scaleX(-1) scale(0.5);
+    transform-origin: 0 0;
+    top: 18px;
+    left: 658px;
+    z-index: 1;
+    border: 4px #ffffff solid;
+    border-radius: 30px;
+    opacity: 0.4
+    
 }

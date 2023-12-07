@@ -1,6 +1,6 @@
 var elem = document.getElementById('myElement');
 //设置精度
-let dpr = 14;
+let dpr = 16;
 
 //设置显示模式
 let displayMode = 0;
@@ -32,6 +32,7 @@ for (z = 0; z < zNum; z++) {
 let canvas;
 
 
+
 function hideMouseCursor() {
 	var elem = document.body; //获取页面body元素
 	elem.style.cursor = 'none'; //隐藏鼠标指针
@@ -41,6 +42,7 @@ function hideMouseCursor() {
 //定义悬浮触控的输入点
 let touchInputX;
 let touchInputY;
+
 
 function touchInput() {
 	if (detections != undefined) {
@@ -98,8 +100,6 @@ class VideoInterface {
 					this.thumbFingerTargetX = width - detections.multiHandLandmarks[i][4].x * width;
 					this.thumbFingerTargetY = detections.multiHandLandmarks[i][4].y * height;
 
-
-
 					this.indexFingerX += (this.indexFingerTargetX - this.indexFingerX) * this.speed;
 					this.indexFingerY += (this.indexFingerTargetY - this.indexFingerY) * this.speed;
 					this.thumbFingerX += (this.thumbFingerTargetX - this.thumbFingerX) * this.speed;
@@ -126,15 +126,13 @@ class VideoInterface {
 				}
 			}
 		}
-
 	}
+
 }
 
 //定义类：画在上面的圆
 class circleDraw {
-
 	constructor(stability, posX, posY, radius, speed, moveRadius) {
-
 		this.inputX = posX;
 		this.inputY = posY;
 		this.inputR = radius;
@@ -167,18 +165,15 @@ class circleDraw {
 	radiusUpdate(radiusValue) {
 		this.inputR = radiusValue;
 	}
-
 }
 
 //把点阵上的数值计算后视觉化呈现出来
 function drawSketchPoint(W, H, Z) {
 	for (let z = 0; z < Z; z++) {
-
 		//把第 Z 类圆形的数值叠加后计算出来
 		for (let i = 0; i < W + 1; i++) {
 			for (let j = 0; j < H + 1; j++) {
 				//储存到圆心距离的倒数
-
 				inputValue[i][j][z] = circleArray[z][0].r / sqrt(sq(circleArray[z][0].x - i * dpr) + sq(circleArray[z][0].y - j * dpr));
 				for (let n = 1; n < circleArray[z].length; n++) {
 					let dt = circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
@@ -186,7 +181,6 @@ function drawSketchPoint(W, H, Z) {
 				}
 			}
 		}
-
 
 		if (z == 0) {
 			for (let i = 0; i < W; i++) {
@@ -218,7 +212,8 @@ function drawSketchPoint(W, H, Z) {
 					//stroke(250);
 					strokeWeight(3);
 					//noFill();
-					fill(246, 243, 243, 255);
+					fill(255);
+					//fill(246, 243, 243, 255);
 					//绘制 Metaballs
 
 					switch (gridValue[i][j][z]) {
@@ -362,7 +357,7 @@ function drawSketchPoint(W, H, Z) {
 					}
 
 					if (displayMode == 1) {
-						stroke(240, 240, 240);
+						stroke(200);
 						switch (gridValue[i][j][z]) {
 							case 1:
 							case 14:
@@ -460,6 +455,7 @@ let videoInterface;
 //初始化画布
 function setup() {
 	canvas = createCanvas(windowWidth, windowHeight);
+	canvas.id("canvas");
 	touchInputX = width / 2;
 	touchInputY = height / 2;
 	xNum = width / dpr | 0;
@@ -471,14 +467,15 @@ function setup() {
 	circleLim[2] = 2;
 
 	//circleArray[][](stability, posX, posY, radius, speed, moveRadius) 
-	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 50, 0.15, 0);
+	circleArray[0][0] = new circleDraw(0, width * 0.65, height * 0.5, 60, 0.15, 0);
 	circleArray[0][1] = new circleDraw(0, width * 0.65, height * 0.5, 50, 0.23, 0);
 	circleArray[0][2] = new circleDraw(0, width * 0.65, height * 0.5, 40, 0.18, 0);
 	circleArray[0][3] = new circleDraw(0, width * 0.65, height * 0.5, 36, 0.15, 0);
+	circleArray[0][4] = new circleDraw(0, width * 0.65, height * 0.5, 50, 0.8, 0);
 	//circleArray[0][3] = new circleDraw(0, width * 0.65, height * 0.5, 34, 0.1, 0);
 
 
-	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 1, 0);
+	circleArray[1][0] = new circleDraw(0, width * 0.35, height * 0.5, 30, 0.8, 0);
 
 
 }
@@ -487,7 +484,9 @@ function setup() {
 function draw() {
 	//隐藏鼠标指针
 	//hideMouseCursor();
+	clear();
 
+	displayMode = 0;
 	//更新视频接口
 	videoInterface.update();
 
@@ -508,14 +507,14 @@ function draw() {
 			gridValue[i][j] = new Array(zNum);
 		}
 	}
-	background(255);
+	//background(255);
 	//touchInput();
 
 	//鼠标滚轮平滑
 	mouseWheelValueSmooth(0.1);
 
 	//暂时这样
-	//circleArray[0][0].radiusUpdate(videoInterface.nowRadius + 20);
+	circleArray[0][4].radiusUpdate(videoInterface.nowRadius*0.65);
 	circleArray[1][0].radiusUpdate(videoInterface.nowRadius);
 
 	//更新圆的属性
@@ -523,35 +522,46 @@ function draw() {
 	circleArray[0][1].normalUpdate(videoInterface.indexFingerTargetX, videoInterface.indexFingerTargetY);
 	circleArray[0][2].normalUpdate(videoInterface.middleFingerTargetX, videoInterface.middleFingerTargetY);
 	circleArray[0][3].normalUpdate(videoInterface.ringFingerTargetX, videoInterface.ringFingerTargetY);
+	circleArray[0][4].normalUpdate(videoInterface.nowPosX,videoInterface.nowPosY)
+	//类似于指示器
+	circleArray[1][0].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
 	//circleArray[0][3].normalUpdate(videoInterface.pinkyTargetX, videoInterface.pinkyTargetY);
 	for (j = 4; j < circleArray[0].length; j++) {
 		circleArray[0][j].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
 	}
 	for (i = 1; i < zNum; i++) {
-		for (j = 0; j < circleArray[i].length; j++) {
+		for (j = 1; j < circleArray[i].length; j++) {
 			//circleArray[i][j].normalUpdate(mouseX, mouseY);
 			circleArray[i][j].normalUpdate(videoInterface.nowPosX, videoInterface.nowPosY);
 		}
 	}
 	//circleLim[0] += (-circleLim[0] + 0.2 * circleArray[0].length ) * 0.06;
 
+	/*
 	if (keyIsPressed === true) {
 		putMode = 0;
 	} else {
 		putMode = 1;
 	}
+	*/
+	putMode = 1;
 	//削减数列长度
-	deleteArray(40);
+	deleteArray(20);
 
 	drawSketchPoint(xNum, yNum, zNum);
 
 }
 
 //删减数列
-//-----待修改-----未排除[0][x]开头的元素
+//排除[0][x]开头的元素
 function deleteArray(num) {
 	if (circleArray[0].length > num) {
-		for (z = 0; z < zNum; z++) {
+		//忘记为什么是从 3 开始了，毁灭吧，这个代码写的和💩一样，记住就行了
+		for (i = 4; i < circleArray[0].length - 2; i++) {
+			circleArray[0][i + 1] = circleArray[0][i + 2];
+		}
+		circleArray[0].length--;
+		for (z = 1; z < zNum; z++) {
 			for (i = 0; i < circleArray[z].length - 2; i++) {
 				circleArray[z][i + 1] = circleArray[z][i + 2];
 			}
