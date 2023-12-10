@@ -1,6 +1,6 @@
 var elem = document.getElementById('myElement');
 //设置精度
-let dpr = 15;
+let dpr = 16;
 
 //设置显示模式
 let displayMode = 0;
@@ -212,7 +212,7 @@ function drawSketchPoint(W, H, Z) {
 					//stroke(250);
 					strokeWeight(3);
 					//noFill();
-					fill(255);
+					fill(255,200);
 					//fill(246, 243, 243, 255);
 					//绘制 Metaballs
 
@@ -516,7 +516,7 @@ function draw() {
 	mouseWheelValueSmooth(0.1);
 
 	//暂时这样
-	circleArray[0][4].radiusUpdate(videoInterface.nowRadius * 1.2);
+	circleArray[0][4].radiusUpdate(videoInterface.nowRadius );
 	circleArray[1][0].radiusUpdate(videoInterface.nowRadius);
 
 	//更新圆的属性
@@ -548,7 +548,7 @@ function draw() {
 	*/
 	putMode = 1;
 	//削减数列长度
-	deleteArray(30);
+	deleteArray(40);
 
 	drawSketchPoint(xNum, yNum, zNum);
 
@@ -574,10 +574,17 @@ function deleteArray(num) {
 
 
 function keyPressed() {
-	if (keyCode === RETURN) {
+	if (keyCode === TAB || keyCode === RETURN) {
 		let randomValue = 0.2 * random(0.1, 1)
 		circleArray[0][circleArray[0].length] = new circleDraw(putMode, videoInterface.nowPosX, videoInterface.nowPosY, videoInterface.nowRadius * 0.6 + 25, randomValue, random(1, 10));
 		circleArray[1][circleArray[1].length] = new circleDraw(putMode, videoInterface.nowPosX, videoInterface.nowPosY, videoInterface.nowRadius, randomValue, random(1, 5));
+	}
+	if (keyCode === BACKSPACE) {
+		if (circleArray[0].length > 5) {
+			for (z = 0; z < zNum; z++) {
+				circleArray[z].length--;
+			}
+		}
 	}
 }
 function windowResized() { resizeCanvas(windowWidth, windowHeight); }
