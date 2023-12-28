@@ -31,7 +31,7 @@ let sketch = function (p) {
                 p.drawLandmarks([13, 17], 60);//ring finger
                 p.drawLandmarks([17, 21], 0);//pinky
 
-
+                
             }
         }
     }
