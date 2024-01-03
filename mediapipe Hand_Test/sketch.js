@@ -32,6 +32,7 @@ let sketch = function (p) {
                 p.drawLandmarks([17, 21], 300);//pinky
             }
         }
+        console.log(i);
     }
 
     p.drawHands = function () {
@@ -46,6 +47,7 @@ let sketch = function (p) {
                 p.stroke(255);
                 p.strokeWeight(10);
                 p.point(x, y);
+                
             }
         }
     }

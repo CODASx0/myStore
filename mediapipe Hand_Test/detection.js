@@ -1,5 +1,5 @@
 let detections = {};
-
+let i = 0;
 const videoElement = document.getElementById('video');
 
 function gotHands(results) {
