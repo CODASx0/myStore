@@ -44,8 +44,7 @@ class myLips {
         let leftMargin = (meshSize - width) / 2;
         let topMargin = (meshSize - height) / 2;
 
-        fill(200, 255);
-        noStroke();
+
 
         beginShape();
         for (let i = 0; i < this.upperLip.length - 1; i++) {
@@ -85,7 +84,7 @@ function keyPressed() {
     if ((key === 'i' || key === 'I') && detections != undefined) {
 
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myLips(smoothedDetections, returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
         isRecording = true;
 
     }
@@ -108,13 +107,35 @@ function keyReleased() {
 //录制函数
 function recordDetection() {
     if (isRecording) {
-        lipsArray[lipsArray.length - 1][frameCount - lipsArray[lipsArray.length - 1][0].time] = new myLips(smoothedDetections, returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][frameCount - lipsArray[lipsArray.length - 1][0].time] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
     }
 }
 
 //网格系统
 function showLips() {
+    let gridSize = 100;
+    let columns = canvas.width / gridSize;
+    let gridX = 0;
+    let gridY = 0;
+    let i = 0;
 
+    while (i < lipsArray.length) {
+        if (lipsArray[i][0].isReturn) {
+            gridX = 0;
+            gridY++;
+        }
+
+        let timeLine = (frameCount - lipsArray[i][0].time) % lipsArray[i].length;
+        lipsArray[i][timeLine].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * 0.6);
+
+        if (gridX < columns - 2) {
+            gridX++;
+        } else {
+            gridX = 0;
+            gridY++;
+        }
+        i++;
+    }
 }
 
 
@@ -140,9 +161,23 @@ function draw() {
     if (detections != undefined) {
         updateDetections(detections);
         lips[0] = new myLips(smoothedDetections, false, frameCount);
+        fill(255, 255);
+        noStroke();
         lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
     }
 
+
+
+    recordDetection();
+
+    fill(220, 255);
+    noStroke();
+    showLips();
+
+    if (lipsArray.length > 0) {
+        //console.log(lipsArray.length, lipsArray[lipsArray.length - 1].length, lipsArray[lipsArray.length - 1][0].isReturn);
+        console.log(lipsArray[0][0].left);
+    }
 
     if (isRecording) {
         fill(255, 0, 0);
@@ -150,11 +185,5 @@ function draw() {
         fill(255, 255, 255);
     }
     noStroke();
-    ellipse(20, 20, 20, 20);
-    recordDetection();
-
-    if (lipsArray.length > 0) {
-        console.log(lipsArray.length, lipsArray[lipsArray.length - 1].length, lipsArray[lipsArray.length - 1][0].isReturn);
-    }
-    //console.log(returnReady);
+    ellipse(10, 10, 10, 10);
 }
