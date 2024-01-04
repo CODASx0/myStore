@@ -3,7 +3,7 @@ let lips = [];
 
 let smoothingFactor = 0.6; // 平滑因子，取值范围是 0 到 1。值越大，平滑效果越强。
 let smoothedDetections = null;
-
+let returnReady = false;
 function updateDetections(newDetections) {
     if (smoothedDetections == null) {
         // 如果 smoothedDetections 还没有初始化，就直接使用 newDetections
@@ -18,30 +18,9 @@ function updateDetections(newDetections) {
     }
 }
 
-function setup() {
-
-    canvas = createCanvas(windowWidth, windowHeight);
-    canvas.id("canvas");
-}
-
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
-
-function draw() {
-    clear();
-    //circle(mouseX, mouseY, 20);
-    if (detections != undefined) {
-        updateDetections(detections);
-        lips[0] = new myLips(smoothedDetections, false);
-        lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
-    }
-
-
-}
-
+//嘴唇类
 class myLips {
-    constructor(input, isReturn) {
+    constructor(input, isReturn, time) {
         this.upperLip = [input[61], input[185], input[40], input[39], input[37], input[0], input[267], input[269], input[270], input[409], input[291], input[308], input[415], input[310], input[311], input[312], input[13], input[82], input[80], input[191], input[78], input[61]];
 
         this.lowerLip = [input[78], input[95], input[88], input[178], input[87], input[14], input[317], input[402], input[318], input[324], input[308], input[291], input[375], input[321], input[405], input[314], input[17], input[84], input[181], input[91], input[146], input[61], input[78]];
@@ -56,6 +35,7 @@ class myLips {
         this.bottom = input[17];
 
         this.isReturn = isReturn;
+        this.time = time;
     }
     draw(posX, posY, meshSize, width) {
         let xyRatio = 0.75
@@ -88,4 +68,93 @@ class myLips {
         endShape(CLOSE);
 
     }
+}
+//一个判断是否在录制中的布尔值
+let isRecording = false;
+
+//定义二维数组，一个维度为嘴唇所代表的不同的字，另一个维度为嘴唇在不同时间的状态
+let timeSetup = 1;
+let lipsNum = 0;
+let lipsArray = new Array(lipsNum);
+for (let i = 0; i < lipsNum; i++) {
+    lipsArray[i] = new Array(timeSetup);
+}
+
+//按下i键开始录制，松开i键结束录制
+function keyPressed() {
+    if ((key === 'i' || key === 'I') && detections != undefined) {
+
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myLips(smoothedDetections, returnReady, frameCount);
+        isRecording = true;
+
+    }
+}
+
+//按下退格键删除最后一个字，按下回车键准备换行
+function keyReleased() {
+    if (key === 'i' || key === 'I') {
+        isRecording = false;
+        returnReady = false;
+    }
+    if (key === 'Backspace') {
+        lipsArray.pop();
+    }
+    if (keyCode === RETURN) {
+        returnReady = true;
+    }
+}
+
+//录制函数
+function recordDetection() {
+    if (isRecording) {
+        lipsArray[lipsArray.length - 1][frameCount - lipsArray[lipsArray.length - 1][0].time] = new myLips(smoothedDetections, returnReady, frameCount);
+    }
+}
+
+//网格系统
+function showLips() {
+
+}
+
+
+
+//画布适应窗口大小
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+}
+
+
+//p5.js
+function setup() {
+
+    canvas = createCanvas(windowWidth, windowHeight);
+    canvas.id("canvas");
+    frameRate(60);
+}
+
+function draw() {
+    clear();
+    //circle(mouseX, mouseY, 20);
+
+    if (detections != undefined) {
+        updateDetections(detections);
+        lips[0] = new myLips(smoothedDetections, false, frameCount);
+        lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
+    }
+
+
+    if (isRecording) {
+        fill(255, 0, 0);
+    } else {
+        fill(255, 255, 255);
+    }
+    noStroke();
+    ellipse(20, 20, 20, 20);
+    recordDetection();
+
+    if (lipsArray.length > 0) {
+        console.log(lipsArray.length, lipsArray[lipsArray.length - 1].length, lipsArray[lipsArray.length - 1][0].isReturn);
+    }
+    //console.log(returnReady);
 }
