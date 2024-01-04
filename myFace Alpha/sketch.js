@@ -1,7 +1,7 @@
 let canvas;
 let lips = [];
 
-let smoothingFactor = 0.5; // 平滑因子，取值范围是 0 到 1。值越大，平滑效果越强。
+let smoothingFactor = 0.6; // 平滑因子，取值范围是 0 到 1。值越大，平滑效果越强。
 let smoothedDetections = null;
 
 function updateDetections(newDetections) {
@@ -19,6 +19,7 @@ function updateDetections(newDetections) {
 }
 
 function setup() {
+
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.id("canvas");
 }
@@ -35,6 +36,8 @@ function draw() {
         lips[0] = new myLips(smoothedDetections, false);
         lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
     }
+
+
 }
 
 class myLips {
@@ -61,15 +64,16 @@ class myLips {
         let leftMargin = (meshSize - width) / 2;
         let topMargin = (meshSize - height) / 2;
 
-        fill(255, 0, 0, 100);
+        fill(200, 255);
         noStroke();
+
         beginShape();
         for (let i = 0; i < this.upperLip.length - 1; i++) {
             let inputX = this.upperLip[i].x;
             let inputY = this.upperLip[i].y;
             let outputX = posX + leftMargin + (inputX - this.left.x) * sizeRatio;
             let outputY = posY + topMargin + (inputY - this.top.y) * sizeRatio * xyRatio;
-            vertex(outputX, outputY);
+            curveVertex(outputX, outputY);
         }
         endShape(CLOSE);
 
@@ -79,7 +83,7 @@ class myLips {
             let inputY = this.lowerLip[i].y;
             let outputX = posX + leftMargin + (inputX - this.left.x) * sizeRatio;
             let outputY = posY + topMargin + (inputY - this.top.y) * sizeRatio * xyRatio;
-            vertex(outputX, outputY);
+            curveVertex(outputX, outputY);
         }
         endShape(CLOSE);
 
