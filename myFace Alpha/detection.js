@@ -7,7 +7,7 @@ const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision;
 let faceLandmarker;
 let runningMode = "VIDEO";
 
-const videoWidth = 280;
+const videoWidth = 480;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
 faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
@@ -72,10 +72,10 @@ async function predictWebcam() {
             drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "000000", lineWidth: 2 });
 
         }
-        
+
     }
     window.requestAnimationFrame(predictWebcam);
-    
+
 }
 
 

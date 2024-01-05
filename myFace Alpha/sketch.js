@@ -22,11 +22,8 @@ function updateDetections(newDetections) {
 class myLips {
     constructor(input, isReturn, time) {
         this.upperLip = [input[61], input[185], input[40], input[39], input[37], input[0], input[267], input[269], input[270], input[409], input[291], input[308], input[415], input[310], input[311], input[312], input[13], input[82], input[80], input[191], input[78], input[61]];
-
         this.lowerLip = [input[78], input[95], input[88], input[178], input[87], input[14], input[317], input[402], input[318], input[324], input[308], input[291], input[375], input[321], input[405], input[314], input[17], input[84], input[181], input[91], input[146], input[61], input[78]];
-
         this.outLip = [input[61], input[185], input[40], input[39], input[37], input[0], input[267], input[269], input[270], input[409], input[291], input[375], input[321], input[405], input[314], input[17], input[84], input[181], input[91], input[146], input[61]];
-
         this.inLip = [input[78], input[191], input[80], input[82], input[13], input[312], input[311], input[310], input[415], input[308], input[324], input[402], input[317], input[14], input[87], input[178], input[88], input[95], input[78]];
 
         this.left = input[61];
@@ -37,7 +34,7 @@ class myLips {
         this.isReturn = isReturn;
         this.time = time;
     }
-    draw(posX, posY, meshSize, width) {
+    draw(posX, posY, meshSize, width,color,alpha) {
         let xyRatio = 0.75
         let sizeRatio = width / (this.right.x - this.left.x);
         let height = sizeRatio * (this.bottom.y - this.top.y) * xyRatio;
@@ -113,19 +110,28 @@ function recordDetection() {
 
 //网格系统
 function showLips() {
-    let gridSize = 100;
+    let gridSize = 120;
     let columns = canvas.width / gridSize;
     let gridX = 0;
     let gridY = 0;
     let i = 0;
 
     while (i < lipsArray.length) {
+        if (i === lipsArray.length - 1 && isRecording) {
+            
+            fill(255,0,0, 255);
+            noStroke();
+        } else {
+            fill(220, 255);
+            noStroke();
+        }
         if (lipsArray[i][0].isReturn) {
             gridX = 0;
             gridY++;
         }
 
         let timeLine = (frameCount - lipsArray[i][0].time) % lipsArray[i].length;
+
         lipsArray[i][timeLine].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * 0.6);
 
         if (gridX < columns - 2) {
@@ -166,6 +172,16 @@ function draw() {
         lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
     }
 
+    canvas.touchStarted(fxn = () => {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
+        isRecording = true;
+    });
+
+    canvas.touchEnded(fxn = () => {
+        isRecording = false;
+        returnReady = false;
+    });
 
 
     recordDetection();
@@ -185,5 +201,5 @@ function draw() {
         fill(255, 255, 255);
     }
     noStroke();
-    ellipse(10, 10, 10, 10);
+    ellipse(16, height - 16, 12, 12);
 }

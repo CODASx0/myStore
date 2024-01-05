@@ -18,7 +18,7 @@ video {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   z-index: 2;
-  
+
   border: 4px #ffffff solid;
   border-radius: 20px;
 }
@@ -31,7 +31,7 @@ video {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   z-index: 3;
-  opacity: 0;
+  opacity: 1;
 }
 
 #canvas {
@@ -39,4 +39,13 @@ video {
   top: 0px;
   left: 0px;
   z-index: 1;
+}
+
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
