@@ -31,7 +31,7 @@ async function draw() {
             y = canvas.height / 2 - lightsNum * meshSize / 2 + i * meshSize;
 
             //设定灯柱的样式
-            let a = mySin(y, 100, targetY, 0, 100);
+            let a = mySin(y, 100, targetY, 0, 200);
 
             fill(a, a, a);
             rect(canvas.width / 2 - meshSize / 2, y, meshSize, meshSize);
