@@ -27,15 +27,28 @@ async function draw() {
 
         let meshSize = 20;
         targetY = lerp(targetY, mouseY, 0.2);
+
+        let targetY1 = cos(frameCount / 30) * 40 + 80;
+        let targetY2 = cos(frameCount / 60) * 40 + 80;
+        let targetY3 = cos(frameCount / 20) * 40 + 80;
+
+        let targetY01 = cos(frameCount / 90) * 200 + canvas.height / 2;
+        let targetY02 = cos(frameCount / (90 + targetY2 * 0.01) + 0.08) * 200 + canvas.height / 2;
+        let targetY03 = cos(frameCount / (90 + targetY3 * 0.01) + 0.16) * 200 + canvas.height / 2;
+
         for (i = 0; i < lightsNum; i++) {
             y = canvas.height / 2 - lightsNum * meshSize / 2 + i * meshSize;
 
             //设定灯柱的样式
-            let a = mySin(y, 100, targetY, 0, 200);
-
-            fill(a, a, a);
+            let c1 = mySin(y, 20, targetY01, 30, targetY1);
+            let c2 = mySin(y, 20, targetY02, 30, targetY1 + targetY2 * 0.02);
+            let c3 = mySin(y, 20, targetY03, 30, targetY1 + targetY3 * 0.02);
+            fill(c1 * 3, c2 * 3, c3 * 3, 255);
+            stroke(255);
             rect(canvas.width / 2 - meshSize / 2, y, meshSize, meshSize);
-            colors[i] = a;
+            colors[i * 3] = c1;
+            colors[i * 3 + 1] = c2;
+            colors[i * 3 + 2] = c3;
         }
 
 
