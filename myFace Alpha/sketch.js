@@ -34,7 +34,7 @@ class myLips {
         this.isReturn = isReturn;
         this.time = time;
     }
-    draw(posX, posY, meshSize, width,color,alpha) {
+    draw(posX, posY, meshSize, width, color, alpha) {
         let xyRatio = 0.75
         let sizeRatio = width / (this.right.x - this.left.x);
         let height = sizeRatio * (this.bottom.y - this.top.y) * xyRatio;
@@ -118,8 +118,8 @@ function showLips() {
 
     while (i < lipsArray.length) {
         if (i === lipsArray.length - 1 && isRecording) {
-            
-            fill(255,0,0, 255);
+
+            fill(255, 0, 0, 255);
             noStroke();
         } else {
             fill(220, 255);
@@ -157,7 +157,7 @@ function setup() {
 
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.id("canvas");
-    frameRate(60);
+    //frameRate(60);
 }
 
 function draw() {
