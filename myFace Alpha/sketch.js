@@ -33,15 +33,17 @@ class myLips {
 
         this.isReturn = isReturn;
         this.time = time;
+        this.type = "lips";
     }
     draw(posX, posY, meshSize, width, color, alpha) {
+
         let xyRatio = 0.75
         let sizeRatio = width / (this.right.x - this.left.x);
         let height = sizeRatio * (this.bottom.y - this.top.y) * xyRatio;
         let leftMargin = (meshSize - width) / 2;
         let topMargin = (meshSize - height) / 2;
 
-
+        //fill(color, alpha);
 
         beginShape();
         for (let i = 0; i < this.upperLip.length - 1; i++) {
@@ -65,6 +67,20 @@ class myLips {
 
     }
 }
+//字符类
+class myText {
+    constructor(input, isReturn, time) {
+        this.type = "text";
+        this.text = input;
+        this.isReturn = isReturn;
+        this.time = time;
+    }
+    draw(posX, posY, meshSize, width, color, alpha) {
+        
+    }
+}
+
+
 //一个判断是否在录制中的布尔值
 let isRecording = false;
 
@@ -117,29 +133,43 @@ function showLips() {
     let i = 0;
 
     while (i < lipsArray.length) {
-        if (i === lipsArray.length - 1 && isRecording) {
 
+        if (lipsArray[i][0].isReturn) {
+            gridX = 0;
+            gridY++;
+        }
+
+        if (i === lipsArray.length - 1 && isRecording) {
             fill(255, 0, 0, 255);
             noStroke();
         } else {
             fill(220, 255);
             noStroke();
         }
-        if (lipsArray[i][0].isReturn) {
-            gridX = 0;
-            gridY++;
-        }
+
 
         let timeLine = (frameCount - lipsArray[i][0].time) % lipsArray[i].length;
-
         lipsArray[i][timeLine].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * 0.6);
 
+        /*
+        for (let j = 0; j < lipsArray[i].length; j++) {
+            //使图形的透明度按照时间变化
+            let alpha = 4 * (1 - 4 * ((j + lipsArray[i].length - timeLine) % lipsArray[i].length )/ lipsArray[i].length);
+            if (alpha < 0) {alpha = 0;}
+            let num = j + lipsArray[i].length - timeLine;
+            //let alpha = 0;
+            if (j === timeLine) { 
+                alpha = 255;
+            }
+            lipsArray[i][j].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * 0.6,255, alpha);
+        }*/
         if (gridX < columns - 2) {
             gridX++;
         } else {
             gridX = 0;
             gridY++;
         }
+
         i++;
     }
 }
@@ -172,6 +202,7 @@ function draw() {
         lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
     }
 
+    //触控检测
     canvas.touchStarted(fxn = () => {
         lipsArray[lipsArray.length] = new Array(timeSetup);
         lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
@@ -200,6 +231,7 @@ function draw() {
     } else {
         fill(255, 255, 255);
     }
+
     noStroke();
     ellipse(16, height - 16, 12, 12);
 }
