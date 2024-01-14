@@ -45,6 +45,7 @@ class myLips {
 
         //fill(color, alpha);
 
+        stroke(0);
         beginShape();
         for (let i = 0; i < this.upperLip.length - 1; i++) {
             let inputX = this.upperLip[i].x;
@@ -67,6 +68,8 @@ class myLips {
 
     }
 }
+
+
 //字符类
 class myText {
     constructor(input, isReturn, time) {
@@ -76,7 +79,11 @@ class myText {
         this.time = time;
     }
     draw(posX, posY, meshSize, width, color, alpha) {
-        
+        textFont(font);
+        textSize(width);
+        textAlign(CENTER, CENTER);
+        fill(0);
+        text(this.text, posX + meshSize / 2, posY + meshSize / 2 - width / 5.2);
     }
 }
 
@@ -99,7 +106,26 @@ function keyPressed() {
         lipsArray[lipsArray.length] = new Array(timeSetup);
         lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
         isRecording = true;
+    }
+    if (key === 'Backspace') {
+        lipsArray.pop();
+    }
 
+    if (key === ',') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('，', returnReady, frameCount);
+    }
+    if (key === '.') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('。', returnReady, frameCount);
+    }
+    if (key === '<') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('《', returnReady, frameCount);
+    }
+    if (key === '>') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('》', returnReady, frameCount);
     }
 }
 
@@ -109,12 +135,12 @@ function keyReleased() {
         isRecording = false;
         returnReady = false;
     }
-    if (key === 'Backspace') {
-        lipsArray.pop();
-    }
+
     if (keyCode === RETURN) {
         returnReady = true;
     }
+
+
 }
 
 //录制函数
@@ -126,11 +152,13 @@ function recordDetection() {
 
 //网格系统
 function showLips() {
-    let gridSize = 120;
+    let gridSize = 40;
     let columns = canvas.width / gridSize;
     let gridX = 0;
     let gridY = 0;
     let i = 0;
+
+
 
     while (i < lipsArray.length) {
 
@@ -143,13 +171,22 @@ function showLips() {
             fill(255, 0, 0, 255);
             noStroke();
         } else {
-            fill(220, 255);
+            fill(255, 255);
             noStroke();
         }
 
+        stroke(0, 20);
+        //定位十字线
+        let ratio = 0.6;
+
+        line(gridX * gridSize, gridY * gridSize, gridX * gridSize + gridSize, gridY * gridSize + gridSize);
+        line(gridX * gridSize + gridSize, gridY * gridSize, gridX * gridSize, gridY * gridSize + gridSize);
+
+        rect((gridX + 0.5 - ratio / 2) * gridSize, (gridY + 0.5 - ratio / 2) * gridSize, gridSize * ratio, gridSize * ratio);
+
 
         let timeLine = (frameCount - lipsArray[i][0].time) % lipsArray[i].length;
-        lipsArray[i][timeLine].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * 0.6);
+        lipsArray[i][timeLine].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * ratio);
 
         /*
         for (let j = 0; j < lipsArray[i].length; j++) {
@@ -183,6 +220,14 @@ function windowResized() {
 
 
 //p5.js
+
+
+let font;
+
+function preload() {
+    font = loadFont('assets/SourceHanSerifCN-Regular.otf');
+}
+
 function setup() {
 
     canvas = createCanvas(windowWidth, windowHeight);
@@ -194,13 +239,17 @@ function draw() {
     clear();
     //circle(mouseX, mouseY, 20);
 
+
     if (detections != undefined) {
         updateDetections(detections);
+        /*
         lips[0] = new myLips(smoothedDetections, false, frameCount);
         fill(255, 255);
         noStroke();
         lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
+        */
     }
+
 
     //触控检测
     canvas.touchStarted(fxn = () => {
@@ -217,7 +266,7 @@ function draw() {
 
     recordDetection();
 
-    fill(220, 255);
+    fill(255, 255);
     noStroke();
     showLips();
 
