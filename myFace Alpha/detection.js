@@ -7,7 +7,7 @@ const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision;
 let faceLandmarker;
 let runningMode = "VIDEO";
 
-const videoWidth = 480;
+const videoWidth = 240;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
 faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {

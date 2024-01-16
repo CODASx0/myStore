@@ -87,7 +87,7 @@ class myText {
         textSize(width);
         textAlign(CENTER, CENTER);
         fill(0);
-        text(this.text, posX + meshSize / 2, posY + meshSize / 2 - width / 5.2);
+        text(this.text, posX + meshSize / 2, posY + meshSize / 2 - width / 4.8);
     }
 }
 
@@ -113,24 +113,29 @@ function recordDetection() {
     }
 }
 
+let scrollY = 0;
+
 //网格系统
 function showElement() {
     //页边距
     let pageMargin = 40;
     //段间距
-    let paragraphSpacing = 40;
+    let paragraphSpacing = 30;
     //段内边距
     let padding = 10;
     //行间距
-    let lineSpacing = 40;
+    let lineSpacing = 20;
     //字间距
-    let wordSpacing = 40;
-
+    let wordSpacing = 20;
+0
     //字符占位大小
     let gridSize = 40;
 
     //计算每行字数
     let columns = Math.floor((canvas.width - pageMargin * 2 - padding * 2) / (gridSize + wordSpacing));
+    if (canvas.width - pageMargin * 2 - padding * 2 - columns * (gridSize + wordSpacing) > gridSize) {
+        columns++;
+    }
 
     //段落数
     let paragraphNum = 0;
@@ -147,7 +152,7 @@ function showElement() {
     let cornerRadius = 10;
 
     //Y轴滚动值
-    let scrollY = 0;
+
 
     //图案缩放系数
     let ratio = 0.9;
@@ -288,7 +293,7 @@ function windowResized() {
 let font;
 
 function preload() {
-    font = loadFont('assets/SourceHanSerifCN-Regular.otf');
+    font = loadFont('assets/SourceSerif4-VariableFont_opsz,wght.ttf');
 }
 
 function setup() {
@@ -359,25 +364,25 @@ function keyPressed() {
         lipsArray.pop();
     }
     //全键盘的字符映射
-    if (key === ',' || key === '，') {
+    if (key === ',') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('，', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText(',', returnReady, frameCount);
     }
-    if (key === '.' || key === '。') {
+    if (key === '.') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('。', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('.', returnReady, frameCount);
     }
-    if (key === '<' || key === '《') {
+    if (key === '<') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('《', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('<', returnReady, frameCount);
     }
-    if (key === '>' || key === '》') {
+    if (key === '>') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('》', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('>', returnReady, frameCount);
     }
-    if (key === '!' || key === '！') {
+    if (key === '!') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('！', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('!', returnReady, frameCount);
     }
     if (key === '@') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
@@ -395,9 +400,7 @@ function keyPressed() {
         lipsArray[lipsArray.length] = new Array(timeSetup);
         lipsArray[lipsArray.length - 1][0] = new myText('%', returnReady, frameCount);
     }
-    if (key === '^' || key === '……') {
-        lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('…', returnReady, frameCount);
+    if (key === '^') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
         lipsArray[lipsArray.length - 1][0] = new myText('…', returnReady, frameCount);
     }
@@ -409,13 +412,13 @@ function keyPressed() {
         lipsArray[lipsArray.length] = new Array(timeSetup);
         lipsArray[lipsArray.length - 1][0] = new myText('*', returnReady, frameCount);
     }
-    if (key === '(' || key === '（') {
+    if (key === '(') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('（', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('(', returnReady, frameCount);
     }
-    if (key === ')' || key === '）') {
+    if (key === ')') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('）', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText(')', returnReady, frameCount);
     }
     if (key === '-') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
@@ -423,10 +426,73 @@ function keyPressed() {
     }
     if (key === '_') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('—', returnReady, frameCount);
-        lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('—', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('_', returnReady, frameCount);
     }
+    if (key === '=') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('=', returnReady, frameCount);
+    }
+    if (key === '+') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('+', returnReady, frameCount);
+    }
+    if (key === '[') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('[', returnReady, frameCount);
+    }
+    if (key === ']') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText(']', returnReady, frameCount);
+    }
+    if (key === '{') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('{', returnReady, frameCount);
+    }
+    if (key === '}') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('}', returnReady, frameCount);
+    }
+    if (key === ';') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText(';', returnReady, frameCount);
+    }
+    if (key === ':') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText(':', returnReady, frameCount);
+    }
+    if (key === '\'') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('\'', returnReady, frameCount);
+    }
+    if (key === '"') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('"', returnReady, frameCount);
+    }
+    if (key === '`') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('`', returnReady, frameCount);
+    }
+    if (key === '~') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('~', returnReady, frameCount);
+    }
+    if (key === '\\') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('\\', returnReady, frameCount);
+    }
+    if (key === '|') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('|', returnReady, frameCount);
+    }
+    if (key === '/') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('/', returnReady, frameCount);
+    }
+    if (key === '?') {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myText('?', returnReady, frameCount);
+    }
+
 }
 
 
@@ -441,6 +507,5 @@ function keyReleased() {
         //returnReady = true;
         lipsArray[lipsArray.length - 1][0].isReturn = true;
     }
-
 
 }
