@@ -1,0 +1,51 @@
+/* 视频横向旋转*/
+body {
+  background-color: #dedede;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+video {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  clear: both;
+  display: block;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  z-index: 2;
+
+  border: 4px #ffffff solid;
+  border-radius: 20px;
+}
+
+#output_canvas {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  z-index: 3;
+  opacity: 1;
+}
+
+#canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+}
+
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

@@ -1,0 +1,56 @@
+let gridX = 0;
+    let gridY = 0;
+
+    while (i < lipsArray.length) {
+
+        //判断是否换行
+        if (lipsArray[i][0].isReturn && i != 0) {
+            gridX = 0;
+            gridY++;
+        }
+
+        if (gridDisplay) {
+            stroke(0, 20);
+            //定位十字线
+            
+            noFill();
+            line(gridX * gridSize, gridY * gridSize, gridX * gridSize + gridSize, gridY * gridSize + gridSize);
+            line(gridX * gridSize + gridSize, gridY * gridSize, gridX * gridSize, gridY * gridSize + gridSize);
+            rect((gridX + 0.5 - ratio / 2) * gridSize, (gridY + 0.5 - ratio / 2) * gridSize, gridSize * ratio, gridSize * ratio);
+        }
+        
+        //判断是否在录制中
+        if (i === lipsArray.length - 1 && isRecording) {
+            fill(255, 0, 0, 255);
+            noStroke();
+        } else {
+            fill(255, 255);
+            noStroke();
+        }
+
+        //绘制图案
+        let timeLine = (frameCount - lipsArray[i][0].time) % lipsArray[i].length;
+        lipsArray[i][timeLine].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * ratio);
+
+        
+        for (let j = 0; j < lipsArray[i].length; j++) {
+            //使图形的透明度按照时间变化
+            let alpha = 4 * (1 - 4 * ((j + lipsArray[i].length - timeLine) % lipsArray[i].length )/ lipsArray[i].length);
+            if (alpha < 0) {alpha = 0;}
+            let num = j + lipsArray[i].length - timeLine;
+            //let alpha = 0;
+            if (j === timeLine) { 
+                alpha = 255;
+            }
+            lipsArray[i][j].draw(gridX * gridSize, gridY * gridSize, gridSize, gridSize * 0.6,255, alpha);
+        }
+        if (gridX < columns - 2) {
+            gridX++;
+        } else {
+            gridX = 0;
+            gridY++;
+        }
+
+        i++;
+        
+    }
