@@ -1,12 +1,122 @@
 let canvas;
 let lips = [];
 
-let smoothingFactor = 0.6; // 平滑因子，取值范围是 0 到 1。值越大，平滑效果越强。
+var smoothingFactor = 0.12; // 平滑因子，取值范围是 0 到 1。值越大，平滑效果越强。
+var smoothingFactorMin = 0;
+var smoothingFactorMax = 1;
+var smoothingFactorStep = 0.01;
+
 let smoothedDetections = null;
+
 let returnReady = false;
+var gridDisplay = true;
 
 
-let gridDisplay = true;
+//页边距
+var pageMargin = 40;
+//段间距
+var paragraphSpacing = 30;
+//段内边距
+var padding = 10;
+//行间距
+var lineSpacing = 16;
+//字间距
+var wordSpacing = 10;
+
+//字符占位大小
+var gridSize = 40;
+
+//圆角大小
+var cornerRadius = 10;
+var cornerRadiusMin = 0;
+var cornerRadiusMax = 40;
+var cornerRadiusStep = 1;
+
+//Y轴滚动值
+var scrollY = 0;
+
+//图案缩放系数
+var ratio = 1;
+var ratioMin = 0.1;
+var ratioMax = 1;
+var ratioStep = 0.01;
+
+
+
+let gui;
+
+//判断是否是右引号
+let isRightQuote = 0;
+let isRightQuote2 = 0;
+
+//p5.js
+
+let font;
+
+function preload() {
+    font = loadFont('assets/SourceHanSerifCN-Regular.otf');
+}
+
+function setup() {
+
+    pixelDensity(2);
+    canvas = createCanvas(windowWidth, windowHeight);
+    canvas.id("canvas");
+    //frameRate(60);
+    gui = createGui('mySettings');
+    gui.addGlobals('smoothingFactor', 'gridDisplay', 'pageMargin', 'paragraphSpacing', 'padding', 'lineSpacing', 'wordSpacing', 'gridSize', 'cornerRadius', 'ratio');
+
+    //noLoop();
+}
+
+function draw() {
+    clear();
+    //circle(mouseX, mouseY, 20);
+
+
+    if (detections != undefined) {
+        updateDetections(detections);
+        /*
+        lips[0] = new myLips(smoothedDetections, false, frameCount);
+        fill(255, 255);
+        noStroke();
+        lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
+        */
+    }
+
+
+    //触控检测
+    canvas.touchStarted(fxn = () => {
+        lipsArray[lipsArray.length] = new Array(timeSetup);
+        lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
+        isRecording = true;
+    });
+
+    canvas.touchEnded(fxn = () => {
+        isRecording = false;
+        returnReady = false;
+    });
+
+
+    recordDetection();
+
+    fill(255, 255);
+    noStroke();
+    showElement();
+
+    if (lipsArray.length > 0) {
+        //console.log(lipsArray.length, lipsArray[lipsArray.length - 1].length, lipsArray[lipsArray.length - 1][0].isReturn);
+    }
+
+    if (isRecording) {
+        fill(255, 0, 0);
+    } else {
+        fill(255, 255, 255);
+    }
+
+    noStroke();
+    ellipse(16, height - 16, 12, 12);
+}
 
 function updateDetections(newDetections) {
     if (smoothedDetections == null) {
@@ -87,7 +197,7 @@ class myText {
         textSize(width);
         textAlign(CENTER, CENTER);
         fill(0);
-        text(this.text, posX + meshSize / 2, posY + meshSize / 2 - width / 4.8);
+        text(this.text, posX + meshSize / 2, posY + meshSize / 2 - width / 5);
     }
 }
 
@@ -113,23 +223,11 @@ function recordDetection() {
     }
 }
 
-let scrollY = 0;
+
 
 //网格系统
 function showElement() {
-    //页边距
-    let pageMargin = 40;
-    //段间距
-    let paragraphSpacing = 30;
-    //段内边距
-    let padding = 10;
-    //行间距
-    let lineSpacing = 20;
-    //字间距
-    let wordSpacing = 20;
-0
-    //字符占位大小
-    let gridSize = 40;
+
 
     //计算每行字数
     let columns = Math.floor((canvas.width - pageMargin * 2 - padding * 2) / (gridSize + wordSpacing));
@@ -148,14 +246,7 @@ function showElement() {
     //段落非全宽字数
     let paragraphNotFullLine = new Array(0);
 
-    //圆角大小
-    let cornerRadius = 10;
 
-    //Y轴滚动值
-
-
-    //图案缩放系数
-    let ratio = 0.9;
 
     //累计段落字数
     for (let i = 0; i < lipsArray.length; i++) {
@@ -219,7 +310,7 @@ function showElement() {
             noStroke();
             rect(pageMargin, paragraphY, maxWidth, fullHeight, cornerRadius, cornerRadius, cornerRadius, 0);
             //非全宽衬底
-            rect(pageMargin, paragraphY + fullHeight, paragraphEndX - pageMargin, gridSize + lineSpacing, 0, 0, cornerRadius, cornerRadius);
+            rect(pageMargin, paragraphY + fullHeight - gridSize, paragraphEndX - pageMargin, 2 * gridSize + lineSpacing, cornerRadius, 0, cornerRadius, cornerRadius);
 
         }
     }
@@ -260,7 +351,8 @@ function showElement() {
                 noFill();
                 line(posX, posY, posX + gridSize, posY + gridSize);
                 line(posX + gridSize, posY, posX, posY + gridSize);
-                rect(posX, posY, gridSize, gridSize)
+                rect(posX + (1 - ratio) * gridSize / 2, posY + (1 - ratio) * gridSize / 2, gridSize * ratio, gridSize * ratio);
+                rect(posX, posY, gridSize, gridSize);
             }
             //判断是否在录制中
             if (wordNum === lipsArray.length - 1 && isRecording) {
@@ -273,6 +365,13 @@ function showElement() {
 
             let timeLine = (frameCount - lipsArray[wordNum][0].time) % lipsArray[wordNum].length;
             lipsArray[wordNum][timeLine].draw(posX, posY, gridSize, gridSize * ratio);
+
+            /*
+            for (let k = 0; k < lipsArray[wordNum].length; k++) { 
+                lipsArray[wordNum][k].draw(posX, posY+k*gridSize*ratio*0.4, gridSize, gridSize * ratio);
+            }
+            */
+
             wordNum++;
         }
 
@@ -287,70 +386,7 @@ function windowResized() {
 }
 
 
-//p5.js
 
-
-let font;
-
-function preload() {
-    font = loadFont('assets/SourceSerif4-VariableFont_opsz,wght.ttf');
-}
-
-function setup() {
-
-    canvas = createCanvas(windowWidth, windowHeight);
-    canvas.id("canvas");
-    //frameRate(60);
-}
-
-function draw() {
-    clear();
-    //circle(mouseX, mouseY, 20);
-
-
-    if (detections != undefined) {
-        updateDetections(detections);
-        /*
-        lips[0] = new myLips(smoothedDetections, false, frameCount);
-        fill(255, 255);
-        noStroke();
-        lips[0].draw(canvas.width / 2 - 200, canvas.height / 2 - 200, 400, 320);
-        */
-    }
-
-
-    //触控检测
-    canvas.touchStarted(fxn = () => {
-        lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
-        isRecording = true;
-    });
-
-    canvas.touchEnded(fxn = () => {
-        isRecording = false;
-        returnReady = false;
-    });
-
-
-    recordDetection();
-
-    fill(255, 255);
-    noStroke();
-    showElement();
-
-    if (lipsArray.length > 0) {
-        //console.log(lipsArray.length, lipsArray[lipsArray.length - 1].length, lipsArray[lipsArray.length - 1][0].isReturn);
-    }
-
-    if (isRecording) {
-        fill(255, 0, 0);
-    } else {
-        fill(255, 255, 255);
-    }
-
-    noStroke();
-    ellipse(16, height - 16, 12, 12);
-}
 
 
 function keyPressed() {
@@ -361,28 +397,28 @@ function keyPressed() {
         isRecording = true;
     }
     if (key === 'Backspace') {
-        lipsArray.pop();
+        myDelete();
     }
     //全键盘的字符映射
     if (key === ',') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText(',', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('，', returnReady, frameCount);
     }
     if (key === '.') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('.', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('。', returnReady, frameCount);
     }
     if (key === '<') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('<', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('《', returnReady, frameCount);
     }
     if (key === '>') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('>', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('》', returnReady, frameCount);
     }
     if (key === '!') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('!', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('！', returnReady, frameCount);
     }
     if (key === '@') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
@@ -414,11 +450,11 @@ function keyPressed() {
     }
     if (key === '(') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('(', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('（', returnReady, frameCount);
     }
     if (key === ')') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText(')', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('）', returnReady, frameCount);
     }
     if (key === '-') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
@@ -426,7 +462,7 @@ function keyPressed() {
     }
     if (key === '_') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('_', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('—', returnReady, frameCount);
     }
     if (key === '=') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
@@ -438,47 +474,61 @@ function keyPressed() {
     }
     if (key === '[') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('[', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('【', returnReady, frameCount);
     }
     if (key === ']') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText(']', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('】', returnReady, frameCount);
     }
     if (key === '{') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('{', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('「', returnReady, frameCount);
     }
     if (key === '}') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('}', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('」', returnReady, frameCount);
     }
     if (key === ';') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText(';', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('；', returnReady, frameCount);
     }
     if (key === ':') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText(':', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('：', returnReady, frameCount);
     }
     if (key === '\'') {
-        lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('\'', returnReady, frameCount);
+        if (isRightQuote2 === 0) {
+            lipsArray[lipsArray.length] = new Array(timeSetup);
+            lipsArray[lipsArray.length - 1][0] = new myText('‘', returnReady, frameCount);
+            isRightQuote2 = 1;
+        } else {
+            lipsArray[lipsArray.length] = new Array(timeSetup);
+            lipsArray[lipsArray.length - 1][0] = new myText('’', returnReady, frameCount);
+            isRightQuote2 = 0;
+        }
     }
     if (key === '"') {
-        lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('"', returnReady, frameCount);
+        if (isRightQuote === 0) {
+            lipsArray[lipsArray.length] = new Array(timeSetup);
+            lipsArray[lipsArray.length - 1][0] = new myText('“', returnReady, frameCount);
+            isRightQuote = 1;
+        } else {
+            lipsArray[lipsArray.length] = new Array(timeSetup);
+            lipsArray[lipsArray.length - 1][0] = new myText('”', returnReady, frameCount);
+            isRightQuote = 0;
+        }
     }
     if (key === '`') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('`', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('·', returnReady, frameCount);
     }
     if (key === '~') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('~', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('～', returnReady, frameCount);
     }
     if (key === '\\') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('\\', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('、', returnReady, frameCount);
     }
     if (key === '|') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
@@ -490,9 +540,14 @@ function keyPressed() {
     }
     if (key === '?') {
         lipsArray[lipsArray.length] = new Array(timeSetup);
-        lipsArray[lipsArray.length - 1][0] = new myText('?', returnReady, frameCount);
+        lipsArray[lipsArray.length - 1][0] = new myText('？', returnReady, frameCount);
     }
 
+}
+
+function myDelete() {
+
+    lipsArray.pop();
 }
 
 

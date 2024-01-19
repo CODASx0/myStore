@@ -42,9 +42,9 @@ let sketch = function (p) {
                 let x = detections.multiHandLandmarks[i][j].x * p.width;
                 let y = detections.multiHandLandmarks[i][j].y * p.height;
                 let z = detections.multiHandLandmarks[i][j].z;
-                // p.strokeWeight(0);
-                // p.textFont('Helvetica Neue');
-                // p.text(j, x, y);
+                 p.strokeWeight(0);
+                 p.textFont('Helvetica Neue');
+                 p.text(j, x, y);
                 p.stroke(255);
                 p.strokeWeight(10);
                 p.point(x, y);
