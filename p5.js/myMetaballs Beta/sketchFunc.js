@@ -7,7 +7,7 @@ function drawSketchPoint(W, H, Z) {
                 inputValue[i][j][z] = circleArray[z][0].r / sqrt(sq(circleArray[z][0].x - i * dpr) + sq(circleArray[z][0].y - j * dpr));
                 for (let n = 1; n < circleArray[z].length; n++) {
                     let dt = circleArray[z][n].r / sqrt(sq(circleArray[z][n].x - i * dpr) + sq(circleArray[z][n].y - j * dpr));
-                    inputValue[i][j][z] += dt * dt * dt;
+                    inputValue[i][j][z] += dt * dt ;
                 }
             }
         }
@@ -42,7 +42,7 @@ function drawSketchPoint(W, H, Z) {
                     //stroke(250);
                     strokeWeight(3);
                     //noFill();
-                    fill(255, 200);
+                    fill(255, 255);
                     //fill(246, 243, 243, 255);
                     //绘制 Metaballs
 
@@ -233,11 +233,11 @@ function drawSketchPoint(W, H, Z) {
             noFill();
             for (n = 1; n < circleArray[z].length; n++) {
                 stroke(0, 0, 0, 20);
-                fill(255, 100);
+                fill(255, 255);
                 ellipse(circleArray[z][n].x, circleArray[z][n].y, circleArray[z][n].r / (lim * circleLim[z]), circleArray[z][n].r / (lim * circleLim[z]))
             }
             stroke("#ECCCCC");
-            fill(255, 100);
+            fill(255, 255);
             ellipse(circleArray[z][0].x, circleArray[z][0].y, circleArray[z][0].r / (lim * circleLim[z]), circleArray[z][0].r / (lim * circleLim[z]))
         }
     }
