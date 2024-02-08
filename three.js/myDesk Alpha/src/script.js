@@ -16,6 +16,7 @@ dracoLoader.setDecoderPath('/draco/')
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
+const textLoader = new THREE.TextureLoader()
 
 gltfLoader.load(
     '/models/macbookAir13.glb',
@@ -28,6 +29,8 @@ gltfLoader.load(
     }
 )
 
+
+
 /**
  * Base
  */
@@ -39,6 +42,12 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+textureLoader.load('/textures/cyclorama_hard_light_1k.hdr',
+    (texture) => { 
+        
+    }
+)
 
 /**
  * Test sphere
