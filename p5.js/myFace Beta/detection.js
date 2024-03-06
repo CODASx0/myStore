@@ -16,6 +16,7 @@ faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
         delegate: "GPU"
     },
     outputFaceBlendshapes: true,
+    outputFacialTransformationMatrixes: true,
     runningMode,
     numFaces: 1
 });
