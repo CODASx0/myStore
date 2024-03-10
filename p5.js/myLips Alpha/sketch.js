@@ -116,6 +116,10 @@ function draw() {
 
     noStroke();
     ellipse(16, height - 16, 12, 12);
+
+    //在屏幕中心绘制一个嘴巴图案
+ 
+    
 }
 
 function updateDetections(newDetections) {
@@ -148,8 +152,9 @@ class myLips {
         this.isReturn = isReturn;
         this.time = time;
         this.type = "lips";
+        this.isSelect = false;
     }
-    draw(posX, posY, meshSize, width, color, alpha) {
+    draw(posX, posY, meshSize, width,color, alpha) {
 
         let xyRatio = 0.75
         let sizeRatio = width / (this.right.x - this.left.x);
@@ -160,6 +165,8 @@ class myLips {
         //fill(color, alpha);
 
         stroke(0);
+
+
         beginShape();
         for (let i = 0; i < this.upperLip.length - 1; i++) {
             let inputX = this.upperLip[i].x;
@@ -180,20 +187,26 @@ class myLips {
         }
         endShape(CLOSE);
 
-    }
-    check(point) {
+        //检查是否被鼠标选中
+        /*
         let intersectCount = 0;
+        point = { x: mouseX, y: mouseY}
         for (let i = 0; i < this.outLip.length - 1; i++) {
-            let p1 = this.outLip[i];
-            let p2 = this.outLip[i + 1];
+            let inputX = this.outLip[i].x;
+            let inputY = this.outLip[i].y;
+            let p1 = posX + leftMargin + (inputX - this.left.x) * sizeRatio
+            let p2 = posY + topMargin + (inputY - this.top.y) * sizeRatio * xyRatio;
             if (p1.y > point.y != p2.y > point.y && point.x < (p2.x - p1.x) * (point.y - p1.y) / (p2.y - p1.y) + p1.x) {
                 intersectCount++;
             }
-            if (intersectCount % 2 === 1) { 
-                return true;
-            }
         }
+        if (intersectCount % 2 === 1) {
+            this.isSelect = true;
+        }
+        */
+
     }
+
 }
 
 
@@ -377,9 +390,10 @@ function showElement() {
             }
 
             let timeLine = (frameCount - lipsArray[wordNum][0].time) % lipsArray[wordNum].length;
-            if (lipsArray[wordNum][timeLine].check({ x: mouseX, y: mouseY })) {
-                fill(0, 255, 0, 255);
-            };
+            
+            if (lipsArray[wordNum][timeLine].isSelect) {
+                fill(255, 0, 0, 255);
+            }
             lipsArray[wordNum][timeLine].draw(posX, posY, gridSize, gridSize * ratio);
 
             /*
@@ -392,6 +406,8 @@ function showElement() {
         }
 
     }
+
+
 }
 
 
