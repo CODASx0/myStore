@@ -1,4 +1,4 @@
-import gsap from 'gsap'
+
 
 let canvas;
 let lips = [];
@@ -67,7 +67,7 @@ function preload() {
 
 function setup() {
 
-    pixelDensity(2);
+    //pixelDensity(2);
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.id("canvas");
     //frameRate(60);
@@ -475,10 +475,20 @@ function showElement() {
 
             let timeLine = (frameCount - lipsArray[wordNum][0].time) % lipsArray[wordNum].length;
 
-            if (lipsArray[wordNum][timeLine].isSelect) {
+
+            //计算鼠标和字符的距离
+            let distance = dist(mouseX, mouseY, posX + gridSize / 2, posY + gridSize / 2)*0.1;
+
+
+            let selectedFrame = Math.min(Math.round(lipsArray[wordNum].length / (1 + distance)), lipsArray[wordNum].length - 1);
+            
+
+            if (lipsArray[wordNum][selectedFrame].isSelect) {
                 fill(255, 0, 0, 255);
             }
-            lipsArray[wordNum][timeLine].draw(posX, posY, gridSize, gridSize * ratio);
+
+
+            lipsArray[wordNum][selectedFrame].draw(posX, posY, gridSize, gridSize * ratio);
 
             /*
             for (let k = 0; k < lipsArray[wordNum].length; k++) { 
