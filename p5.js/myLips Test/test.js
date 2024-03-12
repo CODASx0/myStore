@@ -1,1 +1,2 @@
-let detections ;
+let detections;
+

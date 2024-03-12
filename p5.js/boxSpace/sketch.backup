@@ -1,0 +1,48 @@
+let cam;
+let canvas;
+
+let VirtualBox = {
+  w: 1080,
+  h: 1920,
+  z: 1080
+}
+
+let VirtualCam = {
+  //视角
+  fov: PI * 8 / 9,
+}
+function setup() {
+  canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+  canvas.id("canvas");
+  cam = createCamera();
+  cam.setPosition(0, 0, 2000);
+  perspective(VirtualCam.fov, width / height, 0.1, 1000);
+
+}
+
+
+
+function draw() {
+  clear();
+
+  ellipse(0, 0, 100, 100);
+  drawAxis();
+}
+
+
+
+//绘制参考坐标
+
+function drawAxis() {
+  push()
+  translate(VirtualBox.w / 2, VirtualBox.h / 2, VirtualBox.z / 2);
+  ellipse(0, 0, 10, 10);
+
+  pop()
+}
+
+//调整窗口大小
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  perspective(VirtualCam.fov, width / height, 0.1, 1000);
+}
