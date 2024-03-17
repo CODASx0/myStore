@@ -23,7 +23,7 @@ var mouse = {
 function setup() {
   VCam = {
     fov: PI / 3,
-    z: VBox.z * 0.5 * (sqrt(3) - 1),
+    z: VBox.z * 0.5 * (sqrt(3) - 1) - 100,
   }
 
   canvas = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -38,8 +38,48 @@ function setup() {
 
 function draw() {
   cam.setPosition(0, 0, VCam.z);
+
+  canvas.touchStarted(fxn = () => {
+
+    if (lipsLine.length == 0) {
+      lipsLine[0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
+    }
+    //按下空格键键开始录制
+    //lipsArray[lipsArray.length] = new Array(timeSetup);
+    //lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
+    isRecording = true;
+
+    gsap.to(VCam, {
+      fov: PI / 3,
+      duration: 0.6,
+      z: VBox.z * 0.5 * (sqrt(3) - 1),
+      ease: "expo.out"
+    });
+    gsap.to(mouse, {
+      posZ: 100,
+      duration: 1,
+      ease: "expo.out"
+    });
+  });
+
+  canvas.touchEnded(fxn = () => {
+    isRecording = false;
+    returnReady = false;
+
+    gsap.to(VCam, {
+      fov: PI * 2 / 3,
+      duration: 1,
+      z: -VBox.z * 0.5 * (1 - 1 / sqrt(3)) - 100,
+      ease: "expo.out"
+    });
+    gsap.to(mouse, {
+      posZ: -200,
+      duration: 1,
+      ease: "expo.out"
+    });
+  })
   perspective(VCam.fov, width / height, 0.1, 10000);
-  
+
   clear();
 
 
@@ -56,26 +96,32 @@ function draw() {
     fill(255, 255);
     noStroke();
     lips[0].drawM(-200, -200, 400, 320);
-
+    recordDetection()
 
   }
   pop()
+  push()
+  translate(0, 0, -1000)
+  drawSpaceLine(VBox.w, VBox.h, VBox.z * 4, 3, 5, 6, 200, 2);
+  pop()
 
-  drawSpaceLine(VBox.w, VBox.h, VBox.z*2, 5, 5, 10, 20, 2);
-
+  //other()
 }
 
 function keyPressed() {
   if ((key === ' ') && detections != undefined) {
+    if (lipsLine.length == 0) {
+      lipsLine[0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
+    }
     //按下空格键键开始录制
     //lipsArray[lipsArray.length] = new Array(timeSetup);
     //lipsArray[lipsArray.length - 1][0] = new myLips(JSON.parse(JSON.stringify(smoothedDetections)), returnReady, frameCount);
     isRecording = true;
 
     gsap.to(VCam, {
-      fov: PI * 2 / 3,
-      duration: 1,
-      z: -VBox.z * 0.5 * (1 - 1 / sqrt(3)),
+      fov: PI / 3,
+      duration: 0.6,
+      z: VBox.z * 0.5 * (sqrt(3) - 1),
       ease: "expo.out"
     });
     gsap.to(mouse, {
@@ -83,6 +129,7 @@ function keyPressed() {
       duration: 1,
       ease: "expo.out"
     });
+
   }
 }
 
@@ -91,11 +138,10 @@ function keyReleased() {
     isRecording = false;
     returnReady = false;
 
-    
     gsap.to(VCam, {
-      fov: PI / 3,
-      duration: 0.6,
-      z: VBox.z * 0.5 * (sqrt(3) - 1),
+      fov: PI * 2 / 3,
+      duration: 1,
+      z: -VBox.z * 0.5 * (1 - 1 / sqrt(3)) - 100,
       ease: "expo.out"
     });
     gsap.to(mouse, {
@@ -103,39 +149,13 @@ function keyReleased() {
       duration: 1,
       ease: "expo.out"
     });
+
+
   }
-  
+
 }
 
-//鼠标被按下
-function mousePressed() {
-  gsap.to(VCam, {
-    fov: PI * 2/3,
-    duration: 1,
-    z: -VBox.z * 0.5 * (1 - 1 / sqrt(3)),
-    ease: "expo.out"
-  });
-  gsap.to(mouse, {
-    posZ: 100,
-    duration: 1,
-    ease: "expo.out"
-  });
-}
 
-//鼠标被释放
-function mouseReleased() {
-  gsap.to(VCam, {
-    fov: PI / 3,
-    duration: 0.6,
-    z: VBox.z * 0.5 * (sqrt(3) - 1),
-    ease: "expo.out"
-  });
-  gsap.to(mouse, {
-    posZ: -200,
-    duration: 1,
-    ease: "expo.out"
-  });
-}
 
 //调整窗口大小
 function windowResized() {

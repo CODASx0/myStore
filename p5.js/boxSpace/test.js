@@ -1,4 +1,5 @@
 let detections;
+let isRecording = false;
 
 let lips = [];
 let lipsLine = [];

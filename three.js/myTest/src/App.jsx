@@ -132,7 +132,7 @@ function Scene() {
       <Laptop flipHorizontal>
         <meshStandardMaterial ref={screenMatRef} side={THREE.DoubleSide} transparent opacity={0.9} />
       </Laptop>
-      <Plant position={[-0.25, 0, -0.2]} scale={0.5} />
+      
 
       {/* <axesHelper /> */}
       <Ground />
