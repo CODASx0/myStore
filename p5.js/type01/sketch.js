@@ -8,17 +8,17 @@ function draw() {
   clear()
   //circle(mouseX, mouseY, 20);
 
-  drawMesh('B', 50, 50,
+  drawMesh('Z', 50, 50,
     [
-      mySin(0), mySin(1), mySin(2), mySin(3), 10, 0
+      mySin(0), mySin(1), mySin(2), mySin(3), mySin(4), 0
     ],
     [
-      10,10,10,10,10,10,10,10
+      20, 20, 20, 20, 20, 20, 20, 20
     ], 0);
 }
 
 function mySin(x) {
-  return sin(x * 1.2 + frameCount * 0.03) * 30 + 40
+  return sin(x * 1.2 + frameCount * 0.03) * 10 + 40
 }
 
 

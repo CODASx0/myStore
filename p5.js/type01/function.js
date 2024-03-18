@@ -1,7 +1,8 @@
 //创建像素字符字典
+const isDecorated = true;
+let decorationLength = 4;
 
-
-function drawMesh(key, posX, posY, wid, hei,radio) {
+function drawMesh(key, posX, posY, wid, hei, radio) {
     const mesh = dict[key];
     for (let i = 0; i < mesh.length; i++) {
         let x0, y0, x2, y2;
@@ -46,15 +47,53 @@ function drawMesh(key, posX, posY, wid, hei,radio) {
 
         noStroke();
         fill(0)
-        rect(x1, y1, x3 - x1, y3 - y1,radio,radio,radio,radio);
-        console.log(x1, y1, x3 - x1, y3 - y1)
+        rect(x1, y1, x3 - x1, y3 - y1, radio, radio, radio, radio);
+        //console.log(x1, y1, x3 - x1, y3 - y1)
 
+        if(isDecorated){
+            stroke(255, 200)
+            strokeWeight(2)
+            line(x1 - decorationLength / 2, y1, x1 + decorationLength / 2, y1)
+            line(x1, y1 - decorationLength / 2, x1, y1 + decorationLength / 2)
+            line(x3 - decorationLength / 2, y1, x3 + decorationLength / 2, y1)
+            line(x3, y1 - decorationLength / 2, x3, y1 + decorationLength / 2)
+            line(x1 - decorationLength / 2, y3, x1 + decorationLength / 2, y3)
+            line(x1, y3 - decorationLength / 2, x1, y3 + decorationLength / 2)
+            line(x3 - decorationLength / 2, y3, x3 + decorationLength / 2, y3)
+            line(x3, y3 - decorationLength / 2, x3, y3 + decorationLength / 2)
+        }
 
     }
+
+
+    if (isDecorated) {
+        stroke(255, 200)
+        strokeWeight(2)
+        let nowX = posX;
+        for (i = 0; i < wid.length; i++) {
+            let nowY = posY;
+            for (j = 0; j < hei.length; j++) {
+                line(nowX - decorationLength / 2, nowY, nowX + decorationLength / 2, nowY);
+                line(nowX, nowY - decorationLength / 2, nowX, nowY + decorationLength / 2);
+                nowY += hei[j]
+            }
+            nowX += wid[i]
+        }
+
+        /*
+        for (i = 0; i < mesh.length; i++) {
+        if (mesh[i][0][0] === undefined) {
+            
+        
+        }
+        */
+    }
+
+
     let widSum;
-    for(let i = 0;i<wid.length;i++){
+    for (let i = 0; i < wid.length; i++) {
         widSum += wid[i]
     }
-    
+
     return widSum
 }
