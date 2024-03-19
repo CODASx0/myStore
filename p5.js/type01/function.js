@@ -1,8 +1,11 @@
-//创建像素字符字典
-const isDecorated = true;
-let decorationLength = 4;
 
-function drawMesh(key, posX, posY, wid, hei, radio) {
+const isDecorated = true;
+let decorationLength = 8;
+let decorationWeight = 3;
+
+
+//绘制像素字
+function drawMeshType(key, posX, posY, wid, hei, radio) {
     const mesh = dict[key];
     for (let i = 0; i < mesh.length; i++) {
         let x0, y0, x2, y2;
@@ -50,9 +53,9 @@ function drawMesh(key, posX, posY, wid, hei, radio) {
         rect(x1, y1, x3 - x1, y3 - y1, radio, radio, radio, radio);
         //console.log(x1, y1, x3 - x1, y3 - y1)
 
-        if(isDecorated){
+        if (isDecorated) {
             stroke(255, 200)
-            strokeWeight(2)
+            strokeWeight(decorationWeight)
             line(x1 - decorationLength / 2, y1, x1 + decorationLength / 2, y1)
             line(x1, y1 - decorationLength / 2, x1, y1 + decorationLength / 2)
             line(x3 - decorationLength / 2, y1, x3 + decorationLength / 2, y1)
@@ -67,14 +70,16 @@ function drawMesh(key, posX, posY, wid, hei, radio) {
 
 
     if (isDecorated) {
-        stroke(255, 200)
-        strokeWeight(2)
+        stroke(255, 120)
+        strokeWeight(decorationWeight)
+        noFill()
         let nowX = posX;
         for (i = 0; i < wid.length; i++) {
             let nowY = posY;
             for (j = 0; j < hei.length; j++) {
                 line(nowX - decorationLength / 2, nowY, nowX + decorationLength / 2, nowY);
                 line(nowX, nowY - decorationLength / 2, nowX, nowY + decorationLength / 2);
+                //ellipse(nowX, nowY, decorationLength*2, decorationLength*2)
                 nowY += hei[j]
             }
             nowX += wid[i]
@@ -95,5 +100,5 @@ function drawMesh(key, posX, posY, wid, hei, radio) {
         widSum += wid[i]
     }
 
-    return widSum
+    return widSum;
 }
