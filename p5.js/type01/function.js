@@ -1,3 +1,5 @@
+let detections;
+
 
 const isDecorated = true;
 let decorationLength = 8;
