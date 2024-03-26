@@ -10,14 +10,13 @@ let canvas;
 let smoothX, smoothY, smooth = 0.3;
 let font;
 
-let point1 = {
+let point = [{
   x: 100,
   y: 100,
-}
-let point2 = {
+}, {
   x: 120,
   y: 120
-}
+}]
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
@@ -36,11 +35,11 @@ function draw() {
   smoothY = lerp(smoothY, mouseY, smooth);
 
   /*
-  let point1 = {
+  let point[0] = {
     x: 150 + cos(frameCount * 0.02) * 40,
     y: 150 + sin(frameCount * 0.02) * 100
   }
-  let point2 = {
+  let point[1] = {
     x: 150 + cos(frameCount * 0.025) * 100,
     y: 150 + sin(frameCount * 0.025) * 40
   }
@@ -54,8 +53,8 @@ function draw() {
       gsap.to(windowProp, {
         width: random(100, 300),
         height: random(100, 300),
-        posX: point1.x - 100,
-        posY: point1.y - 100,
+        posX: point[0].x - 100,
+        posY: point[0].y - 100,
         duration: 1,
         ease: "expo.out"
       });
@@ -63,15 +62,15 @@ function draw() {
     */
 
   if (detections != undefined) {
-    point1.x = (1 - detections[13].x) * windowProp.width + windowProp.posX;
-    point1.y = detections[13].y * windowProp.height + windowProp.posY;
-    point2.x = (1 - detections[14].x) * windowProp.width + windowProp.posX;
-    point2.y = detections[14].y * windowProp.height + windowProp.posY;
+    point[0].x = (1 - detections[13].x) * windowProp.width + windowProp.posX;
+    point[0].y = detections[13].y * windowProp.height + windowProp.posY;
+    point[1].x = (1 - detections[14].x) * windowProp.width + windowProp.posX;
+    point[1].y = detections[14].y * windowProp.height + windowProp.posY;
   }
 
   windowRect(windowProp.posX, windowProp.posY, windowProp.width, windowProp.height, [
-    [point1.x - windowProp.posX, point1.y - windowProp.posY],
-    [point2.x - windowProp.posX, point2.y - windowProp.posY],
+    [point[0].x - windowProp.posX, point[0].y - windowProp.posY],
+    [point[1].x - windowProp.posX, point[1].y - windowProp.posY],
   ]);
 
   windowRect(260, windowProp.posY, 400, windowProp.height, [
@@ -79,15 +78,15 @@ function draw() {
   ]);
 
 
-  line(point1.x, point1.y, point2.x, point2.y);
-  ellipse(point1.x, point1.y, 10, 10);
-  ellipse(point2.x, point2.y, 10, 10);
+  line(point[0].x, point[0].y, point[1].x, point[1].y);
+  ellipse(point[0].x, point[0].y, 10, 10);
+  ellipse(point[1].x, point[1].y, 10, 10);
 
   fill(255, 80);
   noStroke()
 
-  text(round(point1.x) + ',' + round(point1.y), point1.x, point1.y)
-  text(round(point2.x) + ',' + round(point2.y), point2.x, point2.y)
+  text(round(point[0].x) + ',' + round(point[0].y), point[0].x, point[0].y)
+  text(round(point[1].x) + ',' + round(point[1].y), point[1].x, point[1].y)
 
   //circle(mouseX, mouseY, 20);
 
