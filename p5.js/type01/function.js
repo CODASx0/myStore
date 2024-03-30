@@ -1,4 +1,5 @@
 let detections;
+let globalVideo;
 
 
 const isDecorated = true;

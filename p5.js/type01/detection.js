@@ -36,6 +36,7 @@ function startWebcam() {
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         video.srcObject = stream;
         video.addEventListener("loadeddata", predictWebcam);
+        
     });
 }
 // Start the webcam as soon as the page loads.
@@ -52,6 +53,9 @@ async function predictWebcam() {
     canvasElement.style.height = videoWidth * radio + "px";
     canvasElement.width = video.videoWidth;
     canvasElement.height = video.videoHeight;
+
+
+
     let startTimeMs = performance.now();
     if (lastVideoTime !== video.currentTime) {
         lastVideoTime = video.currentTime;

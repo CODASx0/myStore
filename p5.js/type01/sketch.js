@@ -11,7 +11,7 @@ var windowProp = {
   posY: 80,
 }
 
-let tl=gsap.timeline({repeat:-1,repeatDelay:1})
+let tl = gsap.timeline({ repeat: -1, repeatDelay: 1 })
 let canvas;
 let smoothX, smoothY, smooth = 0.3;
 let font;
@@ -31,7 +31,7 @@ function setup() {
 
   smoothX = mouseX;
   smoothY = mouseY;
-  
+
   tl.to(windowProp, {
     duration: 1,
     width: 200,
@@ -52,6 +52,10 @@ function setup() {
 }
 
 function draw() {
+
+  if (globalVideo) {
+    //image(globalVideo, 0,0)
+  }
   clear()
   textFont(font);
 
@@ -76,9 +80,7 @@ function draw() {
 
   ]);
 
-  windowRect(30, 260, 400 + 230, 400, [
-    
-  ]);
+  //windowRect(30, 260, 400 + 230, 400, []);
 
 
   line(point[0].x, point[0].y, point[1].x, point[1].y);
