@@ -12,7 +12,7 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
     endShape(CLOSE);
 
     //边角修饰
-    let cornerSize = 10;
+    let cornerSize = 6;
 
     if (cornerSize > windowsWidth / 2) cornerSize = windowsWidth / 2;
     stroke(255, 180);
@@ -42,6 +42,8 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
     vertex(posX, posY + windowsHeight - cornerSize);
     endShape();
 
+
+
     //鼠标输入点绘制
     let radio = 30
     if (pointList != null) {
@@ -49,6 +51,10 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
 
             let x = pointList[i][0];
             let y = pointList[i][1];
+            stroke(255, 100);
+            noFill();
+            ellipse(x + posX, y + posY, 10, 10);
+
             if (x > radio / 2 && x < windowsWidth - radio / 2 && y < windowsHeight - radio / 2 && y > radio / 2) {
                 stroke(255, 40);
                 strokeWeight(1);
@@ -71,8 +77,15 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
                 line(posX + x - cornerSize, posY + windowsHeight, posX + x + cornerSize, posY + windowsHeight)
 
                 for (let p = 0; p < 2; p += 0.5) {
-                    arc(posX + x, posY + y, radio, radio, PI * p - 0.1 * PI, PI * p + 0.1 * PI);
+                    arc(posX + x, posY + y, radio, radio, PI * p - 0.08 * PI, PI * p + 0.08 * PI);
                 }
+
+                
+                
+
+                fill(255, 80);
+                noStroke()
+                text(round(x+posX) + ',' + round(y+posY), x+posX, y+posY)
 
             }
 

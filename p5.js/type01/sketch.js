@@ -1,11 +1,17 @@
+//窗口0:显示嘴唇图像切片
+//窗口1:显示嘴唇信息在屏幕上的位置
+//窗口2:显示嘴唇左右与上下定点的相对位置
+//窗口3:显示嘴唇上下点形成的波形
+//窗口4:显示动态网格与实验性字体
 
 var windowProp = {
-  width: 200,
-  height: 200,
-  posX: 30,
-  posY: 30,
+  width: 0,
+  height: 100,
+  posX: 130,
+  posY: 80,
 }
 
+let tl=gsap.timeline({repeat:-1,repeatDelay:1})
 let canvas;
 let smoothX, smoothY, smooth = 0.3;
 let font;
@@ -25,6 +31,24 @@ function setup() {
 
   smoothX = mouseX;
   smoothY = mouseY;
+  
+  tl.to(windowProp, {
+    duration: 1,
+    width: 200,
+    height: 200,
+    posX: 30,
+    posY: 30,
+    ease: "power2.inOut"
+  });
+
+  tl.to(windowProp, {
+    duration: 1,
+    width: 0,
+    height: 100,
+    posX: 130,
+    posY: 80,
+    ease: "power2.inOut"
+  });
 }
 
 function draw() {
@@ -34,32 +58,7 @@ function draw() {
   smoothX = lerp(smoothX, mouseX, smooth);
   smoothY = lerp(smoothY, mouseY, smooth);
 
-  /*
-  let point[0] = {
-    x: 150 + cos(frameCount * 0.02) * 40,
-    y: 150 + sin(frameCount * 0.02) * 100
-  }
-  let point[1] = {
-    x: 150 + cos(frameCount * 0.025) * 100,
-    y: 150 + sin(frameCount * 0.025) * 40
-  }
-  */
 
-  //演示
-
-
-  /*
-    if (frameCount % 60 == 1) {
-      gsap.to(windowProp, {
-        width: random(100, 300),
-        height: random(100, 300),
-        posX: point[0].x - 100,
-        posY: point[0].y - 100,
-        duration: 1,
-        ease: "expo.out"
-      });
-    }
-    */
 
   if (detections != undefined) {
     point[0].x = (1 - detections[13].x) * windowProp.width + windowProp.posX;
@@ -77,16 +76,14 @@ function draw() {
 
   ]);
 
+  windowRect(30, 260, 400 + 230, 400, [
+    
+  ]);
+
 
   line(point[0].x, point[0].y, point[1].x, point[1].y);
-  ellipse(point[0].x, point[0].y, 10, 10);
-  ellipse(point[1].x, point[1].y, 10, 10);
 
-  fill(255, 80);
-  noStroke()
 
-  text(round(point[0].x) + ',' + round(point[0].y), point[0].x, point[0].y)
-  text(round(point[1].x) + ',' + round(point[1].y), point[1].x, point[1].y)
 
   //circle(mouseX, mouseY, 20);
 
@@ -115,6 +112,8 @@ function draw() {
 function mySin(x) {
   return sin(x * 0.8 + frameCount * 0.03) * 8 + 40
 }
+
+
 
 
 

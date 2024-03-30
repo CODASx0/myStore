@@ -104,3 +104,5 @@ function drawMeshType(key, posX, posY, wid, hei, radio) {
 
     return widSum;
 }
+
+//计算嘴部四个点位的相关信息
