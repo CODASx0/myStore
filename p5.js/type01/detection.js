@@ -7,7 +7,7 @@ const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision;
 let faceLandmarker;
 let runningMode = "VIDEO";
 
-const videoWidth = 240;
+const videoWidth = 480;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
 faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
@@ -25,19 +25,58 @@ const video = document.getElementById("webcam");
 const canvasElement = document.getElementById("output_canvas");
 const canvasCtx = canvasElement.getContext("2d");
 
+
 // 初始化相机
 // getUsermedia parameters.
-const constraints = {
-    video: true
-};
+
+
+
 // Function to start the webcam stream.
 function startWebcam() {
+    // 获取所有设备
+    navigator.mediaDevices.enumerateDevices()
+        .then(function (devices) {
+            var videoDevices = [];
+            var videoDeviceIndex = 0;
+            devices.forEach(function (device) {
+                console.log(device.kind + ": " + device.label +
+                    " id = " + device.deviceId);
+                // 如果设备是摄像头
+                if (device.kind == 'videoinput') {
+                    videoDevices[videoDeviceIndex++] = device.deviceId;
+                }
+            });
+            // 选择第二个摄像头
+            var constraints = {
+                video: {
+                    deviceId: { exact: videoDevices[1] },
+                    frameRate: { ideal: 60 },
+                }
+            };
+
+            // 启动摄像头
+
+            navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                video.srcObject = stream;
+                video.addEventListener("loadeddata", predictWebcam);
+
+
+            });
+        })
+        .catch(function (err) {
+            console.log(err.name + ": " + err.message);
+        });
+
+
+    /*
     // Activate the webcam stream.
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         video.srcObject = stream;
         video.addEventListener("loadeddata", predictWebcam);
         
-    });
+    });*/
+
+
 }
 // Start the webcam as soon as the page loads.
 startWebcam();
@@ -54,6 +93,23 @@ async function predictWebcam() {
     canvasElement.width = video.videoWidth;
     canvasElement.height = video.videoHeight;
 
+    /*
+    //写入GlobalImage
+    // 创建一个新的canvas元素
+    let canvas2 = document.createElement('canvas'); // 修改这里
+    canvas2.width = video.videoWidth;
+    canvas2.height = video.videoHeight;
+
+    // 将视频帧绘制到canvas上
+    let ctx = canvas2.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas2.width, canvas2.height);
+
+    // 将canvas上的图像转换为DataURL
+    let dataURL = canvas2.toDataURL('image/png');
+
+    globalImage = new Image();
+    globalImage.src = dataURL;
+*/
 
 
     let startTimeMs = performance.now();

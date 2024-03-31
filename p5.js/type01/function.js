@@ -1,5 +1,5 @@
 let detections;
-let globalVideo;
+let globalImage;
 
 
 const isDecorated = true;
@@ -7,7 +7,7 @@ let decorationLength = 8;
 let decorationWeight = 3;
 
 
-//绘制像素字
+//绘制像素字(旧)
 function drawMeshType(key, posX, posY, wid, hei, radio) {
     const mesh = dict[key];
     for (let i = 0; i < mesh.length; i++) {
@@ -106,4 +106,142 @@ function drawMeshType(key, posX, posY, wid, hei, radio) {
     return widSum;
 }
 
-//计算嘴部四个点位的相关信息
+function drawMeshTypeAdvance(words, windowProp, recordData) {
+    //单位长度
+    let unitWidth = 10;
+
+    let ratio = 4;
+
+    //words是一个字符串，每个字符都是一个字母，创建一个数组分别储存
+    let wordsArray = words.split('');
+
+    //累加每个字符的最大宽度
+    let totalWidth = 0;
+    if (recordData.length > 1 && wordsArray.length > 0) {
+        //console.log(recordData)
+        for (let i = 0; i < wordsArray.length; i++) {
+            const word = dict[wordsArray[i]];
+            //最右边界
+            let rightest = 0;
+            for (j = 0; j < word.length; j++) {
+                let x0, y0, x1, y1;
+
+                //判断是否是多重数组
+                if (word[j][0][0] != undefined) {
+                    //矩形的起点
+                    x0 = word[j][0][0];
+                    y0 = word[j][0][1];
+                    //矩形的终点
+                    x1 = word[j][1][0];
+                    y1 = word[j][1][1];
+
+                } else {
+                    //矩形的起点
+                    x0 = word[j][0] - 0.5;
+                    y0 = word[j][1] - 0.5;
+                    //矩形的终点
+                    x1 = word[j][0] + 0.5;
+                    y1 = word[j][1] + 0.5;
+                }
+                rightest = max(rightest, x1);
+            }
+            totalWidth += rightest + 1;
+        }
+
+        //totalWidth -= 1;
+        let currentRight = 0;
+        for (let i = 0; i < wordsArray.length; i++) {
+            const word = dict[wordsArray[i]];
+            //最右边界
+            let rightest = 0;
+            for (j = 0; j < word.length; j++) {
+                let x0, y0, x1, y1;
+                //判断是否是多重数组
+                if (word[j][0][0] != undefined) {
+                    //矩形的起点
+                    x0 = word[j][0][0];
+                    y0 = word[j][0][1];
+                    //矩形的终点
+                    x1 = word[j][1][0];
+                    y1 = word[j][1][1];
+
+                } else {
+                    //矩形的起点
+                    x0 = word[j][0] - 0.5;
+                    y0 = word[j][1] - 0.5;
+                    //矩形的终点
+                    x1 = word[j][0] + 0.5;
+                    y1 = word[j][1] + 0.5;
+                }
+
+                for (let x = x0; x < x1; x += 0.1) {
+                    let x01 = (currentRight + x) / totalWidth
+                    let x02 = (currentRight + x + 0.1) / totalWidth
+
+                    let x01left = Math.floor(x01 * recordData.length);
+                    //let x01right = Math.ceil(x01 * recordData.length - 1);
+
+                    let x02left = Math.floor(x02 * recordData.length);
+                    //let x02right = Math.ceil(x02 * recordData.length - 1);
+
+                    let x01leftValue = (recordData[x01left].inBottom.y - recordData[x01left].inTop.y) * windowProp.height * ratio;
+                    //let x01rightValue = (recordData[x01right].inBottom.y - recordData[x01right].inTop.y) * windowProp.height * ratio;
+
+                    let x02leftValue = (recordData[x02left].inBottom.y - recordData[x02left].inTop.y) * windowProp.height * ratio;
+
+                    //let x02rightValue = (recordData[x02right].inBottom.y - recordData[x02right].inTop.y) * windowProp.height * ratio;
+
+                    //let x01lerp = x01 - x01left;
+                    //let x02lerp = x02 - x02left;
+
+                    let x01Value = x01leftValue+2;
+                    let x02Value = x02leftValue+2;
+
+                    let x01heightUnit = x01Value / 7;
+                    let x02heightUnit = x02Value / 7;
+
+                    fill(255)
+                    beginShape();
+                    vertex(x01 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x01Value / 2 + x01heightUnit * y0);
+                    vertex(x02 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x02Value / 2 + x02heightUnit * y0);
+                    vertex(x02 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x02Value / 2 + x02heightUnit * y1);
+                    vertex(x01 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x01Value / 2 + x01heightUnit * y1);
+                    endShape(CLOSE);
+
+
+
+
+
+
+                }
+                rightest = max(rightest, x1);
+
+            }
+            currentRight += rightest + 1;
+
+
+            //console.log(currentRight)
+        }
+    }
+
+}
+
+
+//计算嘴部点位的相关信息
+class LipsData {
+    constructor(detections) {
+        this.left = detections[61];
+        this.right = detections[291];
+
+        this.inTop = detections[13];
+        this.inBottom = detections[14];
+
+        this.outTop = detections[0];
+        this.outBottom = detections[17];
+    }
+
+}
+
+
+
+

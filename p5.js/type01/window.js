@@ -15,6 +15,7 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
     let cornerSize = 6;
 
     if (cornerSize > windowsWidth / 2) cornerSize = windowsWidth / 2;
+    if (cornerSize > windowsHeight / 2) cornerSize = windowsHeight / 2;
     stroke(255, 180);
     strokeWeight(1);
     noFill();
@@ -79,19 +80,63 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
                 for (let p = 0; p < 2; p += 0.5) {
                     arc(posX + x, posY + y, radio, radio, PI * p - 0.08 * PI, PI * p + 0.08 * PI);
                 }
-
-                
-                
-
-                fill(255, 80);
-                noStroke()
-                text(round(x+posX) + ',' + round(y+posY), x+posX, y+posY)
-
             }
-
+            fill(255, 80);
+            noStroke()
+            text(round(x + posX) + ',' + round(y + posY), x + posX, y + posY)
         }
     }
+
 }
 
 
+//创建一个长度为400的数组
+let lineArray = [{ lengthRatio: 1 }];
+
+
+function windowRecord(windowProp, recordData) {
+
+
+    let ratio = 2;
+    
+        lineArray[recordData.length - 1] = { lengthRatio: 0 };
+    
+    for (i = 0; i < recordData.length-1; i++) {
+        posX = i * 2 % windowProp.width + windowProp.posX;
+        posY = windowProp.height / 2 + windowProp.posY;
+
+        let length0 = (recordData[i].inBottom.y - recordData[i].inTop.y) * windowProp.height * ratio * lineArray[i].lengthRatio
+
+
+        let length1 = (recordData[i].inTop.y - recordData[i].outTop.y) * windowProp.height * ratio * lineArray[i].lengthRatio
+        let length2 = (recordData[i].outBottom.y - recordData[i].inBottom.y) * windowProp.height * ratio * lineArray[i].lengthRatio
+
+        //let weight = (recordData[i].right.x - recordData[i].left.x) * ratio * lineArray[i].lengthRatio * 1000 - 100
+        //console.log(length)
+        //strokeWeight(weight / 255)
+        stroke(255, 80)
+
+
+        line(posX, posY - length0 / 2 - length1, posX, posY - length0 / 2)
+        //line(posX, posY - length0 / 2, posX, posY + length0 / 2);
+        line(posX, posY + length0 / 2, posX, posY + length0 / 2 + length2);
+
+
+
+    }
+
+
+    gsap.to(lineArray[recordData.length - 1], {
+        duration: 0.5,
+        lengthRatio: 1,
+        ease: "expo.out",
+    })
+    //console.log(lineArray[recordData.length - 1].lengthRatio)
+
+    //if (isRecording) {
+    fill(255, 4)
+    noStroke()
+    rect(windowProp.posX, windowProp.posY, (recordData.length-1) * 2 % windowProp.width, windowProp.height)
+    //}
+}
 
