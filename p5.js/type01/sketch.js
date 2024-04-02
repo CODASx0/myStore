@@ -77,17 +77,17 @@ function setup() {
 }
 
 function draw() {
-  
+
 
   clear()
 
   //translate(-windowWidth/2, -windowHeight/2)
   keyHoldTest()
 
- 
 
 
-  drawVariableLine(windowWidth / 2, windowHeight / 2, 100, mouseX, mouseY, 20)
+
+  //drawVariableLine(windowWidth / 2, windowHeight / 2, 100, mouseX, mouseY, 20)
 
   if (video && detections) {
     //image(video,0,0,300,300)
