@@ -49,7 +49,7 @@ function startWebcam() {
             // 选择第二个摄像头
             var constraints = {
                 video: {
-                    deviceId: { exact: videoDevices[1] },
+                    deviceId: { exact: videoDevices[0] },
                     frameRate: { ideal: 60 },
                 }
             };

@@ -200,6 +200,8 @@ function drawMeshTypeAdvance(words, windowProp, recordData) {
                     let x01heightUnit = x01Value / 7;
                     let x02heightUnit = x02Value / 7;
 
+
+                    unitWidth = windowProp.width / totalWidth;
                     fill(255)
                     beginShape();
                     vertex(x01 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x01Value / 2 + x01heightUnit * y0);
