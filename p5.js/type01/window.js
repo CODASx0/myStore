@@ -98,10 +98,10 @@ function windowRecord(windowProp, recordData) {
 
 
     let ratio = 2;
-    
-        lineArray[recordData.length - 1] = { lengthRatio: 0 };
-    
-    for (i = 0; i < recordData.length-1; i++) {
+
+    lineArray[recordData.length - 1] = { lengthRatio: 0 };
+
+    for (i = 0; i < recordData.length - 1; i++) {
         posX = i * 2 % windowProp.width + windowProp.posX;
         posY = windowProp.height / 2 + windowProp.posY;
 
@@ -136,7 +136,17 @@ function windowRecord(windowProp, recordData) {
     //if (isRecording) {
     fill(255, 4)
     noStroke()
-    rect(windowProp.posX, windowProp.posY, (recordData.length-1) * 2 % windowProp.width, windowProp.height)
+    rect(windowProp.posX, windowProp.posY, (recordData.length - 1) * 2 % windowProp.width, windowProp.height)
     //}
 }
 
+
+let mouseProp = {
+    isPressed: false,
+    posX0: 0,
+    posY0: 0,
+    posX1: 0,
+    posY1: 0,
+    windowWidth: 0,
+    windowHeight: 0,
+}

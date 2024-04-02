@@ -1,8 +1,4 @@
-//窗口0:显示嘴唇图像切片
-//窗口1:显示嘴唇信息在屏幕上的位置
-//窗口2:显示嘴唇左右与上下定点的相对位置
-//窗口3:显示嘴唇上下点形成的波形
-//窗口4:显示动态网格与实验性字体
+
 let video;
 
 
@@ -61,6 +57,11 @@ function setup() {
       height: 200,
       posX: 920,
       posY: windowHeight / 2 - 100,
+    }, {
+      width: 400,
+      height: 300,
+      posX: 30,
+      posY: windowHeight / 2 - 100 - 230,
     }
   ]
 
@@ -76,21 +77,73 @@ function setup() {
 }
 
 function draw() {
+  
 
-
-
-  keyHoldTest()
   clear()
-  if (video) {
-    //image(video, 0, 0, 400, 300);
-  }
 
+  //translate(-windowWidth/2, -windowHeight/2)
+  keyHoldTest()
+
+ 
+
+
+  drawVariableLine(windowWidth / 2, windowHeight / 2, 100, mouseX, mouseY, 20)
+
+  if (video && detections) {
+    //image(video,0,0,300,300)
+    let tempInput = new LipsData(JSON.parse(JSON.stringify(detections)));
+    let sx = tempInput.left.x
+    let sy = tempInput.outTop.y
+    let sw = tempInput.right.x - tempInput.left.x
+    let sh = tempInput.outBottom.y - tempInput.outTop.y
+    //
+    //image(video, windowProp[4].posX, windowProp[4].posY, windowProp[4].width, windowProp[4].height)
+
+    image(
+      video,
+      windowProp[4].posX + windowProp[4].width * sx,
+      windowProp[4].posY + windowProp[4].height * sy,
+      windowProp[4].width * sw,
+      windowProp[4].height * sh,
+      sx * video.width,
+      sy * video.height,
+      sw * video.width,
+      sh * video.height
+    )
+
+  }
   textFont(font);
 
   smoothX = lerp(smoothX, mouseX, smooth);
   smoothY = lerp(smoothY, mouseY, smooth);
 
 
+  if (mouseProp.isPressed) {
+    //fill(255)
+    mouseProp.windowWidth = mouseX - mouseProp.posX0;
+    mouseProp.windowHeight = mouseY - mouseProp.posY0;
+    let posX = mouseProp.posX0;
+    let posY = mouseProp.posY0;
+    if (mouseProp.windowWidth < 0) {
+      mouseProp.windowWidth = -mouseProp.windowWidth;
+      posX = mouseX;
+    }
+    if (mouseProp.windowHeight < 0) {
+      mouseProp.windowHeight = -mouseProp.windowHeight;
+      posY = mouseY;
+    }
+
+    //windowRect(posX, posY, mouseProp.windowWidth, mouseProp.windowHeight, [])
+
+    gsap.to(windowProp[3], {
+      width: mouseProp.windowWidth,
+      height: mouseProp.windowHeight,
+      posX: posX,
+      posY: posY,
+      duration: 0.5,
+      ease: "expo.out",
+    })
+  }
 
   if (detections != undefined) {
     point[0].x = (1 - detections[13].x) * windowProp[0].width;
@@ -120,12 +173,15 @@ function draw() {
 
   ]);
 
+  windowRect(windowProp[3].posX, windowProp[3].posY, windowProp[3].width, windowProp[3].height, []);
+
   //windowRect(windowProp[3].posX, windowProp[3].posY, windowProp[3].width, windowProp[3].height, []);
 
   windowRecord(windowProp[2], lipsInput);
 
-  drawMeshTypeAdvance(TextInput, windowProp[3], lipsInput);
+  drawMeshTypeAdvanceV2(TextInput, windowProp[3], lipsInput);
 
+  windowRect(windowProp[4].posX, windowProp[4].posY, windowProp[4].width, windowProp[4].height, []);
   textSize(20)
   //text(TextInput, 30, 30)
 
@@ -246,20 +302,7 @@ function keyReleased() {
 }
 
 
-async function startWebcam() {
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-  // 选择第二个视频输入设备
-  const constraints = {
-    video: {
-      deviceId: videoDevices[1].deviceId
-    }
-  };
-
-  video = createCapture(constraints);
-  video.hide();
-}
 
 
 function recordDetection() {
@@ -285,8 +328,8 @@ function keyTyped() {
 //检测backspace键长按时常并删除字符
 function keyHoldTest() {
   let holdTime = frameCount - deleteTime;
-  if (isDeleting && holdTime > 29) {
-    if (holdTime % 3 == 0) {
+  if (isDeleting && holdTime > 16) {
+    if (holdTime % 1 == 0) {
       TextInput = TextInput.slice(0, TextInput.length - 1);
       console.log(TextInput);
     }
@@ -296,4 +339,20 @@ function keyHoldTest() {
 //调整画布大小
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+//鼠标按下时记录位置
+function mousePressed() {
+  mouseProp.isPressed = true;
+  mouseProp.posX0 = mouseX;
+  mouseProp.posY0 = mouseY;
+
+
+}
+
+
+function mouseReleased() {
+  mouseProp.isPressed = false;
+
+
 }
