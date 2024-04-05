@@ -56,7 +56,7 @@ function uploadVideo() {
             method: 'POST',
             body: formData, // 将FormData作为请求体
         })
-        
+
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -508,6 +508,8 @@ class LipsData {
 
         this.outTop = detections[0];
         this.outBottom = detections[17];
+
+        this.center = (detections[0] + detections[17]) / 2;
     }
 
 }

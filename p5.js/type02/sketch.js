@@ -34,6 +34,25 @@ let isRecording = false;
 let isDeleting = false;
 let deleteTime = 0;
 
+
+//窗口基准值
+let windowsBase = {
+  padding: 30,
+  col1: 400,
+}
+
+let windowsProp = {
+  window1: {
+    posX: windowsBase.padding,
+    posY: windowsBase.padding,
+    width: windowsBase.col1,
+    height: windowsBase.col1 / 4 * 3,
+  },
+  window2: {
+    
+  }
+}
+
 function setup() {
 
   windowProp = [
@@ -91,7 +110,7 @@ function draw() {
   }
 
 
-  //drawVariableLine(windowWidth / 2, windowHeight / 2, 100, mouseX, mouseY, 20)
+
 
   if (video && detections) {
     //image(video,0,0,300,300)
@@ -100,8 +119,7 @@ function draw() {
     let sy = tempInput.outTop.y
     let sw = tempInput.right.x - tempInput.left.x
     let sh = tempInput.outBottom.y - tempInput.outTop.y
-    //
-    //image(video, windowProp[4].posX, windowProp[4].posY, windowProp[4].width, windowProp[4].height)
+
 
     image(
       video,
@@ -150,28 +168,9 @@ function draw() {
   }
 
   if (detections != undefined) {
-    point[0].x = (1 - detections[13].x) * windowProp[0].width;
-    point[0].y = detections[13].y * windowProp[0].height;
-    point[1].x = (1 - detections[14].x) * windowProp[0].width;
-    point[1].y = detections[14].y * windowProp[0].height;
-    point[2].x = (1 - detections[61].x) * windowProp[1].width;
-    point[2].y = detections[61].y * windowProp[1].height;
-    point[3].x = (1 - detections[291].x) * windowProp[1].width;
-    point[3].y = detections[291].y * windowProp[1].height;
-
     recordDetection()
-
   }
 
-  windowRect(windowProp[0].posX, windowProp[0].posY, windowProp[0].width, windowProp[0].height, [
-    [point[0].x, point[0].y],
-    [point[1].x, point[1].y],
-  ]);
-
-  windowRect(windowProp[1].posX, windowProp[1].posY, windowProp[1].width, windowProp[1].height, [
-    [point[2].x, point[2].y],
-    [point[3].x, point[3].y],
-  ]);
 
   windowRect(windowProp[2].posX, windowProp[2].posY, windowProp[2].width, windowProp[2].height, [
 
@@ -179,16 +178,17 @@ function draw() {
 
   windowRect(windowProp[3].posX, windowProp[3].posY, windowProp[3].width, windowProp[3].height, []);
 
-  //windowRect(windowProp[3].posX, windowProp[3].posY, windowProp[3].width, windowProp[3].height, []);
+
 
   windowRecord(windowProp[2], lipsInput);
 
-  // drawMeshTypeAdvanceV2(TextInput, windowProp[3], lipsInput);
+
   drawMeshTypeAdvance(TextInput, windowProp[3], lipsInput);
 
   windowRect(windowProp[4].posX, windowProp[4].posY, windowProp[4].width, windowProp[4].height, []);
+
   textSize(20)
-  
+
 
 }
 
