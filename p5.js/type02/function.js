@@ -1,5 +1,77 @@
 let detections;
 let globalImage;
+let cameraIndex = 1;
+
+let recorder;
+let chunks = [];
+let VideoIsRecoding = false;
+let isWaiting = false;
+
+function startRecording() {
+    if (recorder && recorder.state === "inactive") {
+        recorder.start();
+        recording = true;
+    }
+}
+
+function stopRecording() {
+    if (recorder && recorder.state === "recording") {
+        recorder.stop();
+        recording = false;
+    }
+}
+
+function uploadVideo() {
+
+    const blob = new Blob(chunks, { 'type': 'video/webm' }); // 创建视频的Blob对象
+    chunks = []; // 清空chunks以准备下次录制
+
+    if (false) {
+
+        // 创建一个指向Blob对象的URL
+        const videoURL = URL.createObjectURL(blob);
+
+        // 创建一个<a>元素用于下载
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.style = 'display: none';
+
+        // 设置<a>元素的href为Blob对象的URL，并给文件命名
+        a.href = videoURL;
+        a.download = 'recorded-video.webm'; // 您可以自定义下载的视频文件名
+        a.click();
+
+        // 释放创建的URL
+        window.URL.revokeObjectURL(videoURL);
+    }
+
+    if (true) {
+        const formData = new FormData();
+
+        formData.append('video', blob, 'video.webm'); // 添加Blob对象到FormData
+        isWaiting = true
+
+        // 使用fetch API发送POST请求到Flask后端
+        fetch('http://127.0.0.1:5000/upload_video', {
+            method: 'POST',
+            body: formData, // 将FormData作为请求体
+        })
+        
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                isWaiting = false;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                isWaiting = false;
+            });
+    }
+
+
+}
+
+
 
 
 const isDecorated = true;
@@ -175,9 +247,9 @@ function drawMeshTypeAdvance(words, windowProp, recordData) {
                     y1 = word[j][1] + 0.5;
                 }
 
-                for (let x = x0; x < x1; x += 0.1) {
+                for (let x = x0; x < x1; x += 1) {
                     let x01 = (currentRight + x) / totalWidth
-                    let x02 = (currentRight + x + 0.1) / totalWidth
+                    let x02 = (currentRight + x + 1) / totalWidth
 
                     let x01left = Math.floor(x01 * (recordData.length - 1));
                     let x01right = Math.ceil(x01 * (recordData.length - 1));
@@ -202,10 +274,10 @@ function drawMeshTypeAdvance(words, windowProp, recordData) {
                     let x02heightUnit = x02Value / 7;
 
 
-                    unitWidth = windowProp.width / (totalWidth - 1);
+                    //unitWidth = windowProp.width / (totalWidth - 1);
                     fill(255)
 
-                    stroke(255);
+
 
 
                     //strokeWeight(4);
@@ -213,7 +285,7 @@ function drawMeshTypeAdvance(words, windowProp, recordData) {
                     noStroke()
 
 
-                    beginShape(2);
+                    beginShape();
                     vertex(x01 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x01Value / 2 + x01heightUnit * y0);
                     vertex(x02 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x02Value / 2 + x02heightUnit * y0);
                     vertex(x02 * totalWidth * unitWidth + windowProp.posX, windowProp.height / 2 + windowProp.posY - x02Value / 2 + x02heightUnit * y1);
@@ -293,6 +365,7 @@ function drawMeshTypeAdvanceV2(words, windowProp, recordData) {
         }
 
 
+
         let currentRight = 0;
         for (let i = 0; i < wordsArray.length; i++) {
             const word = dict[wordsArray[i]];
@@ -321,13 +394,17 @@ function drawMeshTypeAdvanceV2(words, windowProp, recordData) {
                 let wordWidth = x1 - x0;
                 let wordHeight = y1 - y0;
 
+
+
+                //unitWidth = windowProp.width / (totalWidth - 1);
+
                 if (wordWidth === 1 && wordHeight >= 1) {
 
                     let x = (currentRight + x0 + 0.5) / totalWidth;
                     let xLeft = Math.floor(x * (recordData.length - 1));
                     let xRight = Math.ceil(x * (recordData.length - 1));
-                    let xLeftValue = (recordData[xLeft].outBottom.y - recordData[xLeft].inTop.y) * windowProp.height * ratio;
-                    let xRightValue = (recordData[xRight].outBottom.y - recordData[xRight].inTop.y) * windowProp.height * ratio;
+                    let xLeftValue = (recordData[xLeft].inBottom.y - recordData[xLeft].inTop.y) * windowProp.height * ratio;
+                    let xRightValue = (recordData[xRight].inBottom.y - recordData[xRight].inTop.y) * windowProp.height * ratio;
                     let xlerp = x * (recordData.length - 1) - xLeft;
 
                     let xValue = lerp(xLeftValue, xRightValue, xlerp);
@@ -343,15 +420,70 @@ function drawMeshTypeAdvanceV2(words, windowProp, recordData) {
                         unitWidth / 2
                     );
 
+                } else {
+                    if (false) {
+                        for (let x = x0 + 0.5; x < x1 - 1; x += 0.5) {
+                            let x01 = (currentRight + x + 0.5) / totalWidth
+                            let x02 = (currentRight + x + 1) / totalWidth
+                            let x01Left = Math.floor(x01 * (recordData.length - 1));
+                            let x01Right = Math.ceil(x01 * (recordData.length - 1));
+                            let x02Left = Math.floor(x02 * (recordData.length - 1));
+                            let x02Right = Math.ceil(x02 * (recordData.length - 1));
+                            let x01LeftValue = (recordData[x01Left].inBottom.y - recordData[x01Left].inTop.y) * windowProp.height * ratio;
+                            let x01RightValue = (recordData[x01Right].inBottom.y - recordData[x01Right].inTop.y) * windowProp.height * ratio;
+                            let x02LeftValue = (recordData[x02Left].inBottom.y - recordData[x02Left].inTop.y) * windowProp.height * ratio;
+                            let x02RightValue = (recordData[x02Right].inBottom.y - recordData[x02Right].inTop.y) * windowProp.height * ratio;
+                            let x01Lerp = x01 * (recordData.length - 1) - x01Left;
+                            let x02Lerp = x02 * (recordData.length - 1) - x02Left;
+                            let x01Value = lerp(x01LeftValue, x01RightValue, x01Lerp);
+                            let x02Value = lerp(x02LeftValue, x02RightValue, x02Lerp)
+                            let x01HeightUnit = x01Value / 7;
+                            let x02HeightUnit = x02Value / 7;
+                            let x01Y = (windowProp.height / 2 + windowProp.posY - x01Value / 2 + x01HeightUnit * (y0 + 0.5));
+                            let x02Y = (windowProp.height / 2 + windowProp.posY - x02Value / 2 + x02HeightUnit * (y0 + 0.5));
+                            drawVariableLine(
+                                x01 * totalWidth * unitWidth + windowProp.posX,
+                                x01Y,
+                                unitWidth / 2,
+                                x02 * totalWidth * unitWidth + windowProp.posX,
+                                x02Y,
+                                unitWidth / 2
+                            );
+                        }
+                    } else {
 
 
-                } else if (wordWidth >= 1 && wordHeight === 1) {
 
+                        let x01 = (currentRight + x0 + 0.5) / totalWidth
+                        let x02 = (currentRight + x1 - 0.5) / totalWidth
+                        let x01Left = Math.floor(x01 * (recordData.length - 1));
+                        let x01Right = Math.ceil(x01 * (recordData.length - 1));
+                        let x02Left = Math.floor(x02 * (recordData.length - 1));
+                        let x02Right = Math.ceil(x02 * (recordData.length - 1));
+                        let x01LeftValue = (recordData[x01Left].inBottom.y - recordData[x01Left].inTop.y) * windowProp.height * ratio;
+                        let x01RightValue = (recordData[x01Right].inBottom.y - recordData[x01Right].inTop.y) * windowProp.height * ratio;
+                        let x02LeftValue = (recordData[x02Left].inBottom.y - recordData[x02Left].inTop.y) * windowProp.height * ratio;
+                        let x02RightValue = (recordData[x02Right].inBottom.y - recordData[x02Right].inTop.y) * windowProp.height * ratio;
+                        let x01Lerp = x01 * (recordData.length - 1) - x01Left;
+                        let x02Lerp = x02 * (recordData.length - 1) - x02Left;
+                        let x01Value = lerp(x01LeftValue, x01RightValue, x01Lerp);
+                        let x02Value = lerp(x02LeftValue, x02RightValue, x02Lerp)
+                        let x01HeightUnit = x01Value / 7;
+                        let x02HeightUnit = x02Value / 7;
+                        let x01Y = (windowProp.height / 2 + windowProp.posY - x01Value / 2 + x01HeightUnit * (y0 + 0.5));
+                        let x02Y = (windowProp.height / 2 + windowProp.posY - x02Value / 2 + x02HeightUnit * (y0 + 0.5));
+                        drawVariableLine(
+                            x01 * totalWidth * unitWidth + windowProp.posX,
+                            x01Y,
+                            unitWidth / 2,
+                            x02 * totalWidth * unitWidth + windowProp.posX,
+                            x02Y,
+                            unitWidth / 2
+                        )
 
-                } else if (wordWidth === 1 && wordHeight === 1) {
+                    }
 
                 }
-
 
                 rightest = max(rightest, x1);
 
@@ -381,14 +513,14 @@ class LipsData {
 }
 
 
-async function startWebcam() {
+async function startP5jsWebcam() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
     // 选择第二个视频输入设备
     const constraints = {
         video: {
-            deviceId: videoDevices[0].deviceId
+            deviceId: videoDevices[cameraIndex].deviceId
         }
     };
 
@@ -397,7 +529,13 @@ async function startWebcam() {
 }
 
 
-function drawVariableLine(x0, y0, r0, x1, y1, r1) {
+function drawVariableLine(x0, y0, InputR0, x1, y1, InputR1) {
+    //let mouseD0 = 1 / (dist(x0, y0, mouseX, mouseY) / 100) + 5;
+    //let mouseD1 = 1 / (dist(x1, y1, mouseX, mouseY) / 100)+5
+
+    let r0 = InputR0
+    let r1 = InputR1
+
     fill(200);
     stroke(255); // 设置切线的颜色
     //noStroke();
@@ -412,9 +550,11 @@ function drawVariableLine(x0, y0, r0, x1, y1, r1) {
         if (r0 > r1) {
             // 第一个圆较大
             ellipse(x0, y0, r0 * 2, r0 * 2);
+            plus(x0, y0, 4)
         } else {
             // 第二个圆较大
             ellipse(x1, y1, r1 * 2, r1 * 2);
+            plus(x1, y1, 4)
         }
     } else {
         // 如果没有圆完全覆盖另一个圆，则继续绘制两个圆的外公切线和圆弧
@@ -468,8 +608,18 @@ function drawVariableLine(x0, y0, r0, x1, y1, r1) {
         vertex(tx3, ty3);
         endShape(CLOSE);
 
+        plus(x0, y0, 4);
+        plus(x1, y1, 4);
+
 
     }
+}
+
+function plus(x, y, length) {
+    stroke(0);
+    strokeWeight(1);
+    line(x - length / 2, y, x + length / 2, y);
+    line(x, y - length / 2, x, y + length / 2);
 }
 
 

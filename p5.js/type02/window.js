@@ -1,52 +1,41 @@
 function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
-
+    //边角修饰
+    let cornerSize = 6;
     //外轮廓
     stroke(255, 40);
     strokeWeight(1);
     noFill();
-    beginShape();
-    vertex(posX, posY);
-    vertex(posX + windowsWidth, posY);
-    vertex(posX + windowsWidth, posY + windowsHeight);
-    vertex(posX, posY + windowsHeight);
-    endShape(CLOSE);
-
-    //边角修饰
-    let cornerSize = 6;
-
     if (cornerSize > windowsWidth / 2) cornerSize = windowsWidth / 2;
     if (cornerSize > windowsHeight / 2) cornerSize = windowsHeight / 2;
-    stroke(255, 180);
+
+    rect(posX, posY, windowsWidth, windowsHeight, cornerSize, cornerSize, cornerSize, cornerSize);
+
+
+
+
+
+    stroke(100);
     strokeWeight(1);
     noFill();
-    beginShape();
-    vertex(posX, posY + cornerSize);
-    vertex(posX, posY);
-    vertex(posX + cornerSize, posY);
-    endShape();
 
-    beginShape();
-    vertex(posX + windowsWidth - cornerSize, posY);
-    vertex(posX + windowsWidth, posY);
-    vertex(posX + windowsWidth, posY + cornerSize);
-    endShape();
-
-    beginShape();
-    vertex(posX + windowsWidth, posY + windowsHeight - cornerSize);
-    vertex(posX + windowsWidth, posY + windowsHeight);
-    vertex(posX + windowsWidth - cornerSize, posY + windowsHeight);
-    endShape();
-
-    beginShape();
-    vertex(posX + cornerSize, posY + windowsHeight);
-    vertex(posX, posY + windowsHeight);
-    vertex(posX, posY + windowsHeight - cornerSize);
-    endShape();
+    arc(posX + cornerSize, posY + cornerSize, cornerSize * 2, cornerSize * 2, PI, 1.5 * PI);
+    line(posX + cornerSize, posY, posX + cornerSize * 1.5, posY)
+    line(posX, posY + cornerSize, posX, posY + cornerSize * 1.5)
+    arc(posX + windowsWidth - cornerSize, posY + cornerSize, cornerSize * 2, cornerSize * 2, 1.5 * PI, TWO_PI);
+    line(posX + windowsWidth - cornerSize * 1.5, posY, posX + windowsWidth - cornerSize, posY)
+    line(posX + windowsWidth, posY + cornerSize, posX + windowsWidth, posY + cornerSize * 1.5)
+    arc(posX + cornerSize, posY + windowsHeight - cornerSize, cornerSize * 2, cornerSize * 2, PI / 2, PI);
+    line(posX + cornerSize, posY + windowsHeight, posX + cornerSize * 1.5, posY + windowsHeight)
+    line(posX, posY + windowsHeight - cornerSize * 1.5, posX, posY + windowsHeight - cornerSize)
+    arc(posX + windowsWidth - cornerSize, posY + windowsHeight - cornerSize, cornerSize * 2, cornerSize * 2, 0, PI / 2);
+    line(posX + windowsWidth - cornerSize * 1.5, posY + windowsHeight, posX + windowsWidth - cornerSize, posY + windowsHeight)
+    line(posX + windowsWidth, posY + windowsHeight - cornerSize * 1.5, posX + windowsWidth, posY + windowsHeight - cornerSize)
 
 
 
     //鼠标输入点绘制
     let radio = 30
+    cornerSize = cornerSize * 0.5
     if (pointList != null) {
         for (let i = 0; i < pointList.length; i++) {
 

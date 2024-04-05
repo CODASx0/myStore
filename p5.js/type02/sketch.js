@@ -61,15 +61,16 @@ function setup() {
       width: 400,
       height: 300,
       posX: 30,
-      posY: windowHeight / 2 - 100 - 230,
+      posY: windowHeight / 2 - 100 - 330,
     }
   ]
 
-  startWebcam()
+  startP5jsWebcam()
 
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
   font = loadFont('assets/IBMPlexMono-Light.ttf');
+  frameRate(60)
 
   smoothX = mouseX;
   smoothY = mouseY;
@@ -85,6 +86,9 @@ function draw() {
   keyHoldTest()
 
 
+  if (isWaiting) {
+    console.log('waiting')
+  }
 
 
   //drawVariableLine(windowWidth / 2, windowHeight / 2, 100, mouseX, mouseY, 20)
@@ -179,38 +183,12 @@ function draw() {
 
   windowRecord(windowProp[2], lipsInput);
 
-  drawMeshTypeAdvanceV2(TextInput, windowProp[3], lipsInput);
+  // drawMeshTypeAdvanceV2(TextInput, windowProp[3], lipsInput);
+  drawMeshTypeAdvance(TextInput, windowProp[3], lipsInput);
 
   windowRect(windowProp[4].posX, windowProp[4].posY, windowProp[4].width, windowProp[4].height, []);
   textSize(20)
-  //text(TextInput, 30, 30)
-
-
-  //line(point[0].x+windowProp[0].posX, point[0].y+windowProp[0].posY, point[1].x+windowProp[0].posX, point[1].y+windowProp[0].posY);
-
-
-
-  //circle(mouseX, mouseY, 20);
-
-  /*
-  drawMeshType('K', 0, 0,
-    [
-      mySin(0), mySin(1), mySin(2), mySin(3), mySin(4), 10
-    ],
-    [
-      20, 20, 40, 10, 30, 20, 20, 20
-    ], 0);
-  let posX = mySin(0) + mySin(1) + mySin(2) + mySin(3) + mySin(4) + mySin(5) + 50
-  console.log(posX)
   
-  drawMeshType('A', posX, 50,
-    [
-      mySin(6), mySin(7), mySin(8), mySin(9), mySin(10), 10
-    ],
-    [
-      20, 0, 20, 20, 20, 0, 20, 20
-    ], 0);
-  */
 
 }
 
@@ -220,6 +198,8 @@ function mySin(x) {
 
 function keyPressed() {
   if (key === ';') {
+    startRecording();
+
     tween.forEach(t => t.kill())
     tween[0] = gsap.to(windowProp[0], {
       width: 0,
@@ -253,6 +233,8 @@ function keyPressed() {
     isRecording = true;
 
   }
+
+
   if (key === 'Backspace') {
     //删除最后一个字符
     TextInput = TextInput.slice(0, TextInput.length - 1);
@@ -265,6 +247,8 @@ function keyPressed() {
 
 function keyReleased() {
   if (key === ';') {
+    stopRecording();
+
     tween.forEach(t => t.kill())
     tween[0] = gsap.to(windowProp[0], {
       width: 200,
@@ -347,12 +331,10 @@ function mousePressed() {
   mouseProp.posX0 = mouseX;
   mouseProp.posY0 = mouseY;
 
-
 }
 
 
 function mouseReleased() {
   mouseProp.isPressed = false;
-
 
 }

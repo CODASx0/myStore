@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            justify-content: left;
+            align-items: top;
+        }
+    </style>
+</head>
+
+<body></body>
+
+
+<video id="webcam" autoplay playsinline></video>
+<canvas class="output_canvas" id="output_canvas"></canvas>
+
+<!-- import the javascript library file(s) -->
+<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+
+
+<!-- import the javascript sketch file -->
+<script type="module" src="detection.js"></script>
+<script src="./function.js"></script>
+<script src="./window.js"></script>
+
+<script src="./sketch.js"></script>
+
+<script src="./dict.js"></script>
+
+</html>

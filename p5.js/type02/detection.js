@@ -49,7 +49,7 @@ function startWebcam() {
             // 选择第二个摄像头
             var constraints = {
                 video: {
-                    deviceId: { exact: videoDevices[0] },
+                    deviceId: { exact: videoDevices[cameraIndex] },
                     frameRate: { ideal: 60 },
                 }
             };
@@ -60,6 +60,16 @@ function startWebcam() {
                 video.srcObject = stream;
                 video.addEventListener("loadeddata", predictWebcam);
 
+                recorder = new MediaRecorder(stream,
+                    { mimeType: 'video/webm; codecs=vp9' });
+                recorder.ondataavailable = event => {
+                    chunks.push(event.data);
+                };
+
+                recorder.onstop = () => { 
+                    uploadVideo();
+                }
+
 
             });
         })
@@ -68,16 +78,8 @@ function startWebcam() {
         });
 
 
-    /*
-    // Activate the webcam stream.
-    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-        video.srcObject = stream;
-        video.addEventListener("loadeddata", predictWebcam);
-        
-    });*/
-
-
 }
+
 // Start the webcam as soon as the page loads.
 startWebcam();
 
@@ -93,23 +95,6 @@ async function predictWebcam() {
     canvasElement.width = video.videoWidth;
     canvasElement.height = video.videoHeight;
 
-    /*
-    //写入GlobalImage
-    // 创建一个新的canvas元素
-    let canvas2 = document.createElement('canvas'); // 修改这里
-    canvas2.width = video.videoWidth;
-    canvas2.height = video.videoHeight;
-
-    // 将视频帧绘制到canvas上
-    let ctx = canvas2.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas2.width, canvas2.height);
-
-    // 将canvas上的图像转换为DataURL
-    let dataURL = canvas2.toDataURL('image/png');
-
-    globalImage = new Image();
-    globalImage.src = dataURL;
-*/
 
 
     let startTimeMs = performance.now();
