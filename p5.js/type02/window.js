@@ -1,9 +1,37 @@
-function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
+function windowRectBasic(posX, posY, windowsWidth, windowsHeight, cornerSize) {
+    //边角修饰
+
+
+    //外轮廓
+
+    noStroke();
+    fill('#F3F2EF')
+    if (cornerSize > windowsWidth / 2) cornerSize = windowsWidth / 2;
+    if (cornerSize > windowsHeight / 2) cornerSize = windowsHeight / 2;
+
+    rect(posX, posY, windowsWidth, windowsHeight, cornerSize, cornerSize, cornerSize, cornerSize);
+}
+function windowRectBasicV2(posX, posY, windowsWidth, windowsHeight, cornerSize) {
+    //边角修饰
+
+
+    //外轮廓
+
+    noStroke();
+    fill(255,windowsBase.state*255)
+    if (cornerSize > windowsWidth / 2) cornerSize = windowsWidth / 2;
+    if (cornerSize > windowsHeight / 2) cornerSize = windowsHeight / 2;
+
+    rect(posX, posY, windowsWidth, windowsHeight, cornerSize, cornerSize, cornerSize, cornerSize);
+}
+
+function windowRect(posX, posY, windowsWidth, windowsHeight, pointList, ratioInput) {
     //边角修饰
     let cornerSize = 6;
+
     //外轮廓
-    stroke(255, 40);
-    strokeWeight(1);
+    stroke(240 - 10 * ratioInput);
+    strokeWeight(2);
     noFill();
     if (cornerSize > windowsWidth / 2) cornerSize = windowsWidth / 2;
     if (cornerSize > windowsHeight / 2) cornerSize = windowsHeight / 2;
@@ -14,8 +42,8 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
 
 
 
-    stroke(100);
-    strokeWeight(1);
+    stroke(220 - 100 * ratioInput);
+
     noFill();
 
     arc(posX + cornerSize, posY + cornerSize, cornerSize * 2, cornerSize * 2, PI, 1.5 * PI);
@@ -34,52 +62,56 @@ function windowRect(posX, posY, windowsWidth, windowsHeight, pointList) {
 
 
     //鼠标输入点绘制
-    let radio = 30
-    cornerSize = cornerSize * 0.5
+    let radio = 30-20*ratioInput
+    cornerSize = cornerSize * 0.6
+    strokeWeight(2)
+
+
     if (pointList != null) {
         for (let i = 0; i < pointList.length; i++) {
 
             let x = pointList[i][0];
             let y = pointList[i][1];
-            stroke(255, 100);
-            noFill();
-            ellipse(x + posX, y + posY, 10, 10);
 
-            if (x > radio / 2 && x < windowsWidth - radio / 2 && y < windowsHeight - radio / 2 && y > radio / 2) {
-                stroke(255, 40);
-                strokeWeight(1);
+
+
+            if (x > radio / 2 + posX && x < windowsWidth - radio / 2 + posX && y < windowsHeight - radio / 2 + posY && y > radio / 2 + posY) {
+                stroke(220 - 50 * ratioInput, 60);
+
                 noFill();
-                ellipse(posX + x, posY + y, radio, radio);
-                line(posX, posY + y, posX + x - radio / 2, posY + y)
-                line(posX + x + radio / 2, posY + y, posX + windowsWidth, posY + y)
-                line(posX + x, posY, posX + x, posY + y - radio / 2)
-                line(posX + x, posY + y + radio / 2, posX + x, posY + windowsHeight)
+                strokeWeight(1)
+                ellipse(x, y, 10, 10);
+                ellipse(x, y, radio, radio);
+                line(posX, y,  x - radio / 2, y)
+                line(x + radio / 2, y, posX + windowsWidth, y)
+                line(x, posY, x, y - radio / 2)
+                line(x, y + radio / 2, x, posY + windowsHeight)
 
-                stroke(255, 180);
-                line(posX, posY + y, posX + cornerSize, posY + y)
-
-                line(posX + windowsWidth - cornerSize, posY + y, posX + windowsWidth, posY + y)
-                line(posX + x, posY, posX + x, posY + cornerSize)
-                line(posX + x, posY + windowsHeight - cornerSize, posX + x, posY + windowsHeight)
-                line(posX, posY + y - cornerSize, posX, posY + y + cornerSize)
-                line(posX + windowsWidth, posY + y - cornerSize, posX + windowsWidth, posY + y + cornerSize)
-                line(posX + x - cornerSize, posY, posX + x + cornerSize, posY)
-                line(posX + x - cornerSize, posY + windowsHeight, posX + x + cornerSize, posY + windowsHeight)
+                stroke(220 - 100 * ratioInput);
+                strokeWeight(1)
+                line(posX, y, posX + cornerSize, y)
+                line(posX + windowsWidth - cornerSize, y, posX + windowsWidth, y)
+                line(x, posY, x, posY + cornerSize)
+                line(x, posY + windowsHeight - cornerSize, x, posY + windowsHeight)
+                line(posX, y - cornerSize, posX, y + cornerSize)
+                line(posX + windowsWidth, y - cornerSize, posX + windowsWidth, y + cornerSize)
+                line(x - cornerSize, posY, x + cornerSize, posY)
+                line(x - cornerSize, posY + windowsHeight, x + cornerSize, posY + windowsHeight)
 
                 for (let p = 0; p < 2; p += 0.5) {
-                    arc(posX + x, posY + y, radio, radio, PI * p - 0.08 * PI, PI * p + 0.08 * PI);
+                    arc(x, y, radio, radio, PI * p - 0.08 * PI, PI * p + 0.08 * PI);
                 }
             }
-            fill(255, 80);
+            fill(100+155*ratioInput, 200);
             noStroke()
-            text(round(x + posX) + ',' + round(y + posY), x + posX, y + posY)
+            text(round(x) + ',' + round(y), x, y)
         }
     }
 
 }
 
 
-//创建一个长度为400的数组
+//创建一个数组
 let lineArray = [{ lengthRatio: 1 }];
 
 

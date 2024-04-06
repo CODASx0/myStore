@@ -4,11 +4,11 @@ let cameraIndex = 1;
 
 let recorder;
 let chunks = [];
-let VideoIsRecoding = false;
+
 let isWaiting = false;
 
 function startRecording() {
-    if (recorder && recorder.state === "inactive") {
+    if (recorder && recorder.state === "inactive" && !isWaiting) {
         recorder.start();
         recording = true;
     }
@@ -497,19 +497,109 @@ function drawMeshTypeAdvanceV2(words, windowProp, recordData) {
 
 }
 
+function drawMeshTypeAdvanceV3(recordData, words) { 
+    let unitWidth = 10;
+
+    let ratio = 8;
+
+    //words是一个字符串，每个字符都是一个字母，创建一个数组分别储存
+    let wordsArray = words.split('');
+
+    //累加每个字符的最大宽度
+    let totalWidth = 0;
+    if (recordData.length > 1 && wordsArray.length > 0) {
+        //console.log(recordData)
+        for (let i = 0; i < wordsArray.length; i++) {
+            const word = dict[wordsArray[i]];
+            //最右边界
+            let rightest = 0;
+            for (j = 0; j < word.length; j++) {
+                let x0, y0, x1, y1;
+
+                //判断是否是多重数组
+                if (word[j][0][0] != undefined) {
+                    //矩形的起点
+                    x0 = word[j][0][0];
+                    y0 = word[j][0][1];
+                    //矩形的终点
+                    x1 = word[j][1][0];
+                    y1 = word[j][1][1];
+
+                } else {
+                    //矩形的起点
+                    x0 = word[j][0] - 0.5;
+                    y0 = word[j][1] - 0.5;
+                    //矩形的终点
+                    x1 = word[j][0] + 0.5;
+                    y1 = word[j][1] + 0.5;
+                }
+                rightest = max(rightest, x1);
+            }
+            totalWidth += rightest + 1;
+        }
+
+
+        let currentRight = 0;
+        for (let i = 0; i < wordsArray.length; i++) {
+            const word = dict[wordsArray[i]];
+            //最右边界
+            let rightest = 0;
+            for (j = 0; j < word.length; j++) {
+                let x0, y0, x1, y1;
+                //判断是否是多重数组
+                if (word[j][0][0] != undefined) {
+                    //矩形的起点
+                    x0 = word[j][0][0];
+                    y0 = word[j][0][1];
+                    //矩形的终点
+                    x1 = word[j][1][0];
+                    y1 = word[j][1][1];
+
+                } else {
+                    //矩形的起点
+                    x0 = word[j][0] - 0.5;
+                    y0 = word[j][1] - 0.5;
+                    //矩形的终点
+                    x1 = word[j][0] + 0.5;
+                    y1 = word[j][1] + 0.5;
+                }
+
+
+                rightest = max(rightest, x1);
+
+            }
+            currentRight += rightest + 1;
+
+
+            //console.log(currentRight)
+        }
+    }
+}
+
 //计算嘴部点位的相关信息
 class LipsData {
-    constructor(detections) {
+    constructor(detections,video) {
         this.left = detections[61];
         this.right = detections[291];
 
         this.inTop = detections[13];
         this.inBottom = detections[14];
 
+        this.inTopY = (detections[13].y - detections[0].y)*video.height; 
+        this.inBottomY = (detections[14].y - detections[0].y)*video.height;
+
         this.outTop = detections[0];
         this.outBottom = detections[17];
 
-        this.center = (detections[0] + detections[17]) / 2;
+        this.centerX= (detections[0].x + detections[17].x) / 2*video.width;
+        this.centerY = (detections[0].y + detections[17].y) / 2 * video.height;
+        
+        
+        this.img = video.get(detections[61].x * video.width, detections[0].y * video.height, detections[291].x * video.width - detections[61].x * video.width, detections[17].y * video.height - detections[0].y * video.height);
+        
+        this.posX0 = 0
+        this.width0 = 0
+        this.posY0 = 0
     }
 
 }
