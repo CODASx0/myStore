@@ -60,6 +60,7 @@ function uploadVideo() {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
+                TextInput = data
                 isWaiting = false;
             })
             .catch((error) => {
@@ -497,10 +498,8 @@ function drawMeshTypeAdvanceV2(words, windowProp, recordData) {
 
 }
 
-function drawMeshTypeAdvanceV3(recordData, words) { 
-    let unitWidth = 10;
+function drawMeshTypeAdvanceV3(posX, posY, recordData, words, color, weight) {
 
-    let ratio = 8;
 
     //words是一个字符串，每个字符都是一个字母，创建一个数组分别储存
     let wordsArray = words.split('');
@@ -538,6 +537,171 @@ function drawMeshTypeAdvanceV3(recordData, words) {
             totalWidth += rightest + 1;
         }
 
+        totalWidth -= 1;
+
+
+        let currentRight = 0;
+        for (let i = 0; i < wordsArray.length; i++) {
+            const word = dict[wordsArray[i]];
+            //最右边界
+            let rightest = 0;
+            for (j = 0; j < word.length; j++) {
+                let x0, y0, x1, y1;
+                //判断是否是多重数组
+                if (word[j][0][0] != undefined) {
+                    //矩形的起点
+                    x0 = word[j][0][0];
+                    y0 = word[j][0][1];
+                    //矩形的终点
+                    x1 = word[j][1][0];
+                    y1 = word[j][1][1];
+                    if (x0 === x1 && y0 === y1) {
+                        break;
+                    }
+
+                } else {
+                    //矩形的起点
+                    x0 = word[j][0] - 0.5;
+                    y0 = word[j][1] - 0.5;
+                    //矩形的终点
+                    x1 = word[j][0] + 0.5;
+                    y1 = word[j][1] + 0.5;
+                }
+
+                strokeWeight(weight)
+                stroke(color)
+                noFill()
+
+                x00 = (currentRight + x0) / totalWidth
+                x00left = Math.floor(x00 * (recordData.length - 1));
+                x00right = Math.ceil(x00 * (recordData.length - 1));
+
+                x10 = (currentRight + x1) / totalWidth
+                x10left = Math.floor(x10 * (recordData.length - 1));
+                x10right = Math.ceil(x10 * (recordData.length - 1));
+                if (x10left - x00left <= 1) {
+                    x00lerp = x00 * (recordData.length - 1) - x00left;
+                    x10lerp = x10 * (recordData.length - 1) - x10left;
+                    y00 = lerp(pickY(recordData[x00left], y0), pickY(recordData[x00right], y0), x00lerp)
+                    y01 = lerp(pickY(recordData[x00left], y1), pickY(recordData[x00right], y1), x00lerp)
+                    y10 = lerp(pickY(recordData[x10left], y0), pickY(recordData[x10right], y0), x10lerp)
+                    y11 = lerp(pickY(recordData[x10left], y1), pickY(recordData[x10right], y1), x10lerp)
+                    beginShape(LINES);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y00);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y01);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y11);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y10);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y00);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y10);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y01);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y11);
+                    endShape(CLOSE);
+                } else {
+
+                    x00lerp = x00 * (recordData.length - 1) - x00left;
+                    y00 = lerp(pickY(recordData[x00left], y0), pickY(recordData[x00right], y0), x00lerp)
+                    y01 = lerp(pickY(recordData[x00left], y1), pickY(recordData[x00right], y1), x00lerp)
+                    y10 = pickY(recordData[x00right], y0)
+                    y11 = pickY(recordData[x00right], y1)
+                    beginShape(LINES);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y00);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y01);
+                    vertex(posX + recordData[x00right].posX0, posY + recordData[x00right].posY0 + y11);
+                    vertex(posX + recordData[x00right].posX0, posY + recordData[x00right].posY0 + y10);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y00);
+                    vertex(posX + recordData[x00right].posX0, posY + recordData[x00right].posY0 + y10);
+                    vertex(posX + recordData[x00left].posX0 + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y01);
+                    vertex(posX + recordData[x00right].posX0, posY + recordData[x00right].posY0 + y11);
+                    endShape(CLOSE);
+                    for (x = x00right; x < x10left; x++) {
+                        y00 = pickY(recordData[x], y0)
+                        y01 = pickY(recordData[x], y1)
+                        y10 = pickY(recordData[x + 1], y0)
+                        y11 = pickY(recordData[x + 1], y1)
+                        beginShape(LINES);
+                        vertex(posX + recordData[x].posX0, posY + recordData[x].posY0 + y00);
+                        vertex(posX + recordData[x].posX0, posY + recordData[x].posY0 + y01);
+                        vertex(posX + recordData[x + 1].posX0, posY + recordData[x + 1].posY0 + y11);
+                        vertex(posX + recordData[x + 1].posX0, posY + recordData[x + 1].posY0 + y10);
+
+                        vertex(posX + recordData[x].posX0, posY + recordData[x].posY0 + y00);
+                        vertex(posX + recordData[x + 1].posX0, posY + recordData[x + 1].posY0 + y10);
+                        vertex(posX + recordData[x].posX0, posY + recordData[x].posY0 + y01);
+                        vertex(posX + recordData[x + 1].posX0, posY + recordData[x + 1].posY0 + y11);
+                        endShape(CLOSE);
+                    }
+                    x10lerp = x10 * (recordData.length - 1) - x10left;
+                    y00 = pickY(recordData[x10left], y0)
+                    y01 = pickY(recordData[x10left], y1)
+                    y10 = lerp(pickY(recordData[x10left], y0), pickY(recordData[x10right], y0), x10lerp)
+                    y11 = lerp(pickY(recordData[x10left], y1), pickY(recordData[x10right], y1), x10lerp)
+                    beginShape(LINES);
+                    vertex(posX + recordData[x10left].posX0, posY + recordData[x10left].posY0 + y00);
+                    vertex(posX + recordData[x10left].posX0, posY + recordData[x10left].posY0 + y01);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y11);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y10);
+                    vertex(posX + recordData[x10left].posX0, posY + recordData[x10left].posY0 + y00);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y10);
+                    vertex(posX + recordData[x10left].posX0, posY + recordData[x10left].posY0 + y01);
+                    vertex(posX + recordData[x10left].posX0 + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y11);
+
+                    endShape(CLOSE);
+                }
+
+
+
+                rightest = max(rightest, x1);
+
+            }
+            currentRight += rightest + 1;
+
+
+            //console.log(currentRight)
+        }
+    }
+}
+
+function drawMeshTypeAdvanceV31(posX, posY, recordData, words, color) {
+
+
+    //words是一个字符串，每个字符都是一个字母，创建一个数组分别储存
+    let wordsArray = words.split('');
+
+    //累加每个字符的最大宽度
+    let totalWidth = 0;
+    if (recordData.length > 1 && wordsArray.length > 0) {
+        //console.log(recordData)
+        for (let i = 0; i < wordsArray.length; i++) {
+            const word = dict[wordsArray[i]];
+            //最右边界
+            let rightest = 0;
+            for (j = 0; j < word.length; j++) {
+                let x0, y0, x1, y1;
+
+                //判断是否是多重数组
+                if (word[j][0][0] != undefined) {
+                    //矩形的起点
+                    x0 = word[j][0][0];
+                    y0 = word[j][0][1];
+                    //矩形的终点
+                    x1 = word[j][1][0];
+                    y1 = word[j][1][1];
+
+                } else {
+                    //矩形的起点
+                    x0 = word[j][0] - 0.5;
+                    y0 = word[j][1] - 0.5;
+                    //矩形的终点
+                    x1 = word[j][0] + 0.5;
+                    y1 = word[j][1] + 0.5;
+                }
+                rightest = max(rightest, x1);
+            }
+            totalWidth += rightest + 1;
+        }
+
+        totalWidth -= 1;
+
 
         let currentRight = 0;
         for (let i = 0; i < wordsArray.length; i++) {
@@ -564,6 +728,70 @@ function drawMeshTypeAdvanceV3(recordData, words) {
                     y1 = word[j][1] + 0.5;
                 }
 
+                fill(color)
+
+                noStroke()
+                let makeup = 0.2
+                x00 = (currentRight + x0) / totalWidth
+                x00left = Math.floor(x00 * (recordData.length - 1));
+                x00right = Math.ceil(x00 * (recordData.length - 1));
+
+                x10 = (currentRight + x1) / totalWidth
+                x10left = Math.floor(x10 * (recordData.length - 1));
+                x10right = Math.ceil(x10 * (recordData.length - 1));
+                if (x10left - x00left <= 1) {
+                    x00lerp = x00 * (recordData.length - 1) - x00left;
+                    x10lerp = x10 * (recordData.length - 1) - x10left;
+                    y00 = lerp(pickY(recordData[x00left], y0), pickY(recordData[x00right], y0), x00lerp)
+                    y01 = lerp(pickY(recordData[x00left], y1), pickY(recordData[x00right], y1), x00lerp)
+                    y10 = lerp(pickY(recordData[x10left], y0), pickY(recordData[x10right], y0), x10lerp)
+                    y11 = lerp(pickY(recordData[x10left], y1), pickY(recordData[x10right], y1), x10lerp)
+                    beginShape();
+                    vertex(posX + recordData[x00left].posX0 - makeup + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y00);
+                    vertex(posX + recordData[x00left].posX0 - makeup + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y01);
+                    vertex(posX + recordData[x10left].posX0 + makeup + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y11);
+                    vertex(posX + recordData[x10left].posX0 + makeup + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y10);
+                    endShape(CLOSE);
+                } else {
+
+
+                    x00lerp = x00 * (recordData.length - 1) - x00left;
+                    y00 = lerp(pickY(recordData[x00left], y0), pickY(recordData[x00right], y0), x00lerp)
+                    y01 = lerp(pickY(recordData[x00left], y1), pickY(recordData[x00right], y1), x00lerp)
+                    y10 = pickY(recordData[x00right], y0)
+                    y11 = pickY(recordData[x00right], y1)
+                    beginShape();
+                    vertex(posX + recordData[x00left].posX0 - makeup + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y00);
+                    vertex(posX + recordData[x00left].posX0 - makeup + x00lerp * recordData[x00left].width0, posY + recordData[x00left].posY0 + y01);
+                    vertex(posX + recordData[x00right].posX0 + makeup, posY + recordData[x00right].posY0 + y11);
+                    vertex(posX + recordData[x00right].posX0 + makeup, posY + recordData[x00right].posY0 + y10);
+                    endShape(CLOSE);
+                    for (x = x00right; x < x10left; x++) {
+                        y00 = pickY(recordData[x], y0)
+                        y01 = pickY(recordData[x], y1)
+                        y10 = pickY(recordData[x + 1], y0)
+                        y11 = pickY(recordData[x + 1], y1)
+                        beginShape();
+                        vertex(posX + recordData[x].posX0 - makeup, posY + recordData[x].posY0 + y00);
+                        vertex(posX + recordData[x].posX0 - makeup, posY + recordData[x].posY0 + y01);
+                        vertex(posX + recordData[x + 1].posX0 + makeup, posY + recordData[x + 1].posY0 + y11);
+                        vertex(posX + recordData[x + 1].posX0 + makeup, posY + recordData[x + 1].posY0 + y10);
+                        endShape(CLOSE);
+                    }
+                    x10lerp = x10 * (recordData.length - 1) - x10left;
+                    y00 = pickY(recordData[x10left], y0)
+                    y01 = pickY(recordData[x10left], y1)
+                    y10 = lerp(pickY(recordData[x10left], y0), pickY(recordData[x10right], y0), x10lerp)
+                    y11 = lerp(pickY(recordData[x10left], y1), pickY(recordData[x10right], y1), x10lerp)
+                    beginShape();
+                    vertex(posX + recordData[x10left].posX0 - makeup, posY + recordData[x10left].posY0 + y00);
+                    vertex(posX + recordData[x10left].posX0 - makeup, posY + recordData[x10left].posY0 + y01);
+                    vertex(posX + recordData[x10left].posX0 + makeup + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y11);
+                    vertex(posX + recordData[x10left].posX0 + makeup + x10lerp * recordData[x10left].width0, posY + recordData[x10left].posY0 + y10);
+                    endShape(CLOSE);
+                }
+
+
 
                 rightest = max(rightest, x1);
 
@@ -576,27 +804,37 @@ function drawMeshTypeAdvanceV3(recordData, words) {
     }
 }
 
+function pickY(DataInput, index) {
+    if (index < 1) {
+        return DataInput.inTopY * index / 1
+    } else if (index < 6) {
+        return (DataInput.inBottomY - DataInput.inTopY) * (index - 1) / 5 + DataInput.inTopY
+    } else {
+        return (DataInput.img.height - DataInput.inBottomY) * (index - 6) / 1 + DataInput.inBottomY
+    }
+
+}
 //计算嘴部点位的相关信息
 class LipsData {
-    constructor(detections,video) {
+    constructor(detections, video) {
         this.left = detections[61];
         this.right = detections[291];
 
         this.inTop = detections[13];
         this.inBottom = detections[14];
 
-        this.inTopY = (detections[13].y - detections[0].y)*video.height; 
-        this.inBottomY = (detections[14].y - detections[0].y)*video.height;
+        this.inTopY = (detections[13].y - detections[0].y) * video.height;
+        this.inBottomY = (detections[14].y - detections[0].y) * video.height;
 
         this.outTop = detections[0];
         this.outBottom = detections[17];
 
-        this.centerX= (detections[0].x + detections[17].x) / 2*video.width;
+        this.centerX = (detections[0].x + detections[17].x) / 2 * video.width;
         this.centerY = (detections[0].y + detections[17].y) / 2 * video.height;
-        
-        
+
+
         this.img = video.get(detections[61].x * video.width, detections[0].y * video.height, detections[291].x * video.width - detections[61].x * video.width, detections[17].y * video.height - detections[0].y * video.height);
-        
+
         this.posX0 = 0
         this.width0 = 0
         this.posY0 = 0

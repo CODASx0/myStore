@@ -34,10 +34,11 @@ let windowsProp
 function setup() {
 
   startP5jsWebcam()
+  pixelDensity(3)
 
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
-  font = loadFont('assets/IBMPlexMono-MediumItalic.ttf');
+  font = loadFont('assets/IBMPlexMono-Light.ttf');
   textFont(font);
 
   frameRate(60)
@@ -119,14 +120,14 @@ function LipsPreview(lipsInput) {
       if (lipsInput[i].centerY - lipsInput[0].centerY < 0) {
         posY0 = Math.max(-(lipsInput[i].centerY - lipsInput[0].centerY), posY0)
       }
-      
+
     }
 
     for (let i = 0; i < lipsInput.length; i += step) {
       lipsInput[i].posX0 = width
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
-      
-      height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
+
+        height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
       unit = 4 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
@@ -134,17 +135,76 @@ function LipsPreview(lipsInput) {
   }
 
 
-  
+
   if (true) {
+    //时间轴
+    let textColor = 100
+    let length = 6
+    stroke(0)
+    strokeWeight(0.5)
+    line(posX, posY, posX + width + padding * 2, posY)
+    line(posX, posY, posX, posY + length)
+
+    for (let i = 0; i < lipsInput.length; i += step) {
+      posX0 = lipsInput[i].posX0
+      unit = lipsInput[i].width0
+      if (i % (30 / step) == 0) {
+        stroke(0)
+        line(posX + posX0 + padding, posY, posX + posX0 + padding, posY - length)
+        //line(posX + posX0 + padding - length, posY, posX + posX0 + padding + length, posY)
+        textSize(8)
+        fill(textColor)
+        noStroke()
+        text(i / 60 + 's', posX + posX0 + padding, posY - 12)
+      }
+    }
+
+    stroke(0)
+    line(posX + padding + width, posY, posX + padding + width, posY - length)
+    //line(posX + padding + width - length, posY, posX + padding + width + length, posY)
+
+    textSize(8)
+    fill(textColor)
+    noStroke()
+    let timeNow = (lipsInput.length / 60).toFixed(1)
+    text(timeNow + 's', posX + width + padding, posY - 12)
+
+  }
+
+  posX += padding
+  posY += padding
+
+
+  for (let i = 0; i < lipsInput.length; i += step) {
+    unit = lipsInput[i].width0
+
+    let unit0 = unit + 1
+    image(lipsInput[i].img,
+      posX + lipsInput[i].posX0,
+      posY + lipsInput[i].posY0,
+      unit0,
+      lipsInput[i].img.height,
+      lipsInput[i].img.width / 2 - unit0 * 0.5,
+      0,
+      unit,
+      lipsInput[i].img.height)
+
+  }
+
+  posX -= padding
+  posY += 240 + padding
+
+  if (false) {
     //时间轴
     let length = 4
     stroke(200)
     strokeWeight(2)
     line(posX, posY, posX + width + padding * 2, posY)
-    
+
+
     for (let i = 0; i < lipsInput.length; i += step) {
-      posX0 = lipsInput[i].posX0
       unit = lipsInput[i].width0
+      posX0 = lipsInput[i].posX0
       if (i % (30 / step) == 0) {
         stroke(160)
         line(posX + posX0 + padding, posY, posX + posX0 + padding, posY + length)
@@ -170,64 +230,11 @@ function LipsPreview(lipsInput) {
 
   posX += padding
   posY += padding
-
-  
-  for (let i = 0; i < lipsInput.length; i += step) {
-    unit = lipsInput[i].width0
-
-    let unit0 = unit + 1
-    image(lipsInput[i].img,
-      posX + lipsInput[i].posX0,
-      posY + lipsInput[i].posY0,
-      unit0,
-      lipsInput[i].img.height,
-      lipsInput[i].img.width / 2 - unit0 * 0.5,
-      0,
-      unit,
-      lipsInput[i].img.height)
-    
-  }
-
-  posX -= padding
-  posY += height + padding
-
-  if (true) {
-    //时间轴
-    let length = 4
-    stroke(200)
-    strokeWeight(2)
-    line(posX, posY, posX + width + padding * 2, posY)
-
-    
-    for (let i = 0; i < lipsInput.length; i += step) {
-      unit = lipsInput[i].width0
-      posX0 = lipsInput[i].posX0
-      if (i % (30 / step) == 0) {
-        stroke(160)
-        line(posX + posX0 + padding, posY, posX + posX0 + padding, posY + length)
-        line(posX + posX0 + padding - length, posY, posX + posX0 + padding + length, posY)
-        textSize(12)
-        fill(200)
-        noStroke()
-        text(i / 60 + 's', posX + posX0 + padding + 4, posY + 16)
-      }
-    }
-
-    stroke(160)
-    line(posX + padding + width, posY, posX + padding + width, posY + length)
-    line(posX + padding + width - length, posY, posX + padding + width + length, posY)
-
-    textSize(12)
-    fill(200)
-    noStroke()
-    let timeNow = (lipsInput.length / 60).toFixed(1)
-    text(timeNow + 's', posX + posX0 + padding + 4, posY + 16)
-
-  }
+  drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, TextInput, 0, 1)
+  drawMeshTypeAdvanceV31(posX, posY + 5, lipsInput, TextInput, 0)
 
 
 
-  
 
 }
 
@@ -235,6 +242,7 @@ function LipsPreview(lipsInput) {
 function ImagePreview(ratioInput) {
   let padding = 40;
 
+  
   windowRectBasic(windowsProp.window1.posX, windowsProp.window1.posY, windowsProp.window1.width, windowsProp.window1.height, 6 + padding * ratioInput)
   windowRectBasicV2(windowsProp.window1.posX + padding * ratioInput,
     windowsProp.window1.posY + padding * ratioInput,
@@ -345,7 +353,7 @@ function ImagePreview(ratioInput) {
       windowsProp.window1.height - padding * 2 * ratioInput,
       point,
       ratioInput)
-    
+
   }
 }
 
@@ -432,6 +440,11 @@ function keyTyped() {
   //判断是否是字母
   if (key >= 'A' && key <= 'Z') {
     TextInput += key;
+    console.log(TextInput);
+  }
+  //判断是否是空格
+  if (key === ' ') {
+    TextInput += ' ';
     console.log(TextInput);
   }
 }
