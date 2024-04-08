@@ -358,7 +358,7 @@ function ImagePreview(ratioInput) {
 }
 
 function keyPressed() {
-  if (key === ';') {
+  if (key === ';'&& !isWaiting) {
 
     startRecording();
 
