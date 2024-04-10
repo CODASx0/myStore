@@ -23,8 +23,8 @@ function control() {
 
         controlInput[0] = lerp(controlInput[0], handDetections[8].x, lerpRatio);
         controlInput[1] = lerp(controlInput[1], handDetections[8].y, lerpRatio);
-        controlInput[2] = lerp(controlInput[2], detections[61].x, lerpRatio);
-        controlInput[3] = lerp(controlInput[3], detections[61].y, lerpRatio);
+        controlInput[2] = lerp(controlInput[2], detections[57].x, lerpRatio);
+        controlInput[3] = lerp(controlInput[3], detections[57].y, lerpRatio);
 
 
         let distance = dist(controlInput[0], controlInput[1], controlInput[2], controlInput[3]) * 1000;
@@ -97,7 +97,7 @@ function globalStart() {
     })
 
     lipsInput = [];
-    lipsInput.push(new LipsData(JSON.parse(JSON.stringify(detections)), video));
+    
     isRecording = true;
 
 }

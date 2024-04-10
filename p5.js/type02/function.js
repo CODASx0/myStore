@@ -8,6 +8,67 @@ let recorder;
 let chunks = [];
 
 let isWaiting = false;
+let isWaitingAnimating = false;
+
+
+
+//更新一些全局的数据
+function globalUpdate() {
+
+
+    keyHoldTest()
+
+    LipsLoadingAnimation()
+
+
+    if (isWaiting) {
+        console.log('waiting')
+    }
+
+
+    if (detections != undefined) {
+        recordDetection()
+    }
+}
+
+let LipsAnimation = [];
+function LipsLoadingAnimation() {
+    if (isWaiting && !isWaitingAnimating && !recording) {
+        isWaitingAnimating = true;
+        for (let i = 0; i < lipsInput.length; i++) {
+            LipsAnimation[i] = gsap.timeline({ repeat: -1, repeatDelay: 0, delay: i * 0.008 });
+            LipsAnimation[i].to(lipsInput[i], {
+                scaleX: 10,
+                duration: 1.4,
+                delay: 0,
+                ease: "back.out(4)"
+            });
+            LipsAnimation[i].to(lipsInput[i], {
+                scaleX: 1,
+                duration: 1.4,
+                delay: 0.5,
+                ease: "power2.inOut"
+            });
+
+        }
+    }
+
+    if (!isWaiting && isWaitingAnimating && !recording) {
+        isWaitingAnimating = false;
+        for (let i = 0; i < lipsInput.length; i++) {
+            if (LipsAnimation[i]) {
+                LipsAnimation[i].repeat(LipsAnimation[i].repeat()); // 设置动画重复次数为当前的重复次数
+                LipsAnimation[i].eventCallback("onRepeat", function () {
+                    if (!isWaiting && !recording) {
+                        this.kill(); // 在动画完成后停止动画
+                    }
+                });
+            }
+        }
+        console.log('stop')
+    }
+}
+
 
 function startRecording() {
     if (recorder && recorder.state === "inactive" && !isWaiting) {
@@ -103,7 +164,8 @@ class LipsData {
         this.posY0 = 0
 
         //动效相关参数
-
+        this.scaleY = 0.01;
+        this.scaleX = 5;
 
     }
 

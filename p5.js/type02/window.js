@@ -1,3 +1,7 @@
+function textOutPut() {
+    
+}
+
 function windowRectBasic(posX, posY, windowsWidth, windowsHeight, cornerSize) {
     //边角修饰
 

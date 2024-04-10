@@ -49,27 +49,17 @@ function setup() {
 }
 
 function draw() {
+
+  globalUpdate()
+
   windowsUpdate()
 
   clear()
 
   control()
 
-  keyHoldTest()
-
-
-  if (isWaiting) {
-    console.log('waiting')
-  }
-
-
   //windowRectBasic(windowsProp.window2.posX, windowsProp.window2.posY, windowsProp.window2.width, windowsProp.window2.height, 6 + 40 * windowsBase.state)
   ImagePreview(windowsBase.state)
-
-
-  if (detections != undefined) {
-    recordDetection()
-  }
 
   LipsPreview(lipsInput)
 
@@ -91,7 +81,11 @@ function windowsUpdate() {
       posY: windowsBase.padding * 2 + windowsBase.col1 / 4 * 3,
       width: windowWidth - windowsBase.padding * 2,
       height: windowHeight - windowsBase.padding * 3 - windowsBase.col1 / 4 * 3,
+    },
+    window3: {
+      
     }
+
   }
 }
 
@@ -182,19 +176,19 @@ function LipsPreview(lipsInput) {
 
     let unit0 = unit + 1
     image(lipsInput[i].img,
-      posX + lipsInput[i].posX0,
-      posY + lipsInput[i].posY0,
-      unit0,
-      lipsInput[i].img.height,
-      lipsInput[i].img.width / 2 - unit0 * 0.5,
+      posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
+      posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
+      unit0 * lipsInput[i].scaleX,
+      lipsInput[i].img.height * lipsInput[i].scaleY,
+      lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
       0,
-      unit,
+      unit * lipsInput[i].scaleX,
       lipsInput[i].img.height)
 
   }
 
   posX -= padding
-  posY +=  + padding
+  posY += + padding
 
   if (false) {
     //时间轴
@@ -244,7 +238,7 @@ function LipsPreview(lipsInput) {
 function ImagePreview(ratioInput) {
   let padding = 40;
 
-  
+
   windowRectBasic(windowsProp.window1.posX, windowsProp.window1.posY, windowsProp.window1.width, windowsProp.window1.height, 6 + padding * ratioInput)
   windowRectBasicV2(windowsProp.window1.posX + padding * ratioInput,
     windowsProp.window1.posY + padding * ratioInput,
@@ -332,7 +326,7 @@ function ImagePreview(ratioInput) {
 
 
 
-    
+
     let point = [
 
       [windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * 0.5 * ratio * sw,
@@ -367,6 +361,17 @@ function ImagePreview(ratioInput) {
 function recordDetection() {
   if (isRecording) {
     lipsInput.push(new LipsData(JSON.parse(JSON.stringify(detections)), video));
+    gsap.to(lipsInput[lipsInput.length - 1], {
+      duration: 2.5,
+      scaleY: 1,
+
+      ease: "elastic.out(1,0.3)",
+    })
+    gsap.to(lipsInput[lipsInput.length - 1], {
+      scaleX: 1,
+      duration: 1,
+      ease: "power1.out",
+    })
   }
 }
 
