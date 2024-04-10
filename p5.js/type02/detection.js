@@ -1,15 +1,17 @@
 import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
 
 
-const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision;
+const { FaceLandmarker, HandLandmarker, FilesetResolver, DrawingUtils } = vision;
 
 
-let faceLandmarker;
+let faceLandmarker, handLandmarker;
 let runningMode = "VIDEO";
 
 const videoWidth = 480;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
+
+//创建面部识别器
 faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
     baseOptions: {
         modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
@@ -20,6 +22,18 @@ faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
     runningMode,
     numFaces: 1
 });
+
+// 创建手部识别器
+handLandmarker = await HandLandmarker.createFromOptions(filesetResolver, {
+    baseOptions: {
+        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+        delegate: "GPU"
+    },
+    runningMode,
+    numHands: 1
+});
+
+
 
 const video = document.getElementById("webcam");
 const canvasElement = document.getElementById("output_canvas");
@@ -85,7 +99,12 @@ startWebcam();
 
 let lastVideoTime = -1;
 let results = undefined;
+
+let resultsHand = undefined;
+
+
 const drawingUtils = new DrawingUtils(canvasCtx);
+
 async function predictWebcam() {
     const radio = video.videoHeight / video.videoWidth;
     video.style.width = videoWidth + "px";
@@ -100,26 +119,33 @@ async function predictWebcam() {
     let startTimeMs = performance.now();
     if (lastVideoTime !== video.currentTime) {
         lastVideoTime = video.currentTime;
-        results = faceLandmarker.detectForVideo(video, startTimeMs);
+        results = await faceLandmarker.detectForVideo(video, startTimeMs);
+        
+        resultsHand = await handLandmarker.detectForVideo(video, startTimeMs);
+        
+        
     }
+
     if (results.faceLandmarks) {
         for (const landmarks of results.faceLandmarks) {
             detections = landmarks;
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: "#FFFFFF", lineWidth: 0.1 });
-            /*
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: "#FF3030" });
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, { color: "#FF3030" });
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: "#30FF30" });
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW, { color: "#30FF30" });
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: "#FF3030" });
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: "#30FF30" });
-            */
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#FFFFFF", lineWidth: 2 });
-            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "#FFFFFF", lineWidth: 2 });
+
+            //drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: "#FFFFFF", lineWidth: 0.1 });
+            //drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#FFFFFF", lineWidth: 2 });
+            //drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "#FFFFFF", lineWidth: 2 });
 
         }
 
     }
+
+    if (resultsHand.landmarks) { 
+        for (const landmarks of resultsHand.landmarks) {
+            handDetections = landmarks;
+            
+            
+        }  
+    }
+
     window.requestAnimationFrame(predictWebcam);
 
 }

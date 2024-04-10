@@ -1,6 +1,8 @@
 let detections;
+let handDetections;
+
 let globalImage;
-let cameraIndex = 0;
+let cameraIndex = 1;
 
 let recorder;
 let chunks = [];
@@ -72,6 +74,38 @@ function uploadVideo() {
             });
     }
 
+
+}
+
+//计算嘴部点位的相关信息
+class LipsData {
+    constructor(detections, video) {
+        this.left = detections[61];
+        this.right = detections[291];
+
+        this.inTop = detections[13];
+        this.inBottom = detections[14];
+
+        this.inTopY = (detections[13].y - detections[0].y) * video.height;
+        this.inBottomY = (detections[14].y - detections[0].y) * video.height;
+
+        this.outTop = detections[0];
+        this.outBottom = detections[17];
+
+        this.centerX = (detections[0].x + detections[17].x) / 2 * video.width;
+        this.centerY = (detections[0].y + detections[17].y) / 2 * video.height;
+
+
+        this.img = video.get(detections[61].x * video.width, detections[0].y * video.height, detections[291].x * video.width - detections[61].x * video.width, detections[17].y * video.height - detections[0].y * video.height);
+
+        this.posX0 = 0
+        this.width0 = 0
+        this.posY0 = 0
+
+        //动效相关参数
+
+
+    }
 
 }
 
@@ -817,33 +851,7 @@ function pickY(DataInput, index) {
     }
 
 }
-//计算嘴部点位的相关信息
-class LipsData {
-    constructor(detections, video) {
-        this.left = detections[61];
-        this.right = detections[291];
 
-        this.inTop = detections[13];
-        this.inBottom = detections[14];
-
-        this.inTopY = (detections[13].y - detections[0].y) * video.height;
-        this.inBottomY = (detections[14].y - detections[0].y) * video.height;
-
-        this.outTop = detections[0];
-        this.outBottom = detections[17];
-
-        this.centerX = (detections[0].x + detections[17].x) / 2 * video.width;
-        this.centerY = (detections[0].y + detections[17].y) / 2 * video.height;
-
-
-        this.img = video.get(detections[61].x * video.width, detections[0].y * video.height, detections[291].x * video.width - detections[61].x * video.width, detections[17].y * video.height - detections[0].y * video.height);
-
-        this.posX0 = 0
-        this.width0 = 0
-        this.posY0 = 0
-    }
-
-}
 
 
 async function startP5jsWebcam() {

@@ -34,7 +34,7 @@ let windowsProp
 function setup() {
 
   startP5jsWebcam()
-  pixelDensity(3)
+  //pixelDensity(1)
 
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
@@ -52,6 +52,8 @@ function draw() {
   windowsUpdate()
 
   clear()
+
+  control()
 
   keyHoldTest()
 
@@ -357,72 +359,6 @@ function ImagePreview(ratioInput) {
   }
 }
 
-function keyPressed() {
-  if (key === ';'&& !isWaiting) {
-
-    startRecording();
-    TextInput = '';
-
-    tween.forEach(t => t.kill())
-    tween[0] = gsap.to(windowsBase, {
-      duration: 1,
-      ease: "expo.inOut",
-      state: 1
-    })
-    tween[1] = gsap.to(windowsBase, {
-      duration: 0.8,
-      ease: "expo.out",
-      col1: 400,
-      padding: 10
-    })
-
-    lipsInput = [];
-    lipsInput.push(new LipsData(JSON.parse(JSON.stringify(detections)), video));
-    isRecording = true;
-
-  }
-
-
-  if (key === 'Backspace') {
-    //删除最后一个字符
-    TextInput = TextInput.slice(0, TextInput.length - 1);
-    console.log(TextInput);
-    isDeleting = true;
-    deleteTime = frameCount;
-
-  }
-}
-
-function keyReleased() {
-  if (key === ';') {
-    stopRecording();
-
-    tween.forEach(t => t.kill())
-    tween[0] = gsap.to(windowsBase, {
-      duration: 3,
-      ease: "expo.out",
-      state: 0,
-      padding: 30
-    })
-    tween[1] = gsap.to(windowsBase, {
-      duration: 1,
-      ease: "expo.out",
-      col1: 200,
-
-    })
-
-
-
-
-    isRecording = false;
-  }
-
-  if (key === 'Backspace') {
-
-    isDeleting = false;
-
-  }
-}
 
 
 
@@ -434,46 +370,10 @@ function recordDetection() {
   }
 }
 
-//监测键盘输入字符串
-function keyTyped() {
-  //转大写字母
-  key = key.toUpperCase();
-  //判断是否是字母
-  if (key >= 'A' && key <= 'Z') {
-    TextInput += key;
-    console.log(TextInput);
-  }
-  //判断是否是空格
-  if (key === ' ') {
-    TextInput += ' ';
-    console.log(TextInput);
-  }
-}
-
-
-//检测backspace键长按时常并删除字符
-function keyHoldTest() {
-  let holdTime = frameCount - deleteTime;
-  if (isDeleting && holdTime > 16) {
-    if (holdTime % 1 == 0) {
-      TextInput = TextInput.slice(0, TextInput.length - 1);
-      console.log(TextInput);
-    }
-  }
-}
 
 //调整画布大小
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-//鼠标按下时记录位置
-function mousePressed() {
 
-
-}
-
-
-function mouseReleased() {
-
-}
