@@ -2,7 +2,7 @@ let detections;
 let handDetections;
 
 let globalImage;
-let cameraIndex = 1;
+let cameraIndex = 0;
 
 let recorder;
 let chunks = [];
