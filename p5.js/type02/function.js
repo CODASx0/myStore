@@ -51,8 +51,11 @@ function uploadVideo() {
         formData.append('video', blob, 'video.webm'); // 添加Blob对象到FormData
         isWaiting = true
 
+        let URL0 = 'http://127.0.0.1:5000/upload_video'
+        let URL1 = 'http://192.168.1.21:5000/upload_video'
+
         // 使用fetch API发送POST请求到Flask后端
-        fetch('http://127.0.0.1:5000/upload_video', {
+        fetch(URL0, {
             method: 'POST',
             body: formData, // 将FormData作为请求体
         })

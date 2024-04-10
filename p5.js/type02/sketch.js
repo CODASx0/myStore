@@ -192,7 +192,7 @@ function LipsPreview(lipsInput) {
   }
 
   posX -= padding
-  posY += 240 + padding
+  posY +=  + padding
 
   if (false) {
     //时间轴
@@ -228,8 +228,8 @@ function LipsPreview(lipsInput) {
 
   }
 
-  posX += padding
-  posY += padding
+  posX += padding;
+  posY += padding + height
   drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, TextInput, 0, 1)
   drawMeshTypeAdvanceV31(posX, posY + 5, lipsInput, TextInput, 0)
 
@@ -330,7 +330,7 @@ function ImagePreview(ratioInput) {
 
 
 
-
+    
     let point = [
 
       [windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * 0.5 * ratio * sw,
@@ -361,6 +361,7 @@ function keyPressed() {
   if (key === ';'&& !isWaiting) {
 
     startRecording();
+    TextInput = '';
 
     tween.forEach(t => t.kill())
     tween[0] = gsap.to(windowsBase, {
