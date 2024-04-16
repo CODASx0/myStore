@@ -229,6 +229,11 @@ function LipsPreview(lipsInput) {
   drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, TextInput, 0, 1)
   drawMeshTypeAdvanceV31(posX, posY + 5, lipsInput, TextInput, 0)
 
+  posY += padding + height + padding
+  posX -= padding
+  fill(0)
+  textSize(12)
+  text('Output: '+TextInput, posX, posY)
 
 
 

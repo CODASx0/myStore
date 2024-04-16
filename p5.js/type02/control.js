@@ -1,9 +1,13 @@
 
-let controlInput = [0, 0, 0, 0]
+let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
+
+let error = ''
 
 let controlInputList = [];
 let outOfTime = 4;
 let isOutOfTime = false;
+
+let distanceTest = false;
 
 let lerpRatio = 0.3;
 
@@ -21,13 +25,25 @@ function control() {
 
         lastControlState = controlState;
 
+        //食指
         controlInput[0] = lerp(controlInput[0], handDetections[8].x, lerpRatio);
         controlInput[1] = lerp(controlInput[1], handDetections[8].y, lerpRatio);
+        //右嘴角
         controlInput[2] = lerp(controlInput[2], detections[57].x, lerpRatio);
         controlInput[3] = lerp(controlInput[3], detections[57].y, lerpRatio);
+        //中指
+        controlInput[4] = lerp(controlInput[4], handDetections[12].x, lerpRatio);
+        controlInput[5] = lerp(controlInput[5], handDetections[12].y, lerpRatio);
+        //左嘴角
+        controlInput[6] = lerp(controlInput[6], detections[287].x, lerpRatio);
+        controlInput[7] = lerp(controlInput[7], detections[287].y, lerpRatio);
+
 
 
         let distance = dist(controlInput[0], controlInput[1], controlInput[2], controlInput[3]) * 1000;
+        let distance2 = dist(controlInput[4], controlInput[5], controlInput[6], controlInput[7]) * 1000;
+
+        if (distance < 20) { distanceTest = true }
         //因为即使没有检测到手的坐标，也会有一个默认的坐标，所以这里需要判断一下是否超时
 
         if (controlInputList.length < outOfTime) {
@@ -46,10 +62,10 @@ function control() {
             }
         }
 
-        if (distance < 30 && !isOutOfTime) {
+        if (distanceTest && !isOutOfTime) {
 
             controlState = true;
-            console.log(true);
+
 
         } else {
             controlState = false;
@@ -97,7 +113,7 @@ function globalStart() {
     })
 
     lipsInput = [];
-    
+
     isRecording = true;
 
 }

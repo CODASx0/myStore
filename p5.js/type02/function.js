@@ -904,12 +904,12 @@ function drawMeshTypeAdvanceV31(posX, posY, recordData, words, color) {
 }
 
 function pickY(DataInput, index) {
-    if (index < 1) {
-        return DataInput.inTopY * index / 1
-    } else if (index < 6) {
-        return (DataInput.inBottomY - DataInput.inTopY) * (index - 1) / 5 + DataInput.inTopY
+    if (index < 2) {
+        return DataInput.inTopY * index / 2
+    } else if (index < 5) {
+        return (DataInput.inBottomY - DataInput.inTopY) * (index - 2) / 3 + DataInput.inTopY
     } else {
-        return (DataInput.img.height - DataInput.inBottomY) * (index - 6) / 1 + DataInput.inBottomY
+        return (DataInput.img.height - DataInput.inBottomY) * (index - 5) / 2 + DataInput.inBottomY
     }
 
 }
