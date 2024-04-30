@@ -1,5 +1,9 @@
 
-let video;
+let videoIn;
+let videoDetection;
+
+//需要实时更新的数据
+let tempInput;
 
 
 let canvas;
@@ -56,12 +60,23 @@ function draw() {
 
   clear()
 
-  control()
+  //控制方式还要修改
+  //control()
+  newControl(0, 0, windowWidth, windowHeight)
+
+
 
   //windowRectBasic(windowsProp.window2.posX, windowsProp.window2.posY, windowsProp.window2.width, windowsProp.window2.height, 6 + 40 * windowsBase.state)
-  ImagePreview(windowsBase.state)
 
+  //预览方式还要改
+  //ImagePreview(windowsBase.state)
+
+  //嘴唇预览还要改
   LipsPreview(lipsInput)
+
+  //console.log(videoIn.height / videoIn.width)
+
+
 
 
 }
@@ -83,7 +98,7 @@ function windowsUpdate() {
       height: windowHeight - windowsBase.padding * 3 - windowsBase.col1 / 4 * 3,
     },
     window3: {
-      
+
     }
 
   }
@@ -175,6 +190,7 @@ function LipsPreview(lipsInput) {
     unit = lipsInput[i].width0
 
     let unit0 = unit + 1
+
     image(lipsInput[i].img,
       posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
       posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
@@ -233,7 +249,7 @@ function LipsPreview(lipsInput) {
   posX -= padding
   fill(0)
   textSize(12)
-  text('Output: '+TextInput, posX, posY)
+  text('Output: ' + TextInput, posX, posY)
 
 
 
@@ -251,9 +267,10 @@ function ImagePreview(ratioInput) {
     windowsProp.window1.height - padding * 2 * ratioInput, 6)
 
   let ratio = (ratioInput + 2);
-  if (video && detections) {
-    //image(video,0,0,300,300)
-    let tempInput = new LipsData(JSON.parse(JSON.stringify(detections)), video);
+  if (videoIn && detections && tempInput) {
+    //image(videoIn,0,0,300,300)
+
+
     let sx = tempInput.left.x
     let sy = tempInput.outTop.y
     let sw = tempInput.right.x - tempInput.left.x
@@ -269,61 +286,61 @@ function ImagePreview(ratioInput) {
 
 
     image(
-      video,
+      videoIn,
       windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio,
       windowsProp.window1.posY + windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio,
       windowsProp.window1.width * sw * ratio,
       windowsProp.window1.height * sh * ratio,
-      sx * video.width,
-      sy * video.height,
-      sw * video.width,
-      sh * video.height
+      sx * videoIn.width,
+      sy * videoIn.height,
+      sw * videoIn.width,
+      sh * videoIn.height
     )
     /*
     image(
-      video,
+      videoIn,
       windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio,
       windowsProp.window1.posY + windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio,
       -(windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio - padding * ratioInput),
       windowsProp.window1.height * sh * ratio,
-      sx * video.width - 1,
-      sy * video.height,
+      sx * videoIn.width - 1,
+      sy * videoIn.height,
       1,
-      sh * video.height
+      sh * videoIn.height
     )
     
     image(
-      video,
+      videoIn,
       windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio + windowsProp.window1.width * sw * ratio,
       windowsProp.window1.posY + windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio,
       windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio - padding * ratioInput,
       windowsProp.window1.height * sh * ratio,
-      sx * video.width + sw * video.width,
-      sy * video.height,
+      sx * videoIn.width + sw * videoIn.width,
+      sy * videoIn.height,
       1,
-      sh * video.height
+      sh * videoIn.height
     )
     image(
-      video,
+      videoIn,
       windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio,
       windowsProp.window1.posY + windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio,
       windowsProp.window1.width * sw * ratio,
       -(windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio - padding * ratioInput),
-      sx * video.width,
-      sy * video.height-1,
-      sw * video.width,
+      sx * videoIn.width,
+      sy * videoIn.height-1,
+      sw * videoIn.width,
       1
     )
 
     image(
-      video,
+      videoIn,
       windowsProp.window1.posX + windowsProp.window1.width * 0.5 - windowsProp.window1.width * sw * 0.5 * ratio,
       windowsProp.window1.posY + windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio + windowsProp.window1.height * sh * ratio,
       windowsProp.window1.width * sw * ratio,
       windowsProp.window1.height * 0.5 - windowsProp.window1.height * sh * 0.5 * ratio - padding * ratioInput,
-      sx * video.width,
-      sy * video.height + sh * video.height,
-      sw * video.width,
+      sx * videoIn.width,
+      sy * videoIn.height + sh * videoIn.height,
+      sw * videoIn.width,
       1
     )
     */
@@ -365,7 +382,7 @@ function ImagePreview(ratioInput) {
 
 function recordDetection() {
   if (isRecording) {
-    lipsInput.push(new LipsData(JSON.parse(JSON.stringify(detections)), video));
+    lipsInput.push(new LipsData(JSON.parse(JSON.stringify(detections)), videoIn));
     gsap.to(lipsInput[lipsInput.length - 1], {
       duration: 2.5,
       scaleY: 1,

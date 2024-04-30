@@ -61,16 +61,21 @@ function startWebcam() {
                 }
             });
             // 选择第二个摄像头
+            
             var constraints = {
                 video: {
                     deviceId: { exact: videoDevices[cameraIndex] },
-                    frameRate: { ideal: 60 },
+                    frameRate: 60 ,
+                    width: cameraWidth,
+                    height: cameraHeight
                 }
             };
 
             // 启动摄像头
 
             navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                //videoDetection = stream;
+                
                 video.srcObject = stream;
                 video.addEventListener("loadeddata", predictWebcam);
 
@@ -107,6 +112,7 @@ const drawingUtils = new DrawingUtils(canvasCtx);
 
 async function predictWebcam() {
     const radio = video.videoHeight / video.videoWidth;
+    
     video.style.width = videoWidth + "px";
     video.style.height = videoWidth * radio + "px";
     canvasElement.style.width = videoWidth + "px";
@@ -117,6 +123,7 @@ async function predictWebcam() {
 
 
     let startTimeMs = performance.now();
+
     if (lastVideoTime !== video.currentTime) {
         lastVideoTime = video.currentTime;
         results = await faceLandmarker.detectForVideo(video, startTimeMs);

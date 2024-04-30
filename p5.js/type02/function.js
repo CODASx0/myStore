@@ -1,8 +1,11 @@
 let detections;
 let handDetections;
 
+let tempFaceDetection;
+let tempHandDetection;
+
 let globalImage;
-let cameraIndex = 0;
+
 
 let recorder;
 let chunks = [];
@@ -29,6 +32,22 @@ function globalUpdate() {
     if (detections != undefined) {
         recordDetection()
     }
+
+    //VideoIn保活，不知道是什么bug，先这么写着了
+    
+    if (videoIn && detections) {
+        tempInput = new LipsData(JSON.parse(JSON.stringify(detections)), videoIn);
+    }
+
+    if (handDetections != undefined) {
+        tempHandDetection = JSON.parse(JSON.stringify(handDetections));
+    }
+
+    if (detections != undefined) {
+        tempFaceDetection = JSON.parse(JSON.stringify(detections));
+    }
+
+    
 }
 
 let LipsAnimation = [];
@@ -115,7 +134,7 @@ function uploadVideo() {
         isWaiting = true
 
         let URL0 = 'http://127.0.0.1:5000/upload_video'
-        let URL1 = 'http://192.168.1.21:5000/upload_video'
+        
 
         // 使用fetch API发送POST请求到Flask后端
         fetch(URL0, {
@@ -920,15 +939,23 @@ async function startP5jsWebcam() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
+    videoDevices.forEach((device, index) => {
+        console.log(`videoinput: ${device.label}, id = ${device.deviceId} ---VideoInTest---`);
+    });
+
     // 选择第二个视频输入设备
     const constraints = {
         video: {
-            deviceId: videoDevices[cameraIndex].deviceId
+            deviceId: videoDevices[cameraIndex].deviceId,
+            frameRate: 60,
+            width: cameraWidth,
+            height: cameraHeight
         }
     };
 
-    video = createCapture(constraints);
-    video.hide();
+    videoIn = createCapture(constraints);
+    //console.log(videoIn.width)
+    videoIn.hide();
 }
 
 

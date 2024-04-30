@@ -1,5 +1,5 @@
 body {
-    background-color: #ebebeb;
+    background-color: #000000;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -36,9 +36,11 @@ video {
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
     -moz-transform: rotateY(180deg);
-    z-index: 1;
+
+    z-index: 2;
 
     border: 0px #ffffff solid;
     border-radius: 0px;
     opacity: 0;
+
 }
