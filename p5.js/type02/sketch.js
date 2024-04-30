@@ -35,6 +35,12 @@ let windowsBase = {
 
 let windowsProp
 
+function preload() {
+  icon = {
+    arrow: loadImage('assets/icon/arrow.png'),
+  }
+}
+
 function setup() {
 
   startP5jsWebcam()

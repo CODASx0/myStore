@@ -5,6 +5,9 @@ let cameraIndex = 0;
 let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
 
+let icon;
+
+
 
 
 
@@ -98,61 +101,77 @@ function control() {
     }
 }
 
+const positionProps = {
+    origin: 1,
+    half: 0.5,
+    target: 0,
+}
+
 const indicatorStyle = {
     notActive: {
         radius: 100,
         fill: 'rgba(255, 255, 255, 0)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0
+        strokeWeight: 0,
+        positionRatio: positionProps.origin
+
     },
 
     lipNotActive: {
         radius: 200,
         fill: 'rgba(255, 255, 255, 0)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0
+        strokeWeight: 0,
+        positionRatio: positionProps.origin
     },
 
     active: {
         radius: 40,
-        fill: 'rgba(255, 255, 255, 0.1)',
-        stroke: 'rgba(255, 255, 255, 0.7)',
-        strokeWeight: 10
+        fill: 'rgba(255, 255, 255, 0.8)',
+        stroke: 'rgba(255, 255, 255, 0)',
+        strokeWeight: 0,
+        positionRatio: positionProps.origin
+
     },
 
     lipActive: {
         radius: 30,
         fill: 'rgba(255, 255, 255, 0.6)',
         stroke: 'rgba(255, 255, 255, 0.1)',
-        strokeWeight: 20
+        strokeWeight: 20,
+        positionRatio: positionProps.origin
     },
 
     ready: {
         radius: 20,
         fill: 'rgba(255, 255, 0, 1)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0
+        strokeWeight: 0,
+        positionRatio: positionProps.half
     },
 
     lipReady: {
         radius: 30,
         fill: 'rgba(255, 255, 255, 0.4)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 10
+        strokeWeight: 10,
+        positionRatio: positionProps.origin
     },
 
     recording: {
         radius: 20,
         fill: 'rgba(0, 255, 0, 0.8)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 4
+        strokeWeight: 0,
+        positionRatio: positionProps.target
     },
 
     lipRecording: {
         radius: 40,
-        fill: 'rgba(255, 255, 255, 0.4)',
+        fill: 'rgba(255, 255, 255, 0.9)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0
+        strokeWeight: 0,
+        positionRatio: positionProps.origin
     },
 
 
@@ -160,14 +179,16 @@ const indicatorStyle = {
         radius: 30,
         fill: 'rgba(255, 0,0, 0.6)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 10
+        strokeWeight: 10,
+        positionRatio: positionProps.origin
     },
 
     lipWaiting: {
         radius: 50,
         fill: 'rgba(255, 100, 100, 0.2)',
         stroke: 'rgba(255, 0, 0, 0)',
-        strokeWeight: 0
+        strokeWeight: 0,
+        positionRatio: positionProps.origin
     }
 
 }
@@ -240,7 +261,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.active.radius,
                 stroke: indicatorStyle.active.stroke,
                 fill: indicatorStyle.active.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.active.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -252,7 +273,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.notActive.radius,
                 stroke: indicatorStyle.notActive.stroke,
                 fill: indicatorStyle.notActive.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.notActive.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -264,7 +285,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.ready.radius,
                 stroke: indicatorStyle.ready.stroke,
                 fill: indicatorStyle.ready.fill,
-                postionRatio: 0.5,
+                postionRatio: indicatorStyle.ready.positionRatio,
                 ease: "expo.out"
             })
 
@@ -277,7 +298,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.recording.radius,
                 stroke: indicatorStyle.recording.stroke,
                 fill: indicatorStyle.recording.fill,
-                postionRatio: 0,
+                postionRatio: indicatorStyle.recording.positionRatio,
                 ease: "expo.out"
             })
 
@@ -291,7 +312,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.recording.radius,
                 stroke: indicatorStyle.recording.stroke,
                 fill: indicatorStyle.recording.fill,
-                postionRatio: 0.5,
+                postionRatio: indicatorStyle.recording.positionRatio,
                 ease: "expo.out"
             })
 
@@ -305,7 +326,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.waiting.radius,
                 stroke: indicatorStyle.waiting.stroke,
                 fill: indicatorStyle.waiting.fill,
-                postionRatio: 0.1,
+                postionRatio: indicatorStyle.waiting.positionRatio,
                 ease: "expo.out"
             })
 
@@ -323,7 +344,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.lipActive.radius,
                 stroke: indicatorStyle.lipActive.stroke,
                 fill: indicatorStyle.lipActive.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.lipActive.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -335,7 +356,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.lipNotActive.radius,
                 stroke: indicatorStyle.lipNotActive.stroke,
                 fill: indicatorStyle.lipNotActive.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.lipNotActive.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -347,7 +368,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.lipReady.radius,
                 stroke: indicatorStyle.lipReady.stroke,
                 fill: indicatorStyle.lipReady.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.lipReady.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -359,7 +380,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.lipRecording.radius,
                 stroke: indicatorStyle.lipRecording.stroke,
                 fill: indicatorStyle.lipRecording.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.lipRecording.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -372,7 +393,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.lipRecording.radius,
                 stroke: indicatorStyle.lipRecording.stroke,
                 fill: indicatorStyle.lipRecording.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.lipRecording.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -385,7 +406,7 @@ function indicatorUpdater() {
                 radius: indicatorStyle.lipWaiting.radius,
                 stroke: indicatorStyle.lipWaiting.stroke,
                 fill: indicatorStyle.lipWaiting.fill,
-                postionRatio: 1,
+                postionRatio: indicatorStyle.lipWaiting.positionRatio,
                 ease: "expo.out"
             })
         }
@@ -394,7 +415,7 @@ function indicatorUpdater() {
 }
 
 class indicator {
-    constructor() {
+    constructor(type) {
         this.x = 0
         this.y = 0
 
@@ -412,6 +433,8 @@ class indicator {
         this.stroke = 'rgba(255, 255, 255, 0.1)'
         this.strokeWeight = 2
 
+        this.type = type
+
 
 
         this.state = 'notActive'
@@ -424,6 +447,10 @@ class indicator {
         this.timeoutThreshold = 5
 
         this.inputList = []
+
+        this.imageWidth = 0
+        this.imageRotation = 0
+        this.imageTint = 255
 
 
     }
@@ -438,6 +465,11 @@ class indicator {
 
         this.xNow = this.x * this.postionRatio + this.x2 * (1 - this.postionRatio)
         this.yNow = this.y * this.postionRatio + this.y2 * (1 - this.postionRatio)
+
+        this.imageRotation = atan2(this.y - this.y2, this.x - this.x2)
+
+        //暂时用半径代替宽度
+        this.imageWidth = this.radius - 10
     }
 
     activeTest(Detection, windowRatio, videoRatio) {
@@ -483,14 +515,31 @@ class indicator {
         stroke(color(this.stroke))
         strokeWeight(this.strokeWeight)
         ellipse(this.xNow, this.yNow, this.radius, this.radius)
+
+        if (this.type == 'hand') {
+            push()
+            translate(this.xNow, this.yNow)
+            rotate(this.imageRotation)
+
+            tint(0, 255)
+            image(icon.arrow, -this.imageWidth / 2, -this.imageWidth / 2, this.imageWidth, this.imageWidth)
+            noTint()
+
+            pop()
+        }
+
+
+
+
+
     }
 
 }
 
 
 
-let lipIndicator = new indicator();
-let handIndicator = new indicator();
+let lipIndicator = new indicator('lip');
+let handIndicator = new indicator('hand');
 
 let tl = gsap.timeline();
 let lipTl = gsap.timeline();
