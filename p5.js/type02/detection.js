@@ -130,7 +130,6 @@ async function predictWebcam() {
         
         resultsHand = await handLandmarker.detectForVideo(video, startTimeMs);
         
-        
     }
 
     if (results.faceLandmarks) {

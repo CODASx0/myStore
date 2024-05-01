@@ -1,11 +1,12 @@
 
 
 let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
-let cameraIndex = 0;
+let cameraIndex =0;
 let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
 
 let icon;
+let sound;
 
 
 
@@ -17,7 +18,7 @@ let isOutOfTime = false;
 
 let distanceTest = false;
 
-let lerpRatio = 0.4;
+let lerpRatio = 0.3;
 
 let controlState = false;
 let lastControlState = false;
@@ -26,6 +27,7 @@ let controlDelayStart = 0;
 let leastDelay = 20;
 let isDelay = false;
 
+/*
 function control() {
     if (handDetections != undefined && detections != undefined) {
 
@@ -100,11 +102,12 @@ function control() {
 
     }
 }
+*/
 
 const positionProps = {
     origin: 1,
-    half: 0.5,
-    target: 0,
+    half: 0.4,
+    target: 0.1,
 }
 
 const indicatorStyle = {
@@ -166,6 +169,14 @@ const indicatorStyle = {
         positionRatio: positionProps.target
     },
 
+    steady: {
+        radius: 20,
+        fill: 'rgba(0, 255, 0, 0.8)',
+        stroke: 'rgba(255, 255, 255, 1)',
+        strokeWeight: 0,
+        positionRatio: positionProps.half
+    },
+
     lipRecording: {
         radius: 40,
         fill: 'rgba(255, 255, 255, 0.9)',
@@ -177,9 +188,9 @@ const indicatorStyle = {
 
     waiting: {
         radius: 30,
-        fill: 'rgba(255, 0,0, 0.6)',
+        fill: 'rgba(255, 20,20, 0.6)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 10,
+        strokeWeight: 4,
         positionRatio: positionProps.origin
     },
 
@@ -256,64 +267,81 @@ function indicatorUpdater() {
             tl.clear()
 
             tl.to(handIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.active.strokeWeight,
                 radius: indicatorStyle.active.radius,
                 stroke: indicatorStyle.active.stroke,
                 fill: indicatorStyle.active.fill,
                 postionRatio: indicatorStyle.active.positionRatio,
-                ease: "expo.out"
+                rotationDelta: 0,
+
             })
+
+            if(handIndicator.lastState == 'ready'){
+                sound.leave.play()
+            }
+
         }
         if (handIndicator.state == 'notActive') {
             tl.clear()
             tl.to(handIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.notActive.strokeWeight,
                 radius: indicatorStyle.notActive.radius,
                 stroke: indicatorStyle.notActive.stroke,
                 fill: indicatorStyle.notActive.fill,
                 postionRatio: indicatorStyle.notActive.positionRatio,
-                ease: "expo.out"
+                rotationDelta: 0,
+
             })
         }
         if (handIndicator.state == 'ready') {
             tl.clear()
             tl.to(handIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.ready.strokeWeight,
                 radius: indicatorStyle.ready.radius,
                 stroke: indicatorStyle.ready.stroke,
                 fill: indicatorStyle.ready.fill,
                 postionRatio: indicatorStyle.ready.positionRatio,
-                ease: "expo.out"
+                rotationDelta: 0,
+
             })
+
+            if (handIndicator.lastState == 'active') {
+                sound.enter.play()
+            }
 
         }
         if (handIndicator.state == 'recording') {
             tl.clear()
             tl.to(handIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.recording.strokeWeight,
                 radius: indicatorStyle.recording.radius,
                 stroke: indicatorStyle.recording.stroke,
                 fill: indicatorStyle.recording.fill,
                 postionRatio: indicatorStyle.recording.positionRatio,
-                ease: "expo.out"
-            })
+                rotationDelta: PI,
 
+            })
+            if (handIndicator.lastState != 'steady') {
+                sound.start.play()
+            }
+            
         }
 
         if (handIndicator.state == 'steady') {
             tl.clear()
             tl.to(handIndicator, {
-                duration: 0.5,
-                strokeWeight: indicatorStyle.recording.strokeWeight,
-                radius: indicatorStyle.recording.radius,
-                stroke: indicatorStyle.recording.stroke,
-                fill: indicatorStyle.recording.fill,
-                postionRatio: indicatorStyle.recording.positionRatio,
-                ease: "expo.out"
+
+                strokeWeight: indicatorStyle.steady.strokeWeight,
+                radius: indicatorStyle.steady.radius,
+                stroke: indicatorStyle.steady.stroke,
+                fill: indicatorStyle.steady.fill,
+                postionRatio: indicatorStyle.steady.positionRatio,
+                rotationDelta: PI,
+
             })
 
         }
@@ -321,14 +349,21 @@ function indicatorUpdater() {
         if (handIndicator.state == 'waiting') {
             tl.clear()
             tl.to(handIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.waiting.strokeWeight,
                 radius: indicatorStyle.waiting.radius,
                 stroke: indicatorStyle.waiting.stroke,
                 fill: indicatorStyle.waiting.fill,
                 postionRatio: indicatorStyle.waiting.positionRatio,
-                ease: "expo.out"
+                rotationDelta: PI,
+
             })
+
+            if (handIndicator.lastActive != false) {
+                sound.end.play()
+
+            }
+
 
         }
     }
@@ -339,75 +374,75 @@ function indicatorUpdater() {
         if (lipIndicator.state == 'active') {
             lipTl.clear()
             lipTl.to(lipIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.lipActive.strokeWeight,
                 radius: indicatorStyle.lipActive.radius,
                 stroke: indicatorStyle.lipActive.stroke,
                 fill: indicatorStyle.lipActive.fill,
                 postionRatio: indicatorStyle.lipActive.positionRatio,
-                ease: "expo.out"
+
             })
         }
         if (lipIndicator.state == 'notActive') {
             lipTl.clear()
             lipTl.to(lipIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.lipNotActive.strokeWeight,
                 radius: indicatorStyle.lipNotActive.radius,
                 stroke: indicatorStyle.lipNotActive.stroke,
                 fill: indicatorStyle.lipNotActive.fill,
                 postionRatio: indicatorStyle.lipNotActive.positionRatio,
-                ease: "expo.out"
+
             })
         }
         if (lipIndicator.state == 'ready') {
             lipTl.clear()
             lipTl.to(lipIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.lipReady.strokeWeight,
                 radius: indicatorStyle.lipReady.radius,
                 stroke: indicatorStyle.lipReady.stroke,
                 fill: indicatorStyle.lipReady.fill,
                 postionRatio: indicatorStyle.lipReady.positionRatio,
-                ease: "expo.out"
+                ease: "back.out(1.7)"
             })
         }
         if (lipIndicator.state == 'recording') {
             lipTl.clear()
             lipTl.to(lipIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.lipRecording.strokeWeight,
                 radius: indicatorStyle.lipRecording.radius,
                 stroke: indicatorStyle.lipRecording.stroke,
                 fill: indicatorStyle.lipRecording.fill,
                 postionRatio: indicatorStyle.lipRecording.positionRatio,
-                ease: "expo.out"
+
             })
         }
 
         if (lipIndicator.state == 'steady') {
             lipTl.clear()
             lipTl.to(lipIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.lipRecording.strokeWeight,
                 radius: indicatorStyle.lipRecording.radius,
                 stroke: indicatorStyle.lipRecording.stroke,
                 fill: indicatorStyle.lipRecording.fill,
                 postionRatio: indicatorStyle.lipRecording.positionRatio,
-                ease: "expo.out"
+
             })
         }
 
         if (lipIndicator.state == 'waiting') {
             lipTl.clear()
             lipTl.to(lipIndicator, {
-                duration: 0.5,
+
                 strokeWeight: indicatorStyle.lipWaiting.strokeWeight,
                 radius: indicatorStyle.lipWaiting.radius,
                 stroke: indicatorStyle.lipWaiting.stroke,
                 fill: indicatorStyle.lipWaiting.fill,
                 postionRatio: indicatorStyle.lipWaiting.positionRatio,
-                ease: "expo.out"
+
             })
         }
     }
@@ -444,13 +479,15 @@ class indicator {
 
 
         //判断输入是否超时
-        this.timeoutThreshold = 5
+        this.timeoutThreshold = 6
 
         this.inputList = []
 
         this.imageWidth = 0
         this.imageRotation = 0
         this.imageTint = 255
+
+        this.rotationDelta = 0
 
 
     }
@@ -466,10 +503,10 @@ class indicator {
         this.xNow = this.x * this.postionRatio + this.x2 * (1 - this.postionRatio)
         this.yNow = this.y * this.postionRatio + this.y2 * (1 - this.postionRatio)
 
-        this.imageRotation = atan2(this.y - this.y2, this.x - this.x2)
+        this.imageRotation = atan2(this.y - this.y2, this.x - this.x2) + this.rotationDelta
 
         //暂时用半径代替宽度
-        this.imageWidth = this.radius - 10
+        this.imageWidth = this.radius - 4
     }
 
     activeTest(Detection, windowRatio, videoRatio) {
@@ -541,8 +578,8 @@ class indicator {
 let lipIndicator = new indicator('lip');
 let handIndicator = new indicator('hand');
 
-let tl = gsap.timeline();
-let lipTl = gsap.timeline();
+let tl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
+let lipTl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
 
 
@@ -573,6 +610,8 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         )
         scale(-1, 1)
         image(videoIn, 0, 0, imageWidth, imageHeight);
+        fill(180)
+        //rect(0, 0, imageWidth, imageHeight)
         pop()
 
         //控制点预览

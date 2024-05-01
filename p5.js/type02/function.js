@@ -11,13 +11,15 @@ let recorder;
 let chunks = [];
 
 let isWaiting = false;
+let lastIsWaiting = false;
+
 let isWaitingAnimating = false;
 
 
 
 //更新一些全局的数据
 function globalUpdate() {
-
+    
 
     keyHoldTest()
 
@@ -51,6 +53,8 @@ function globalUpdate() {
 }
 
 let LipsAnimation = [];
+
+
 function LipsLoadingAnimation() {
     if (isWaiting && !isWaitingAnimating && !recording) {
         isWaitingAnimating = true;
@@ -134,7 +138,7 @@ function uploadVideo() {
         isWaiting = true
 
         let URL0 = 'http://127.0.0.1:5000/upload_video'
-        
+        let URL1 = 'http://192.168.1.10:5000/upload_video'
 
         // 使用fetch API发送POST请求到Flask后端
         fetch(URL0, {
@@ -147,10 +151,12 @@ function uploadVideo() {
                 console.log(data);
                 TextInput = data
                 isWaiting = false;
+                
             })
             .catch((error) => {
                 console.error('Error:', error);
                 isWaiting = false;
+                
             });
     }
 

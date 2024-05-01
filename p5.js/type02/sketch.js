@@ -33,11 +33,23 @@ let windowsBase = {
   state: 0
 }
 
+let windows
+
 let windowsProp
 
 function preload() {
   icon = {
     arrow: loadImage('assets/icon/arrow.png'),
+  }
+  soundFormats('wav');
+  sound = {
+    start: loadSound('assets/sound/Cm.wav'),
+    end: loadSound('assets/sound/C.wav'),
+    sucess: loadSound('assets/sound/Cm2.wav'),
+    error: loadSound('assets/sound/Em.wav'),
+
+    enter: loadSound('assets/sound/natural-tap-2.wav'),
+    leave: loadSound('assets/sound/natural-tap-1.wav'),
   }
 }
 
@@ -51,7 +63,7 @@ function setup() {
   font = loadFont('assets/IBMPlexMono-Light.ttf');
   textFont(font);
 
-  frameRate(60)
+  frameRate(120)
 
   smoothX = mouseX;
   smoothY = mouseY;
@@ -59,6 +71,9 @@ function setup() {
 }
 
 function draw() {
+  
+
+  
 
   globalUpdate()
 
@@ -84,9 +99,22 @@ function draw() {
 
 
 
-
+  waitingTest()
+  
 }
 
+
+function waitingTest() {
+  
+  if (lastIsWaiting != isWaiting) { 
+    if(TextInput == ''){
+      sound.error.play()
+    }else{
+      sound.sucess.play()
+    }
+  }
+  lastIsWaiting = isWaiting
+}
 
 
 function windowsUpdate() {
@@ -115,7 +143,11 @@ function LipsPreview(lipsInput) {
   let posX = windowsProp.window2.posX + windowsBase.state * 40
   let posX0 = 0
   let unit = 0
-  let posY = windowsProp.window2.posY + windowsBase.state * 40
+
+  //暂时修改 let posY = windowsProp.window2.posY + windowsBase.state * 40
+  let posY = windowsBase.state * 40 + 20
+
+
   let posY0 = 0
   let widthMin
   let ratio = 0.1
@@ -153,7 +185,7 @@ function LipsPreview(lipsInput) {
 
 
 
-  if (true) {
+  if (false) {
     //时间轴
     let textColor = 100
     let length = 6
@@ -248,11 +280,16 @@ function LipsPreview(lipsInput) {
 
   posX += padding;
   posY += padding + height
+
+  /*
   drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, TextInput, 0, 1)
   drawMeshTypeAdvanceV31(posX, posY + 5, lipsInput, TextInput, 0)
 
   posY += padding + height + padding
   posX -= padding
+
+  */
+  
   fill(0)
   textSize(12)
   text('Output: ' + TextInput, posX, posY)
