@@ -1,4 +1,5 @@
 
+
 let videoIn;
 let videoDetection;
 
@@ -26,16 +27,32 @@ let isDeleting = false;
 let deleteTime = 0;
 
 
-//窗口基准值
+//窗口基准值（旧版）
 let windowsBase = {
   padding: 30,
   col1: 200,
   state: 0
 }
 
-let windows
 
+
+//旧版（暂未弃用）
 let windowsProp
+
+//--------------------------------
+
+//新版窗口属性
+let newWindowsProp = {
+  w1: {
+    posX: 0,
+    posY: 0,
+    width: 1000,
+    height: 20,
+    heightReady: 20,
+  },
+}
+
+//--------------------------------
 
 function preload() {
   icon = {
@@ -63,7 +80,7 @@ function setup() {
   font = loadFont('assets/IBMPlexMono-Light.ttf');
   textFont(font);
 
-  frameRate(120)
+  frameRate(60)
 
   smoothX = mouseX;
   smoothY = mouseY;
@@ -71,9 +88,9 @@ function setup() {
 }
 
 function draw() {
-  
 
-  
+
+
 
   globalUpdate()
 
@@ -83,7 +100,7 @@ function draw() {
 
   //控制方式还要修改
   //control()
-  newControl(0, 0, windowWidth, windowHeight)
+  newControl(0, newWindowsProp.w1.height, windowWidth, windowHeight - newWindowsProp.w1.height)
 
 
 
@@ -100,16 +117,16 @@ function draw() {
 
 
   waitingTest()
-  
+
 }
 
 
 function waitingTest() {
-  
-  if (lastIsWaiting != isWaiting) { 
-    if(TextInput == ''){
+
+  if (lastIsWaiting != isWaiting) {
+    if (TextInput == '') {
       sound.error.play()
-    }else{
+    } else {
       sound.sucess.play()
     }
   }
@@ -118,6 +135,8 @@ function waitingTest() {
 
 
 function windowsUpdate() {
+
+
   windowsProp = {
     window1: {
       posX: windowsBase.padding,
@@ -131,21 +150,28 @@ function windowsUpdate() {
       width: windowWidth - windowsBase.padding * 2,
       height: windowHeight - windowsBase.padding * 3 - windowsBase.col1 / 4 * 3,
     },
-    window3: {
-
-    }
 
   }
+
+  newWindowsProp.w1.width = windowWidth
+
+  gsap.to(newWindowsProp.w1, {
+    duration: 0.5,
+    height: newWindowsProp.w1.heightReady,
+
+  })
+
+
 }
 
 function LipsPreview(lipsInput) {
   let step = 1
-  let posX = windowsProp.window2.posX + windowsBase.state * 40
+  let posX = 20
   let posX0 = 0
   let unit = 0
 
   //暂时修改 let posY = windowsProp.window2.posY + windowsBase.state * 40
-  let posY = windowsBase.state * 40 + 20
+  let posY = 20
 
 
   let posY0 = 0
@@ -155,6 +181,11 @@ function LipsPreview(lipsInput) {
   let width = 0
 
   let padding = 20
+
+
+  fill(255)
+  noStroke()
+  rect(newWindowsProp.w1.posX, newWindowsProp.w1.posY, newWindowsProp.w1.width, newWindowsProp.w1.height)
 
 
   //先遍历一遍找到最小的宽度，以及最上的坐标并进行修正，以及总体的宽度----非常重要----
@@ -176,7 +207,7 @@ function LipsPreview(lipsInput) {
       lipsInput[i].posX0 = width
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
 
-        height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
+      height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
       unit = 4 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
@@ -223,17 +254,22 @@ function LipsPreview(lipsInput) {
   posX += padding
   posY += padding
 
-
   for (let i = 0; i < lipsInput.length; i += step) {
     unit = lipsInput[i].width0
 
     let unit0 = unit + 1
 
     image(lipsInput[i].img,
-      posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
+
+      //旧版：posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
+      //新版：
+      posX + lipsInput[i].posX0,
+      
       posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
       unit0 * lipsInput[i].scaleX,
       lipsInput[i].img.height * lipsInput[i].scaleY,
+
+      
       lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
       0,
       unit * lipsInput[i].scaleX,
@@ -241,44 +277,7 @@ function LipsPreview(lipsInput) {
 
   }
 
-  posX -= padding
-  posY += + padding
-
-  if (false) {
-    //时间轴
-    let length = 4
-    stroke(200)
-    strokeWeight(2)
-    line(posX, posY, posX + width + padding * 2, posY)
-
-
-    for (let i = 0; i < lipsInput.length; i += step) {
-      unit = lipsInput[i].width0
-      posX0 = lipsInput[i].posX0
-      if (i % (30 / step) == 0) {
-        stroke(160)
-        line(posX + posX0 + padding, posY, posX + posX0 + padding, posY + length)
-        line(posX + posX0 + padding - length, posY, posX + posX0 + padding + length, posY)
-        textSize(12)
-        fill(200)
-        noStroke()
-        text(i / 60 + 's', posX + posX0 + padding + 4, posY + 16)
-      }
-    }
-
-    stroke(160)
-    line(posX + padding + width, posY, posX + padding + width, posY + length)
-    line(posX + padding + width - length, posY, posX + padding + width + length, posY)
-
-    textSize(12)
-    fill(200)
-    noStroke()
-    let timeNow = (lipsInput.length / 60).toFixed(1)
-    text(timeNow + 's', posX + posX0 + padding + 4, posY + 16)
-
-  }
-
-  posX += padding;
+  
   posY += padding + height
 
   /*
@@ -289,11 +288,12 @@ function LipsPreview(lipsInput) {
   posX -= padding
 
   */
-  
+
   fill(0)
   textSize(12)
   text('Output: ' + TextInput, posX, posY)
 
+  newWindowsProp.w1.heightReady = posY + 40
 
 
 }

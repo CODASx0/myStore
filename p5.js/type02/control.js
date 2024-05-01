@@ -1,108 +1,19 @@
 
 
 let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
-let cameraIndex =0;
+let cameraIndex = 0;
 let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
+
 
 let icon;
 let sound;
 
-
-
-
-
-let controlInputList = [];
-let outOfTime = 4;
-let isOutOfTime = false;
-
-let distanceTest = false;
-
 let lerpRatio = 0.3;
+let timeoutThreshold = 6
 
-let controlState = false;
-let lastControlState = false;
+let timeLimit = 3;
 
-let controlDelayStart = 0;
-let leastDelay = 20;
-let isDelay = false;
-
-/*
-function control() {
-    if (handDetections != undefined && detections != undefined) {
-
-        lastControlState = controlState;
-
-        //食指
-        controlInput[0] = lerp(controlInput[0], handDetections[8].x, lerpRatio);
-        controlInput[1] = lerp(controlInput[1], handDetections[8].y, lerpRatio);
-        //右嘴角
-        controlInput[2] = lerp(controlInput[2], detections[57].x, lerpRatio);
-        controlInput[3] = lerp(controlInput[3], detections[57].y, lerpRatio);
-        //中指
-        controlInput[4] = lerp(controlInput[4], handDetections[12].x, lerpRatio);
-        controlInput[5] = lerp(controlInput[5], handDetections[12].y, lerpRatio);
-        //左嘴角
-        controlInput[6] = lerp(controlInput[6], detections[287].x, lerpRatio);
-        controlInput[7] = lerp(controlInput[7], detections[287].y, lerpRatio);
-
-
-
-        let distance = dist(controlInput[0], controlInput[1], controlInput[2], controlInput[3]) * 1000;
-        let distance2 = dist(controlInput[4], controlInput[5], controlInput[6], controlInput[7]) * 1000;
-
-        if (distance < 20) { distanceTest = true }
-        //因为即使没有检测到手的坐标，也会有一个默认的坐标，所以这里需要判断一下是否超时
-
-        if (controlInputList.length < outOfTime) {
-            controlInputList.push([handDetections[8].x, handDetections[8].y]);
-        } else {
-            controlInputList.shift();
-            controlInputList.push([handDetections[8].x, handDetections[8].y]);
-        }
-
-        for (let i = 0; i < controlInputList.length - 1; i++) {
-            isOutOfTime = true;
-            //如果列表里面的坐标都是一样的，那么就说明超时了
-            if (controlInputList[i][0] != controlInputList[i + 1][0] && controlInputList[i][1] != controlInputList[i + 1][1]) {
-                isOutOfTime = false;
-                break;
-            }
-        }
-
-        if (distanceTest && !isOutOfTime) {
-
-            controlState = true;
-
-
-        } else {
-            controlState = false;
-        }
-
-        //当controlState变成true时的一瞬间，开始录制
-        if (controlState && !lastControlState && !isWaiting) {
-            controlDelayStart = frameCount;
-            globalStart();
-        }
-
-        //当controlState变成false时的一瞬间，结束录制
-        if (!controlState && lastControlState && !isWaiting) {
-            if (frameCount - controlDelayStart > leastDelay) {
-                globalEnd();
-            } else {
-                isDelay = true;
-            }
-
-        }
-        if (isDelay && frameCount - controlDelayStart > leastDelay) {
-            isDelay = false;
-            globalEnd();
-        }
-
-
-    }
-}
-*/
 
 const positionProps = {
     origin: 1,
@@ -178,26 +89,27 @@ const indicatorStyle = {
     },
 
     lipRecording: {
-        radius: 40,
-        fill: 'rgba(255, 255, 255, 0.9)',
-        stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0,
-        positionRatio: positionProps.origin
+        radius: 60,
+        fill: 'rgba(255, 255, 255, 0.1)',
+        stroke: 'rgba(255, 255, 255, 0.9)',
+        strokeWeight: 10,
+        positionRatio: positionProps.origin,
+        ease: "back.out(4)"
     },
 
 
     waiting: {
         radius: 30,
         fill: 'rgba(255, 20,20, 0.6)',
-        stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 4,
+        stroke: 'rgba(255, 255, 255, 0)',
+        strokeWeight: 0,
         positionRatio: positionProps.origin
     },
 
     lipWaiting: {
         radius: 50,
-        fill: 'rgba(255, 100, 100, 0.2)',
-        stroke: 'rgba(255, 0, 0, 0)',
+        fill: 'rgba(255, 0, 0, 0.4)',
+        stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 0,
         positionRatio: positionProps.origin
     }
@@ -215,12 +127,12 @@ function indicatorUpdater() {
             handIndicator.state = 'waiting'
             lipIndicator.state = 'waiting'
         }
-        else if (distance < 40) {
+        else if (distance < 40 && handIndicator.timeLeft > 0) {
             handIndicator.state = 'recording'
             lipIndicator.state = 'recording'
 
         }
-        else if (distance < 100 && isRecording) {
+        else if (distance < 100 && isRecording && handIndicator.timeLeft > 0) {
             handIndicator.state = 'steady'
             lipIndicator.state = 'steady'
         }
@@ -274,10 +186,12 @@ function indicatorUpdater() {
                 fill: indicatorStyle.active.fill,
                 postionRatio: indicatorStyle.active.positionRatio,
                 rotationDelta: 0,
+                
+                timeLeft: timeLimit
 
             })
 
-            if(handIndicator.lastState == 'ready'){
+            if (handIndicator.lastState == 'ready') {
                 sound.leave.play()
             }
 
@@ -306,6 +220,8 @@ function indicatorUpdater() {
                 postionRatio: indicatorStyle.ready.positionRatio,
                 rotationDelta: 0,
 
+                
+
             })
 
             if (handIndicator.lastState == 'active') {
@@ -328,7 +244,7 @@ function indicatorUpdater() {
             if (handIndicator.lastState != 'steady') {
                 sound.start.play()
             }
-            
+
         }
 
         if (handIndicator.state == 'steady') {
@@ -357,12 +273,16 @@ function indicatorUpdater() {
                 postionRatio: indicatorStyle.waiting.positionRatio,
                 rotationDelta: PI,
 
+                timeLeft: 0
+                
             })
 
             if (handIndicator.lastActive != false) {
                 sound.end.play()
 
             }
+
+
 
 
         }
@@ -381,6 +301,7 @@ function indicatorUpdater() {
                 fill: indicatorStyle.lipActive.fill,
                 postionRatio: indicatorStyle.lipActive.positionRatio,
 
+                timeLeft: timeLimit
             })
         }
         if (lipIndicator.state == 'notActive') {
@@ -404,7 +325,9 @@ function indicatorUpdater() {
                 stroke: indicatorStyle.lipReady.stroke,
                 fill: indicatorStyle.lipReady.fill,
                 postionRatio: indicatorStyle.lipReady.positionRatio,
-                ease: "back.out(1.7)"
+                ease: "elastic.out(1.2, 0.75)",
+
+                
             })
         }
         if (lipIndicator.state == 'recording') {
@@ -443,6 +366,8 @@ function indicatorUpdater() {
                 fill: indicatorStyle.lipWaiting.fill,
                 postionRatio: indicatorStyle.lipWaiting.positionRatio,
 
+                timeLeft: 0
+
             })
         }
     }
@@ -479,7 +404,7 @@ class indicator {
 
 
         //判断输入是否超时
-        this.timeoutThreshold = 6
+        this.timeoutThreshold = timeoutThreshold
 
         this.inputList = []
 
@@ -489,12 +414,20 @@ class indicator {
 
         this.rotationDelta = 0
 
+        this.timeLeft = timeLimit
+        this.timeStart = 0
+
 
     }
 
 
 
     Update() {
+        if (this.state == 'recording' && this.lastState == 'ready') {
+            this.timeStart = new Date().getTime() / 1000;
+        }
+
+
         this.lastState = this.state
 
         this.lastActive = this.active
@@ -507,6 +440,18 @@ class indicator {
 
         //暂时用半径代替宽度
         this.imageWidth = this.radius - 4
+
+
+        //时间限制
+        
+
+        if (this.state == 'recording') {
+            this.timeLeft = timeLimit - (new Date().getTime() / 1000 - this.timeStart)
+        }
+
+
+        
+
     }
 
     activeTest(Detection, windowRatio, videoRatio) {
@@ -549,9 +494,16 @@ class indicator {
 
     display() {
         fill(color(this.fill))
+        noStroke()
+        ellipse(this.xNow, this.yNow, this.radius, this.radius)
+
+
+        noFill()
         stroke(color(this.stroke))
         strokeWeight(this.strokeWeight)
-        ellipse(this.xNow, this.yNow, this.radius, this.radius)
+        arc(this.xNow, this.yNow, this.radius, this.radius, PI * 1.5, PI * 1.5 + 2 * PI * this.timeLeft / timeLimit, OPEN)
+
+
 
         if (this.type == 'hand') {
             push()
@@ -609,8 +561,9 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             posY - (imageHeight - windowHeight) / 2
         )
         scale(-1, 1)
+
         image(videoIn, 0, 0, imageWidth, imageHeight);
-        fill(180)
+        fill(200)
         //rect(0, 0, imageWidth, imageHeight)
         pop()
 
@@ -763,3 +716,96 @@ function keyHoldTest() {
         }
     }
 }
+
+/*
+
+let controlInputList = [];
+
+let outOfTime = 4;
+
+let isOutOfTime = false;
+let distanceTest = false;
+
+let controlState = false;
+let lastControlState = false;
+
+let controlDelayStart = 0;
+let leastDelay = 20;
+let isDelay = false;
+
+
+function control() {
+    if (handDetections != undefined && detections != undefined) {
+
+        lastControlState = controlState;
+
+        //食指
+        controlInput[0] = lerp(controlInput[0], handDetections[8].x, lerpRatio);
+        controlInput[1] = lerp(controlInput[1], handDetections[8].y, lerpRatio);
+        //右嘴角
+        controlInput[2] = lerp(controlInput[2], detections[57].x, lerpRatio);
+        controlInput[3] = lerp(controlInput[3], detections[57].y, lerpRatio);
+        //中指
+        controlInput[4] = lerp(controlInput[4], handDetections[12].x, lerpRatio);
+        controlInput[5] = lerp(controlInput[5], handDetections[12].y, lerpRatio);
+        //左嘴角
+        controlInput[6] = lerp(controlInput[6], detections[287].x, lerpRatio);
+        controlInput[7] = lerp(controlInput[7], detections[287].y, lerpRatio);
+
+
+
+        let distance = dist(controlInput[0], controlInput[1], controlInput[2], controlInput[3]) * 1000;
+        let distance2 = dist(controlInput[4], controlInput[5], controlInput[6], controlInput[7]) * 1000;
+
+        if (distance < 20) { distanceTest = true }
+        //因为即使没有检测到手的坐标，也会有一个默认的坐标，所以这里需要判断一下是否超时
+
+        if (controlInputList.length < outOfTime) {
+            controlInputList.push([handDetections[8].x, handDetections[8].y]);
+        } else {
+            controlInputList.shift();
+            controlInputList.push([handDetections[8].x, handDetections[8].y]);
+        }
+
+        for (let i = 0; i < controlInputList.length - 1; i++) {
+            isOutOfTime = true;
+            //如果列表里面的坐标都是一样的，那么就说明超时了
+            if (controlInputList[i][0] != controlInputList[i + 1][0] && controlInputList[i][1] != controlInputList[i + 1][1]) {
+                isOutOfTime = false;
+                break;
+            }
+        }
+
+        if (distanceTest && !isOutOfTime) {
+
+            controlState = true;
+
+
+        } else {
+            controlState = false;
+        }
+
+        //当controlState变成true时的一瞬间，开始录制
+        if (controlState && !lastControlState && !isWaiting) {
+            controlDelayStart = frameCount;
+            globalStart();
+        }
+
+        //当controlState变成false时的一瞬间，结束录制
+        if (!controlState && lastControlState && !isWaiting) {
+            if (frameCount - controlDelayStart > leastDelay) {
+                globalEnd();
+            } else {
+                isDelay = true;
+            }
+
+        }
+        if (isDelay && frameCount - controlDelayStart > leastDelay) {
+            isDelay = false;
+            globalEnd();
+        }
+
+
+    }
+}
+*/
