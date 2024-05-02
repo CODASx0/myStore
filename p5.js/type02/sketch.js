@@ -50,9 +50,13 @@ let newWindowsProp = {
     height: 20,
     heightReady: 20,
   },
+  w2: {
+    height: 180,
+  }
 }
 
 //--------------------------------
+
 
 function preload() {
   icon = {
@@ -100,7 +104,10 @@ function draw() {
 
   //控制方式还要修改
   //control()
-  newControl(0, newWindowsProp.w1.height, windowWidth, windowHeight - newWindowsProp.w1.height)
+  newControl(0, newWindowsProp.w1.height + newWindowsProp.w2.height, windowWidth, windowHeight - newWindowsProp.w1.height - newWindowsProp.w2.height)
+
+  fill(0, 10)
+  rect(0, newWindowsProp.w1.height, windowWidth, newWindowsProp.w2.height)
 
 
 
@@ -119,6 +126,36 @@ function draw() {
   waitingTest()
 
 }
+
+let sketch2 = function (p) { 
+  p.setup = function () {
+    
+    
+    p.createCanvas(p.windowWidth, p.windowHeight);
+    p.frameRate(60)
+  }
+
+  p.draw = function () {
+
+    p.clear()
+
+    p.fill(255);
+
+    p.rect(0, newWindowsProp.w1.height, p.windowWidth, newWindowsProp.w2.height);
+    
+    p.fill(255/2+3);
+    p.ellipse(p.windowWidth - p.mouseX, p.mouseY, 80, 80);
+
+    p.fill(0);
+    p.ellipse(p.mouseX, p.mouseY, 40, 40);
+    p.ellipse(p.mouseX, p.mouseY+40, 40, 40);
+  }
+
+}
+
+let myp5 = new p5(sketch2, 'canvas2');
+
+
 
 
 function waitingTest() {
@@ -156,7 +193,7 @@ function windowsUpdate() {
   newWindowsProp.w1.width = windowWidth
 
   gsap.to(newWindowsProp.w1, {
-    duration: 0.5,
+    duration: 2,
     height: newWindowsProp.w1.heightReady,
 
   })

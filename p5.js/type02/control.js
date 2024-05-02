@@ -50,9 +50,9 @@ const indicatorStyle = {
 
     lipActive: {
         radius: 30,
-        fill: 'rgba(255, 255, 255, 0.6)',
-        stroke: 'rgba(255, 255, 255, 0.1)',
-        strokeWeight: 20,
+        fill: 'rgba(255, 255, 255, 0.5)',
+        stroke: 'rgba(255, 255, 255, 0.2)',
+        strokeWeight: 10,
         positionRatio: positionProps.origin
     },
 
@@ -65,7 +65,7 @@ const indicatorStyle = {
     },
 
     lipReady: {
-        radius: 30,
+        radius: 20,
         fill: 'rgba(255, 255, 255, 0.4)',
         stroke: 'rgba(255, 255, 255, 1)',
         strokeWeight: 10,
@@ -92,14 +92,14 @@ const indicatorStyle = {
         radius: 60,
         fill: 'rgba(255, 255, 255, 0.1)',
         stroke: 'rgba(255, 255, 255, 0.9)',
-        strokeWeight: 10,
+        strokeWeight: 4,
         positionRatio: positionProps.origin,
-        ease: "back.out(4)"
+
     },
 
 
     waiting: {
-        radius: 30,
+        radius: 36,
         fill: 'rgba(255, 20,20, 0.6)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 0,
@@ -107,10 +107,10 @@ const indicatorStyle = {
     },
 
     lipWaiting: {
-        radius: 50,
+        radius: 20,
         fill: 'rgba(255, 0, 0, 0.4)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0,
+        strokeWeight: 8,
         positionRatio: positionProps.origin
     }
 
@@ -122,25 +122,40 @@ function indicatorUpdater() {
     let distance = dist(handIndicator.x, handIndicator.y, lipIndicator.x, lipIndicator.y);
     //当两个点之间的位置小于40
 
+
+
+    if (lipIndicator.state == 'waiting' && !isWaiting) {
+        if (distance > 50) {
+            handIndicator.state = 'active'
+            lipIndicator.state = 'active'
+        }
+    }
+
     if (handIndicator.active && lipIndicator.active) {
         if (isWaiting) {
             handIndicator.state = 'waiting'
             lipIndicator.state = 'waiting'
+        } else if (lipIndicator.lastState == 'waiting') {
+            //退出判断
         }
-        else if (distance < 40 && handIndicator.timeLeft > 0) {
+        else if (distance < 40) {
             handIndicator.state = 'recording'
             lipIndicator.state = 'recording'
 
         }
-        else if (distance < 100 && isRecording && handIndicator.timeLeft > 0) {
+        else if (distance < 100 && isRecording) {
             handIndicator.state = 'steady'
             lipIndicator.state = 'steady'
         }
-        else if (distance < 120) {
+        else if (distance < 120 && !isRecording) {
             handIndicator.state = 'ready'
             lipIndicator.state = 'ready'
         }
-        else {
+        else if (isRecording) {
+            handIndicator.state = 'waiting'
+            lipIndicator.state = 'waiting'
+            
+        } else {
             handIndicator.state = 'active'
             lipIndicator.state = 'active'
         }
@@ -153,19 +168,25 @@ function indicatorUpdater() {
         }
         handIndicator.state = 'notActive'
 
-    }
-
-    else {
+    } else {
         lipIndicator.state = 'notActive'
         handIndicator.state = 'notActive'
     }
 
 
 
+    //console.log(lipIndicator.state, lipIndicator.timeLeft)
+
 
 
 
     //激活状态切换
+
+    if (lipIndicator.timeLeft <= 0) {
+        globalEnd();
+    }
+
+
     if (handIndicator.state != handIndicator.lastState) {
 
         if (handIndicator.state == 'recording' && handIndicator.lastState == 'ready') {
@@ -173,6 +194,7 @@ function indicatorUpdater() {
         } else if (handIndicator.state != 'recording' && handIndicator.state != 'steady') {
             globalEnd();
         }
+
 
 
         if (handIndicator.state == 'active') {
@@ -186,8 +208,9 @@ function indicatorUpdater() {
                 fill: indicatorStyle.active.fill,
                 postionRatio: indicatorStyle.active.positionRatio,
                 rotationDelta: 0,
-                
-                timeLeft: timeLimit
+
+                timeLeft: timeLimit,
+                imageTint: 0
 
             })
 
@@ -206,6 +229,9 @@ function indicatorUpdater() {
                 fill: indicatorStyle.notActive.fill,
                 postionRatio: indicatorStyle.notActive.positionRatio,
                 rotationDelta: 0,
+                imageTint: 255,
+
+
 
             })
         }
@@ -219,8 +245,9 @@ function indicatorUpdater() {
                 fill: indicatorStyle.ready.fill,
                 postionRatio: indicatorStyle.ready.positionRatio,
                 rotationDelta: 0,
+                imageTint: 0
 
-                
+
 
             })
 
@@ -273,8 +300,8 @@ function indicatorUpdater() {
                 postionRatio: indicatorStyle.waiting.positionRatio,
                 rotationDelta: PI,
 
-                timeLeft: 0
-                
+                timeLeft: timeLimit,
+                imageTint: 255
             })
 
             if (handIndicator.lastActive != false) {
@@ -301,7 +328,7 @@ function indicatorUpdater() {
                 fill: indicatorStyle.lipActive.fill,
                 postionRatio: indicatorStyle.lipActive.positionRatio,
 
-                timeLeft: timeLimit
+
             })
         }
         if (lipIndicator.state == 'notActive') {
@@ -327,7 +354,11 @@ function indicatorUpdater() {
                 postionRatio: indicatorStyle.lipReady.positionRatio,
                 ease: "elastic.out(1.2, 0.75)",
 
-                
+
+            })
+
+            lipTl2.to(lipIndicator, {
+                timeLeft: timeLimit
             })
         }
         if (lipIndicator.state == 'recording') {
@@ -339,7 +370,7 @@ function indicatorUpdater() {
                 stroke: indicatorStyle.lipRecording.stroke,
                 fill: indicatorStyle.lipRecording.fill,
                 postionRatio: indicatorStyle.lipRecording.positionRatio,
-
+                ease: "power1.out",
             })
         }
 
@@ -366,8 +397,11 @@ function indicatorUpdater() {
                 fill: indicatorStyle.lipWaiting.fill,
                 postionRatio: indicatorStyle.lipWaiting.positionRatio,
 
-                timeLeft: 0
+            })
 
+            lipTl2.clear()
+            lipTl2.to(lipIndicator, {
+                timeLeft: 0,
             })
         }
     }
@@ -376,11 +410,11 @@ function indicatorUpdater() {
 
 class indicator {
     constructor(type) {
-        this.x = 0
-        this.y = 0
+        this.x = 10000
+        this.y = 10000
 
-        this.x2 = 0
-        this.y2 = 0
+        this.x2 = 10000
+        this.y2 = 10000
 
         this.postionRatio = 1
 
@@ -410,7 +444,7 @@ class indicator {
 
         this.imageWidth = 0
         this.imageRotation = 0
-        this.imageTint = 255
+        this.imageTint = 0
 
         this.rotationDelta = 0
 
@@ -443,14 +477,14 @@ class indicator {
 
 
         //时间限制
-        
 
-        if (this.state == 'recording') {
+
+        if (this.state == 'recording' || this.state == 'steady') {
             this.timeLeft = timeLimit - (new Date().getTime() / 1000 - this.timeStart)
         }
 
 
-        
+
 
     }
 
@@ -510,7 +544,7 @@ class indicator {
             translate(this.xNow, this.yNow)
             rotate(this.imageRotation)
 
-            tint(0, 255)
+            tint(this.imageTint, 255)
             image(icon.arrow, -this.imageWidth / 2, -this.imageWidth / 2, this.imageWidth, this.imageWidth)
             noTint()
 
@@ -532,10 +566,21 @@ let handIndicator = new indicator('hand');
 
 let tl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 let lipTl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
+let lipTl2 = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
 
 
 function newControl(posX, posY, windowWidth, windowHeight) {
+    let widthtemp = 80;
+
+    if (tempFaceDetection == undefined) {
+        lipIndicator.x = posX + windowWidth - widthtemp / 2;
+        lipIndicator.y = posY + windowHeight - widthtemp / 2;
+    }
+    if (tempHandDetection == undefined) {
+        handIndicator.x = windowWidth - widthtemp / 2;
+        handIndicator.y = windowHeight - widthtemp;
+    }
 
 
     if (videoIn && tempInput) {
@@ -556,16 +601,85 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             imageWidth = windowWidth;
             imageHeight = windowWidth * videoRatio;
         }
+
         translate(
-            posX + windowWidth + (imageWidth - windowWidth) / 2,
-            posY - (imageHeight - windowHeight) / 2
+            posX + windowWidth ,
+            posY 
         )
         scale(-1, 1)
 
-        image(videoIn, 0, 0, imageWidth, imageHeight);
-        fill(200)
-        //rect(0, 0, imageWidth, imageHeight)
+        image(videoIn, 0, 0, windowWidth, windowHeight,
+            (imageWidth - windowWidth) / 2 / imageWidth * videoIn.width,
+            (imageHeight - windowHeight) / 2 / imageHeight * videoIn.height,
+            windowWidth / imageWidth * videoIn.width,
+            windowHeight / imageHeight * videoIn.height
+        );
+
+        
+        fill(200, 230)
+        rect(0, 0, windowWidth, windowHeight)
+
+
+
+/*
+
+
+        //以lipIndicator与handIndicator为两端的图片裁切
+        let rectLeft = max(lipIndicator.x, handIndicator.x) - widthtemp;
+        let rectTop = min(lipIndicator.y, handIndicator.y) - widthtemp;
+        let rectWidth = abs(lipIndicator.x - handIndicator.x) + widthtemp * 2;
+        let rectHeight = abs(lipIndicator.y - handIndicator.y) + widthtemp * 2;
+
+        //tint(255, 100)
+        image(videoIn,
+            imageWidth - rectLeft - widthtemp * 2,
+            rectTop,
+            rectWidth,
+            rectHeight,
+            (imageWidth - rectLeft - 2 * widthtemp) / imageWidth * videoIn.width,
+            (rectTop) / imageHeight * videoIn.height,
+            rectWidth / imageWidth * videoIn.width,
+            rectHeight / imageHeight * videoIn.height
+        )
+        fill(220, 100)
+        rect(
+            imageWidth - rectLeft - widthtemp * 2,
+            rectTop,
+            rectWidth,
+            rectHeight
+        )
+
+        widthtemp = 40;
+
+
+        image(videoIn,
+            imageWidth - lipIndicator.x - widthtemp,
+            lipIndicator.y - widthtemp,
+            widthtemp * 2, widthtemp * 2,
+            (imageWidth - lipIndicator.x - widthtemp) / imageWidth * videoIn.width,
+            (lipIndicator.y - widthtemp) / imageHeight * videoIn.height,
+            widthtemp * 2 / imageWidth * videoIn.width,
+            widthtemp * 2 / imageHeight * videoIn.height
+        )
+
+        image(videoIn,
+            imageWidth - handIndicator.x - widthtemp,
+            handIndicator.y - widthtemp,
+            widthtemp * 2, widthtemp * 2,
+            (imageWidth - handIndicator.x - widthtemp) / imageWidth * videoIn.width,
+            (handIndicator.y - widthtemp) / imageHeight * videoIn.height,
+            widthtemp * 2 / imageWidth * videoIn.width,
+            widthtemp * 2 / imageHeight * videoIn.height
+        )
+        */
+
+
         pop()
+
+
+
+
+
 
         //控制点预览
         push()
@@ -573,6 +687,9 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             posX - (imageWidth - windowWidth) / 2,
             posY - (imageHeight - windowHeight) / 2
         )
+
+
+
 
         if (tempFaceDetection != undefined) {
             //右嘴角

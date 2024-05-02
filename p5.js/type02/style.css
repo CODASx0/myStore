@@ -1,12 +1,13 @@
 body {
     cursor: none;
 
-    background-color: #000000;
+    background-color: #ffffff;
     margin: 0;
     padding: 0;
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    
 }
 
 #canvas {
@@ -16,6 +17,7 @@ body {
     top: 0px;
     left: 0px;
     z-index: 1;
+    
 }
 
 #output_canvas {
@@ -45,4 +47,25 @@ video {
     border-radius: 0px;
     opacity: 0;
 
+}
+
+.effect {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 0;
+    opacity: 1;
+    filter: contrast(14);
+    
+}
+
+#canvas2 {
+    
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    
+    opacity: 1;
+    filter: blur(12px);
+    
 }
