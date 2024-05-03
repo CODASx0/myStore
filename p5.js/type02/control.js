@@ -608,6 +608,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         )
         scale(-1, 1)
 
+        
         image(videoIn, 0, 0, windowWidth, windowHeight,
             (imageWidth - windowWidth) / 2 / imageWidth * videoIn.width,
             (imageHeight - windowHeight) / 2 / imageHeight * videoIn.height,
