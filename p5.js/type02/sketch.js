@@ -106,7 +106,7 @@ function draw() {
   //control()
   newControl(0, newWindowsProp.w1.height + newWindowsProp.w2.height, windowWidth, windowHeight - newWindowsProp.w1.height - newWindowsProp.w2.height)
 
-  fill(0, 10)
+  fill(0, 20)
   rect(0, newWindowsProp.w1.height, windowWidth, newWindowsProp.w2.height)
 
 
@@ -176,7 +176,7 @@ function windowsUpdate() {
 }
 
 function LipsPreview(lipsInput) {
-  let step = 1
+  let step = imageStep
   let posX = 20
   let posX0 = 0
   let unit = 0
@@ -219,7 +219,7 @@ function LipsPreview(lipsInput) {
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
 
       height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
-      unit = 4 * step + (lipsInput[i].img.width - widthMin) * ratio
+      unit = 3 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
     }

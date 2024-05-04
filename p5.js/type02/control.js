@@ -6,6 +6,9 @@ let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
 
 
+let imageStep = 2;
+
+
 let icon;
 let sound;
 
@@ -231,9 +234,15 @@ function indicatorUpdater() {
                 rotationDelta: 0,
                 imageTint: 255,
 
-
-
             })
+
+            if (handIndicator.lastState == 'ready') {
+                sound.leave.play()
+            }else if (handIndicator.lastState == 'recording') {
+                sound.end.play()
+            }9
+
+
         }
         if (handIndicator.state == 'ready') {
             tl.clear()

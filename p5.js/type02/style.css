@@ -1,5 +1,5 @@
 body {
-    cursor: none;
+    
 
     background-color: #ffffff;
     margin: 0;
@@ -66,6 +66,6 @@ video {
     top: 0px;
     
     opacity: 1;
-    filter: blur(10px);
+    filter: blur(8px); 
     
 }

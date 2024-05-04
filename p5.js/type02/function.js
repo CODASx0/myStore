@@ -142,6 +142,7 @@ function uploadVideo() {
 
         // 使用fetch API发送POST请求到Flask后端
         fetch(URL0, {
+            
             method: 'POST',
             body: formData, // 将FormData作为请求体
         })
@@ -793,6 +794,7 @@ function drawMeshTypeAdvanceV31(posX, posY, recordData, words, color) {
 
     //累加每个字符的最大宽度
     let totalWidth = 0;
+
     if (recordData.length > 1 && wordsArray.length > 0) {
         //console.log(recordData)
         for (let i = 0; i < wordsArray.length; i++) {
@@ -828,10 +830,12 @@ function drawMeshTypeAdvanceV31(posX, posY, recordData, words, color) {
 
 
         let currentRight = 0;
+
         for (let i = 0; i < wordsArray.length; i++) {
             const word = dict[wordsArray[i]];
             //最右边界
             let rightest = 0;
+            
             for (j = 0; j < word.length; j++) {
                 let x0, y0, x1, y1;
                 //判断是否是多重数组
