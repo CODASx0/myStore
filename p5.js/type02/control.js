@@ -23,6 +23,10 @@ const positionProps = {
     half: 0.4,
     target: 0.1,
 }
+let tipProps = {
+    ratio: 1,
+    bottom: 24
+}
 
 const indicatorStyle = {
     notActive: {
@@ -146,7 +150,7 @@ function indicatorUpdater() {
             lipIndicator.state = 'recording'
 
         }
-        else if (distance < 100 && isRecording) {
+        else if (distance < 80 && isRecording) {
             handIndicator.state = 'steady'
             lipIndicator.state = 'steady'
         }
@@ -217,6 +221,12 @@ function indicatorUpdater() {
 
             })
 
+            gsap.to(tipProps, {
+                ratio: 0,
+                duration: 2,
+                ease: "expo.out"
+            })
+
             if (handIndicator.lastState == 'ready') {
                 sound.leave.play()
             }
@@ -234,6 +244,12 @@ function indicatorUpdater() {
                 rotationDelta: 0,
                 imageTint: 255,
 
+            })
+
+            gsap.to(tipProps, {
+                ratio: 1,
+                duration: 2,
+                ease: "expo.out"
             })
 
             if (handIndicator.lastState == 'ready') {
@@ -568,9 +584,7 @@ class indicator {
 
 }
 
-let tipProps = {
-    ratio: 1,
-}
+
 
 
 let lipIndicator = new indicator('lip');
@@ -707,12 +721,18 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         strokeWeight(1)
         fill(0, 20)
 
-        let bottom = 20
-        rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
+        
+        
+        rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - tipProps.bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
+
+
+        noStroke()
+        fill(255, 255)
+        rect(posX + padding, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 10 + 25 * (1 - tipProps.ratio), windowWidth - padding * 2, tipProps.bottom * tipProps.ratio + 40, cornerSize, cornerSize, 0, 0)
 
         noStroke()
         fill(0, 255)
-        text('将食指靠近嘴角并开始说话', posX + padding, posY + windowHeight - padding - bottom * tipProps.ratio +20)
+        text('将食指靠近嘴角并开始说话', posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 28 + 50 * (1 - tipProps.ratio))
 
 
 
