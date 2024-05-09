@@ -79,7 +79,7 @@ function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
   font = loadFont('assets/OPlusSans3-Light.ttf');
-  
+
 
   textFont(font);
 
@@ -146,7 +146,7 @@ function waitingTest() {
     }
   }
 
-  if (isWaiting) { 
+  if (isWaiting) {
     if (frameCount % 45 == 0) {
       //生成省略号
       textInput += '.'
@@ -197,12 +197,13 @@ function windowsUpdate() {
 
 function LipsPreview(lipsInput) {
   let step = imageStep
-  let posX = 20
+  let posX = 10
   let posX0 = 0
   let unit = 0
 
   //暂时修改 let posY = windowsProp.window2.posY + windowsBase.state * 40
   let posY = 20 + wProp.w1.height + wProp.w2.height
+  posY = 10
 
 
   let posY0 = 0
@@ -216,7 +217,7 @@ function LipsPreview(lipsInput) {
 
   fill(255)
   noStroke()
-  rect(wProp.w1.posX, wProp.w1.posY, wProp.w1.width, wProp.w1.height)
+  //rect(wProp.w1.posX, wProp.w1.posY, wProp.w1.width, wProp.w1.height)
 
 
   //先遍历一遍找到最小的宽度，以及最上的坐标并进行修正，以及总体的宽度----非常重要----
@@ -238,7 +239,7 @@ function LipsPreview(lipsInput) {
       lipsInput[i].posX0 = width
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
 
-        height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
+      height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
       unit = 3 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
@@ -282,7 +283,7 @@ function LipsPreview(lipsInput) {
 
   }
 
-  rect(posX, posY, width + padding * 2 , height + padding * 2,8,0,8,0)
+  //rect(posX, posY, width + padding * 2 , height + padding * 2,8,0,8,0)
 
   posX += padding
   posY += padding
@@ -313,7 +314,7 @@ function LipsPreview(lipsInput) {
 
   posY += padding + height
 
-  
+
 
   /*
   drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, textInput, 0, 1)

@@ -732,7 +732,10 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         noStroke()
         fill(0, 255)
-        text('将食指靠近嘴角并开始说话', posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 28 + 50 * (1 - tipProps.ratio))
+
+        textSize(16)
+
+        text('将食指靠近嘴角并开始说话', posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
 
 
 

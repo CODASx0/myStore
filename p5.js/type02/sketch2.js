@@ -288,8 +288,8 @@ let sketch2 = function (p) {
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.frameRate(60)
-        //gui = createGui('p5.gui');
-        //gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl','ratioControl')
+        gui = createGui('p5.gui');
+        gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl','ratioControl')
 
 
     }
