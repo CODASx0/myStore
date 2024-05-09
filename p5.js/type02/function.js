@@ -19,6 +19,8 @@ let isWaitingAnimating = false;
 
 //更新一些全局的数据
 function globalUpdate() {
+
+
     
 
     keyHoldTest()
@@ -150,7 +152,7 @@ function uploadVideo() {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                TextInput = data
+                textInput = data
                 isWaiting = false;
                 
             })

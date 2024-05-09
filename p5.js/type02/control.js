@@ -6,7 +6,7 @@ let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
 
 
-let imageStep = 2;
+let imageStep = 1;
 
 
 let icon;
@@ -157,7 +157,7 @@ function indicatorUpdater() {
         else if (isRecording) {
             handIndicator.state = 'waiting'
             lipIndicator.state = 'waiting'
-            
+
         } else {
             handIndicator.state = 'active'
             lipIndicator.state = 'active'
@@ -238,9 +238,9 @@ function indicatorUpdater() {
 
             if (handIndicator.lastState == 'ready') {
                 sound.leave.play()
-            }else if (handIndicator.lastState == 'recording') {
+            } else if (handIndicator.lastState == 'recording') {
                 sound.end.play()
-            }9
+            } 9
 
 
         }
@@ -582,13 +582,14 @@ let lipTl2 = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 function newControl(posX, posY, windowWidth, windowHeight) {
     let widthtemp = 80;
 
+    //初始状态
     if (tempFaceDetection == undefined) {
         lipIndicator.x = posX + windowWidth - widthtemp / 2;
         lipIndicator.y = posY + windowHeight - widthtemp / 2;
     }
     if (tempHandDetection == undefined) {
-        handIndicator.x = windowWidth - widthtemp / 2;
-        handIndicator.y = windowHeight - widthtemp;
+        handIndicator.x = posX + windowWidth - widthtemp / 2;
+        handIndicator.y = posY + windowHeight - widthtemp / 2;
     }
 
 
@@ -603,6 +604,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         //控制视窗预览
         push()
+
         if (windowRatio >= videoRatio) {
             imageWidth = windowHeight / videoRatio;
             imageHeight = windowHeight;
@@ -612,12 +614,12 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         }
 
         translate(
-            posX + windowWidth ,
-            posY 
+            posX + windowWidth,
+            posY
         )
         scale(-1, 1)
 
-        
+
         image(videoIn, 0, 0, windowWidth, windowHeight,
             (imageWidth - windowWidth) / 2 / imageWidth * videoIn.width,
             (imageHeight - windowHeight) / 2 / imageHeight * videoIn.height,
@@ -625,14 +627,17 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             windowHeight / imageHeight * videoIn.height
         );
 
-        
-        fill(200, 230)
+
+
+
+        videoElement.style.width = "50px";
+
+        fill(230, 200)
         rect(0, 0, windowWidth, windowHeight)
 
 
 
-/*
-
+        /*-----------位置错误----------------
 
         //以lipIndicator与handIndicator为两端的图片裁切
         let rectLeft = max(lipIndicator.x, handIndicator.x) - widthtemp;
@@ -652,11 +657,17 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             rectHeight / imageHeight * videoIn.height
         )
         fill(220, 100)
+
         rect(
             imageWidth - rectLeft - widthtemp * 2,
             rectTop,
             rectWidth,
             rectHeight
+        )
+
+        translate(
+            -(imageWidth - windowWidth) / 2,0
+            
         )
 
         widthtemp = 40;
@@ -684,6 +695,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         */
 
 
+
         pop()
 
 
@@ -700,38 +712,42 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
 
 
+        if (true) {
 
-        if (tempFaceDetection != undefined) {
-            //右嘴角
-            lipIndicator.x = lerp(lipIndicator.x, (1 - tempFaceDetection[61].x) * imageWidth, lerpRatio);
-            lipIndicator.y = lerp(lipIndicator.y, tempFaceDetection[61].y * imageHeight, lerpRatio);
+            if (tempFaceDetection != undefined) {
+                //右嘴角
+                lipIndicator.x = lerp(lipIndicator.x, (1 - tempFaceDetection[61].x) * imageWidth, lerpRatio);
+                lipIndicator.y = lerp(lipIndicator.y, tempFaceDetection[61].y * imageHeight, lerpRatio);
 
-            handIndicator.x2 = lipIndicator.x;
-            handIndicator.y2 = lipIndicator.y;
+                handIndicator.x2 = lipIndicator.x;
+                handIndicator.y2 = lipIndicator.y;
 
-            lipIndicator.activeTest(tempFaceDetection[61], windowRatio, videoRatio);
+                lipIndicator.activeTest(tempFaceDetection[61], windowRatio, videoRatio);
 
-            lipIndicator.display();
-
-
-        }
-
-        if (tempHandDetection != undefined) {
-            //食指
-            handIndicator.x = lerp(handIndicator.x, (1 - tempHandDetection[8].x) * imageWidth, lerpRatio);
-            handIndicator.y = lerp(handIndicator.y, tempHandDetection[8].y * imageHeight, lerpRatio);
-
-            lipIndicator.x2 = handIndicator.x;
-            lipIndicator.y2 = handIndicator.y;
-
-            handIndicator.activeTest(tempHandDetection[8], windowRatio, videoRatio);
-
-            handIndicator.display();
+                lipIndicator.display();
 
 
+            }
+
+            if (tempHandDetection != undefined) {
+                //食指
+                handIndicator.x = lerp(handIndicator.x, (1 - tempHandDetection[8].x) * imageWidth, lerpRatio);
+                handIndicator.y = lerp(handIndicator.y, tempHandDetection[8].y * imageHeight, lerpRatio);
+
+                lipIndicator.x2 = handIndicator.x;
+                lipIndicator.y2 = handIndicator.y;
+
+                handIndicator.activeTest(tempHandDetection[8], windowRatio, videoRatio);
+
+                handIndicator.display();
+
+
+            }
         }
 
         pop()
+
+
 
 
 
@@ -744,7 +760,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
 function globalStart() {
     startRecording();
-    TextInput = '';
+    textInput = '';
 
     tween.forEach(t => t.kill())
     tween[0] = gsap.to(windowsBase, {
@@ -787,16 +803,18 @@ function globalEnd() {
 
 
 function keyPressed() {
+    /*
     if (key === ';' && !isWaiting) {
 
         globalStart();
 
     }
+    */
 
     if (key === 'Backspace') {
         //删除最后一个字符
-        TextInput = TextInput.slice(0, TextInput.length - 1);
-        console.log(TextInput);
+        textInput = textInput.slice(0, textInput.length - 1);
+        console.log(textInput);
         isDeleting = true;
         deleteTime = frameCount;
 
@@ -804,9 +822,11 @@ function keyPressed() {
 }
 
 function keyReleased() {
+    /*
     if (key === ';') {
         globalEnd();
     }
+    */
 
     if (key === 'Backspace') {
 
@@ -822,13 +842,26 @@ function keyTyped() {
     key = key.toUpperCase();
     //判断是否是字母
     if (key >= 'A' && key <= 'Z') {
-        TextInput += key;
-        console.log(TextInput);
+        textInput += key;
+        console.log(textInput);
     }
     //判断是否是空格
     if (key === ' ') {
-        TextInput += ' ';
-        console.log(TextInput);
+        textInput += ' ';
+        console.log(textInput);
+    }
+
+    if (key === '.') {
+        textInput += '.';
+        console.log(textInput);
+    }
+    if (key === ',') {
+        textInput += ',';
+        console.log(textInput);
+    }
+
+    if (key === '\'') {
+        textInput += '\'';
     }
 }
 
@@ -838,8 +871,8 @@ function keyHoldTest() {
     let holdTime = frameCount - deleteTime;
     if (isDeleting && holdTime > 16) {
         if (holdTime % 1 == 0) {
-            TextInput = TextInput.slice(0, TextInput.length - 1);
-            console.log(TextInput);
+            textInput = textInput.slice(0, textInput.length - 1);
+            console.log(textInput);
         }
     }
 }

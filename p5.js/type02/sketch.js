@@ -1,5 +1,8 @@
 
 
+
+
+
 let videoIn;
 let videoDetection;
 
@@ -8,6 +11,7 @@ let tempInput;
 
 
 let canvas;
+let videoElement = document.getElementById('webcam')
 
 
 let font;
@@ -16,7 +20,7 @@ let tween = [];
 
 
 //文本输入
-let TextInput = '';
+let textInput = '';
 
 //嘴部输入
 let lipsInput = [];
@@ -39,21 +43,9 @@ let windowsBase = {
 //旧版（暂未弃用）
 let windowsProp
 
-//--------------------------------
+//GUI置入bianliang--------------------------------
 
-//新版窗口属性
-let newWindowsProp = {
-  w1: {
-    posX: 0,
-    posY: 0,
-    width: 1000,
-    height: 20,
-    heightReady: 20,
-  },
-  w2: {
-    height: 180,
-  }
-}
+
 
 //--------------------------------
 
@@ -74,6 +66,11 @@ function preload() {
   }
 }
 
+let imageMask = []
+
+
+
+
 function setup() {
 
   startP5jsWebcam()
@@ -82,7 +79,14 @@ function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
   font = loadFont('assets/IBMPlexMono-Light.ttf');
+  
+
   textFont(font);
+
+  for (let i = 0; i < 3; i++) {
+    imageMask[i] = createGraphics(windowWidth, windowHeight)
+  }
+
 
   frameRate(60)
 
@@ -104,10 +108,10 @@ function draw() {
 
   //控制方式还要修改
   //control()
-  newControl(0, newWindowsProp.w1.height + newWindowsProp.w2.height, windowWidth, windowHeight - newWindowsProp.w1.height - newWindowsProp.w2.height)
+  newControl(0, wProp.w1.height + wProp.w2.height, windowWidth, windowHeight - wProp.w1.height - wProp.w2.height)
 
   fill(0, 20)
-  rect(0, newWindowsProp.w1.height, windowWidth, newWindowsProp.w2.height)
+  //rect(0, wProp.w1.height, windowWidth, wProp.w2.height)
 
 
 
@@ -135,7 +139,7 @@ function draw() {
 function waitingTest() {
 
   if (lastIsWaiting != isWaiting) {
-    if (TextInput == '') {
+    if (textInput == '') {
       sound.error.play()
     } else {
       sound.sucess.play()
@@ -164,11 +168,20 @@ function windowsUpdate() {
 
   }
 
-  newWindowsProp.w1.width = windowWidth
+  wProp.w1.width = windowWidth
 
-  gsap.to(newWindowsProp.w1, {
+
+  gsap.to(wProp.w1, {
     duration: 2,
-    height: newWindowsProp.w1.heightReady,
+    //height: wProp.w1.heightReady,
+
+
+  })
+
+  gsap.to(wProp.w2, {
+    duration: 0.5,
+    //height:windowHeight,
+
 
   })
 
@@ -182,7 +195,7 @@ function LipsPreview(lipsInput) {
   let unit = 0
 
   //暂时修改 let posY = windowsProp.window2.posY + windowsBase.state * 40
-  let posY = 20
+  let posY = 20 + wProp.w1.height + wProp.w2.height
 
 
   let posY0 = 0
@@ -196,7 +209,7 @@ function LipsPreview(lipsInput) {
 
   fill(255)
   noStroke()
-  rect(newWindowsProp.w1.posX, newWindowsProp.w1.posY, newWindowsProp.w1.width, newWindowsProp.w1.height)
+  rect(wProp.w1.posX, wProp.w1.posY, wProp.w1.width, wProp.w1.height)
 
 
   //先遍历一遍找到最小的宽度，以及最上的坐标并进行修正，以及总体的宽度----非常重要----
@@ -218,7 +231,7 @@ function LipsPreview(lipsInput) {
       lipsInput[i].posX0 = width
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
 
-      height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
+        height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
       unit = 3 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
@@ -275,12 +288,12 @@ function LipsPreview(lipsInput) {
       //旧版：posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
       //新版：
       posX + lipsInput[i].posX0,
-      
+
       posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
       unit0 * lipsInput[i].scaleX,
       lipsInput[i].img.height * lipsInput[i].scaleY,
 
-      
+
       lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
       0,
       unit * lipsInput[i].scaleX,
@@ -288,12 +301,12 @@ function LipsPreview(lipsInput) {
 
   }
 
-  
+
   posY += padding + height
 
   /*
-  drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, TextInput, 0, 1)
-  drawMeshTypeAdvanceV31(posX, posY + 5, lipsInput, TextInput, 0)
+  drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, textInput, 0, 1)
+  drawMeshTypeAdvanceV31(posX, posY + 5, lipsInput, textInput, 0)
 
   posY += padding + height + padding
   posX -= padding
@@ -302,9 +315,9 @@ function LipsPreview(lipsInput) {
 
   fill(0)
   textSize(12)
-  text('Output: ' + TextInput, posX, posY)
+  //text('Output: ' + textInput, posX, posY)
 
-  newWindowsProp.w1.heightReady = posY + 40
+  wProp.w1.heightReady = posY + padding
 
 
 }

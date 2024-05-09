@@ -1,6 +1,7 @@
 import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
 
 
+
 const { FaceLandmarker, HandLandmarker, FilesetResolver, DrawingUtils } = vision;
 
 
@@ -8,6 +9,9 @@ let faceLandmarker, handLandmarker;
 let runningMode = "VIDEO";
 
 const videoWidth = 480;
+
+const cameraWidthHere = cameraWidth / 2;
+const cameraHeightHere = cameraHeight / 2;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
 
@@ -66,8 +70,8 @@ function startWebcam() {
                 video: {
                     deviceId: { exact: videoDevices[cameraIndex] },
                     frameRate: 60 ,
-                    width: cameraWidth,
-                    height: cameraHeight
+                    width: cameraWidthHere,
+                    height: cameraHeightHere
                 }
             };
 
@@ -120,7 +124,7 @@ async function predictWebcam() {
     canvasElement.width = video.videoWidth;
     canvasElement.height = video.videoHeight;
 
-
+    
 
     let startTimeMs = performance.now();
 
