@@ -78,7 +78,7 @@ function setup() {
 
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
-  font = loadFont('assets/IBMPlexMono-Light.ttf');
+  font = loadFont('assets/OPlusSans3-Light.ttf');
   
 
   textFont(font);
@@ -143,6 +143,13 @@ function waitingTest() {
       sound.error.play()
     } else {
       sound.sucess.play()
+    }
+  }
+
+  if (isWaiting) { 
+    if (frameCount % 45 == 0) {
+      //生成省略号
+      textInput += '.'
     }
   }
   lastIsWaiting = isWaiting
@@ -275,6 +282,8 @@ function LipsPreview(lipsInput) {
 
   }
 
+  rect(posX, posY, width + padding * 2 , height + padding * 2,8,0,8,0)
+
   posX += padding
   posY += padding
 
@@ -303,6 +312,8 @@ function LipsPreview(lipsInput) {
 
 
   posY += padding + height
+
+  
 
   /*
   drawMeshTypeAdvanceV3(posX, posY + 5, lipsInput, textInput, 0, 1)

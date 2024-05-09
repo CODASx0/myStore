@@ -568,6 +568,9 @@ class indicator {
 
 }
 
+let tipProps = {
+    ratio: 1,
+}
 
 
 let lipIndicator = new indicator('lip');
@@ -581,6 +584,7 @@ let lipTl2 = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
 function newControl(posX, posY, windowWidth, windowHeight) {
     let widthtemp = 80;
+    let padding = 20;
 
     //初始状态
     if (tempFaceDetection == undefined) {
@@ -632,7 +636,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         videoElement.style.width = "50px";
 
-        fill(230, 200)
+        fill(255, 150)
         rect(0, 0, windowWidth, windowHeight)
 
 
@@ -698,8 +702,17 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         pop()
 
+        let cornerSize = 8;
+        stroke(255, 255)
+        strokeWeight(1)
+        fill(0, 20)
 
+        let bottom = 20
+        rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
 
+        noStroke()
+        fill(0, 255)
+        text('将食指靠近嘴角并开始说话', posX + padding, posY + windowHeight - padding - bottom * tipProps.ratio +20)
 
 
 
@@ -746,6 +759,8 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         }
 
         pop()
+
+
 
 
 

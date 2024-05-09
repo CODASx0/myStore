@@ -8,7 +8,7 @@ let wProp = {
         heightReady: 20,
     },
     w2: {
-        height: 400,
+        height: 500,
     }
 }
 
@@ -196,10 +196,13 @@ let sketch2 = function (p) {
 
         
         if (gridSizeHere * 7 * (lineFeed.length + 1) + lineFeed.length * lineSpace + padding * 2 > wProp.w2.height ) {
-            wProp.w2.height 
+            
         }
         
-        posY = wProp.w2.height / 2 - gridSizeHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        //纵向居中
+        //posY = wProp.w2.height / 2 - gridSizeHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        //纵向置底
+        posY = wProp.w2.height - gridSizeHere * 7 * (lineFeed.length + 1) - lineFeed.length * lineSpace - padding
 
         for (let i = 0; i < letterArray.length; i++) {
 
