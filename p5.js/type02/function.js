@@ -140,7 +140,7 @@ function uploadVideo() {
         isWaiting = true
 
         let URL0 = 'http://127.0.0.1:5000/upload_video'
-        let URL1 = 'http://192.168.1.10:5000/upload_video'
+        let URL1 = 'http://192.168.1.9:5000/upload_video'
 
         // 使用fetch API发送POST请求到Flask后端
         fetch(URL0, {

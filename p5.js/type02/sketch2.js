@@ -8,7 +8,7 @@ let wProp = {
         heightReady: 20,
     },
     w2: {
-        height: 500,
+        height: 400,
     }
 }
 
@@ -42,6 +42,11 @@ var ratioControl = 1;
 var ratioControlMin = 0;
 var ratioControlMax = 1;
 var ratioControlStep = 0.01;
+
+var typePadding = 40;
+var typePaddingMin = 0;
+var typePaddingMax = 200;
+var typePaddingStep = 1;
 
 
 
@@ -119,7 +124,7 @@ let sketch2 = function (p) {
 
     function Show(words) {
         //定义网格间距
-        let padding = 40
+        let padding = typePadding
 
         let gridSizeHere = gridSize
 
@@ -200,9 +205,9 @@ let sketch2 = function (p) {
         }
         
         //纵向居中
-        //posY = wProp.w2.height / 2 - gridSizeHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        posY = wProp.w2.height / 2 - gridSizeHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
         //纵向置底
-        posY = wProp.w2.height - gridSizeHere * 7 * (lineFeed.length + 1) - lineFeed.length * lineSpace - padding
+        //posY = wProp.w2.height - gridSizeHere * 7 * (lineFeed.length + 1) - lineFeed.length * lineSpace - padding
 
         for (let i = 0; i < letterArray.length; i++) {
 
@@ -289,7 +294,9 @@ let sketch2 = function (p) {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.frameRate(60)
         gui = createGui('p5.gui');
-        gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl','ratioControl')
+        gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl', 'ratioControl', 'typePadding')
+        
+        wProp.w2.height = p.windowHeight
 
 
     }
@@ -336,6 +343,7 @@ let sketch2 = function (p) {
 
     p.windowResized = function () {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
+        wProp.w2.height = p.windowHeight
     }
 
 }

@@ -6,7 +6,7 @@ let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
 
 
-let imageStep = 1;
+let imageStep = 2;
 
 
 let icon;
@@ -650,7 +650,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         videoElement.style.width = "50px";
 
-        fill(255, 150)
+        fill(240, 20)
         rect(0, 0, windowWidth, windowHeight)
 
 
@@ -723,11 +723,11 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         
         
-        rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - tipProps.bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
+        //rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - tipProps.bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
 
 
         noStroke()
-        fill(255, 255)
+        fill(245, 255)
         rect(posX + padding, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 10 + 25 * (1 - tipProps.ratio), windowWidth - padding * 2, tipProps.bottom * tipProps.ratio + 40, cornerSize, cornerSize, 0, 0)
 
         noStroke()
@@ -735,7 +735,8 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         textSize(16)
 
-        text('将食指靠近嘴角并开始说话', posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
+        text('将食指靠近嘴角并开始说话（支持英文）', posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
+
 
 
 
@@ -745,7 +746,6 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             posX - (imageWidth - windowWidth) / 2,
             posY - (imageHeight - windowHeight) / 2
         )
-
 
 
         if (true) {

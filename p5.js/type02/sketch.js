@@ -203,7 +203,7 @@ function LipsPreview(lipsInput) {
 
   //暂时修改 let posY = windowsProp.window2.posY + windowsBase.state * 40
   let posY = 20 + wProp.w1.height + wProp.w2.height
-  posY = 10
+  //posY = 10
 
 
   let posY0 = 0
@@ -291,7 +291,7 @@ function LipsPreview(lipsInput) {
   for (let i = 0; i < lipsInput.length; i += step) {
     unit = lipsInput[i].width0
 
-    let unit0 = unit + 1
+    let unit0 = unit 
 
     image(lipsInput[i].img,
 
