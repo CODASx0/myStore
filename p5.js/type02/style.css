@@ -1,5 +1,5 @@
 body {
-    
+
 
     background-color: #ffffff;
     margin: 0;
@@ -7,7 +7,7 @@ body {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    
+
 }
 
 #canvas {
@@ -17,7 +17,7 @@ body {
     top: 0px;
     left: 0px;
     z-index: 1;
-    
+
 }
 
 #output_canvas {
@@ -32,7 +32,7 @@ body {
 }
 
 #webcam {
-    
+
     position: absolute;
     left: 0px;
     top: 0px;
@@ -57,16 +57,25 @@ body {
     z-index: 0;
     opacity: 1;
     filter: contrast(16);
-    
+
 }
 
 #canvas2 {
-    
+
     position: absolute;
     left: 0px;
     top: 0px;
-    
+
     opacity: 1;
-    filter: blur(8px); 
-    
+    filter: blur(0px);
+
+}
+
+#canvas3 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+    opacity: 2;
+
 }

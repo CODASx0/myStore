@@ -5,6 +5,7 @@ let cameraIndex = 0;
 let cameraWidth = 1920;
 let cameraHeight = cameraWidth * 0.75;
 
+let pixelDensityControl = 0;
 
 let imageStep = 2;
 
@@ -25,7 +26,8 @@ const positionProps = {
 }
 let tipProps = {
     ratio: 1,
-    bottom: 24
+    bottom: 24,
+    text: '将食指靠近嘴角并开始说话（支持英文）'
 }
 
 const indicatorStyle = {
@@ -114,7 +116,7 @@ const indicatorStyle = {
     },
 
     lipWaiting: {
-        radius: 20,
+        radius: 40,
         fill: 'rgba(255, 0, 0, 0.4)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 8,
@@ -221,14 +223,19 @@ function indicatorUpdater() {
 
             })
 
-            gsap.to(tipProps, {
-                ratio: 0,
-                duration: 2,
-                ease: "expo.out"
-            })
+
+            
 
             if (handIndicator.lastState == 'ready') {
                 sound.leave.play()
+
+                tipTl.clear()
+                tipTl.to(tipProps, {
+                    ratio: 1,
+
+
+                    text: '唇语识别：将食指靠近嘴角并开始说话（支持英文）'
+                })
             }
 
         }
@@ -248,8 +255,9 @@ function indicatorUpdater() {
 
             gsap.to(tipProps, {
                 ratio: 1,
-                duration: 2,
-                ease: "expo.out"
+                duration: 1,
+                ease: "expo.out",
+                
             })
 
             if (handIndicator.lastState == 'ready') {
@@ -272,9 +280,16 @@ function indicatorUpdater() {
                 rotationDelta: 0,
                 imageTint: 0
 
-
-
             })
+
+            tipTl.clear()
+            tipTl.to(tipProps, {
+                ratio: 1,
+
+
+                text: '请继续靠近'
+            })
+  
 
             if (handIndicator.lastState == 'active') {
                 sound.enter.play()
@@ -293,9 +308,19 @@ function indicatorUpdater() {
                 rotationDelta: PI,
 
             })
+
             if (handIndicator.lastState != 'steady') {
                 sound.start.play()
             }
+
+            tipTl.clear()
+            tipTl.to(tipProps, {
+                ratio: 1,
+
+
+                text: "松开即可结束",
+            })
+ 
 
         }
 
@@ -333,6 +358,15 @@ function indicatorUpdater() {
                 sound.end.play()
 
             }
+
+            tipTl.clear()
+            tipTl.to(tipProps, {
+                ratio: 1,
+
+
+                text: '等待结果中',
+            })
+
 
 
 
@@ -594,7 +628,146 @@ let tl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 let lipTl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 let lipTl2 = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
+let tipTl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
+let pX = 0
+let pY = 0
+let pW = 0
+let pH = 0
+let r = 100;
+
+function mask(posX, posY, width, height, points) {
+    let lerpRatioHere = lerpRatio2
+    
+    //填充改色---暂时
+    fill(255,255)
+    //fill(255, 255)
+    noStroke()
+
+    beginShape()
+    vertex(posX, posY)
+    vertex(posX + width, posY)
+    vertex(posX + width, posY + height)
+    vertex(posX, posY + height)
+    
+
+    let pointList = points
+
+     // 圆角的半径
+
+    //console.log(pointList.length)
+
+
+
+    if (pointList.length == 1) { 
+        pX = lerp(pX, pointList[0][0], lerpRatioHere)
+        pY = lerp(pY, pointList[0][1], lerpRatioHere)
+        pW = lerp(pW, 0, lerpRatioHere)
+        pH = lerp(pH, 0, lerpRatioHere)
+        r = lerp(r, 80, lerpRatioHere)
+        
+    } else if (pointList.length == 2) {
+        pW = lerp(pW,abs(pointList[0][0] - pointList[1][0]), lerpRatioHere)
+        pH = lerp(pH,abs(pointList[0][1] - pointList[1][1]), lerpRatioHere)
+        pX = lerp(pX, (pointList[0][0] + pointList[1][0]) / 2 - abs(pointList[0][0] - pointList[1][0]) / 2, lerpRatioHere)
+        pY = lerp(pY, (pointList[0][1] + pointList[1][1]) / 2 - abs(pointList[0][1] - pointList[1][1]) / 2, lerpRatioHere)
+        r = lerp(r, 40, lerpRatioHere)
+
+    }
+
+
+
+    
+    let x = pX-r
+    let y = pY-r
+    let w = pW+2*r;
+    let h = pH+2*r;
+    let cornerRatio = 0.4
+
+    if (x + w > posX + width) { 
+        x = posX + width - w
+        w = posX + width - x
+
+    }
+    if (y + h > posY + height) {
+        y = posY + height - h
+        h = posY + height - y
+    }
+    if (x < posX) {
+        x = posX
+        w = w - (posX - x)
+    }
+    if (y < posY) {
+        y = posY
+        h = h - (posY - y)
+    }
+
+
+    
+    beginContour();
+    vertex(x + r, y); // 左上角
+    bezierVertex(x + cornerRatio * r, y, x, y + cornerRatio * r, x, y + r);
+    vertex(x, y + h - r); // 左边
+    bezierVertex(x, y + h - cornerRatio * r, x + cornerRatio * r, y + h, x + r, y + h);
+    vertex(x + w - r, y + h); // 下边
+    bezierVertex(x + w - cornerRatio * r, y + h, x + w, y + h - cornerRatio * r, x + w, y + h - r);
+    vertex(x + w, y + r); // 右边
+    bezierVertex(x + w, y + cornerRatio * r, x + w - cornerRatio * r, y, x + w - r, y);
+    endContour(CLOSE);
+
+    endShape(CLOSE)
+
+    
+    
+}
+
+function mask2(posX, posY, width, height) {
+    //填充改色---暂时
+    fill(255,255)
+    //fill(255, 255)
+    noStroke()
+    let r;
+    let cornerRatio = 0.4
+
+    if (width < height) {
+        r = width / 2
+    } else {
+        r = height / 2
+    }
+
+    posX = posX - 1;
+    posY = posY - 1;
+    width = width + 2;
+    height = height + 2;
+    beginShape()
+    vertex(posX, posY)
+    vertex(posX + width, posY)
+    vertex(posX + width, posY + height)
+    vertex(posX, posY + height)
+
+    posX = posX + 1;
+    posY = posY + 1;
+    width = width - 2;
+    height = height - 2;
+
+
+    beginContour();
+    vertex(posX + r, posY); // 左上角
+    bezierVertex(posX + cornerRatio * r, posY, posX, posY + cornerRatio * r, posX, posY + r);
+    vertex(posX, posY + height - r); // 左边
+    bezierVertex(posX, posY + height - cornerRatio * r, posX + cornerRatio * r, posY + height, posX + r, posY + height);
+    vertex(posX + width - r, posY + height); // 下边
+    bezierVertex(posX + width - cornerRatio * r, posY + height, posX + width, posY + height - cornerRatio * r, posX + width, posY + height - r);
+    vertex(posX + width, posY + r); // 右边
+    bezierVertex(posX + width, posY + cornerRatio * r, posX + width - cornerRatio * r, posY, posX + width - r, posY);
+    endContour(CLOSE);
+
+    endShape(CLOSE)
+
+
+
+
+}
 
 function newControl(posX, posY, windowWidth, windowHeight) {
     let widthtemp = 80;
@@ -716,6 +889,11 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
         pop()
 
+        
+
+
+
+
         let cornerSize = 8;
         stroke(255, 255)
         strokeWeight(1)
@@ -726,17 +904,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         //rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - tipProps.bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
 
 
-        noStroke()
-        fill(245, 255)
-        rect(posX + padding, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 10 + 25 * (1 - tipProps.ratio), windowWidth - padding * 2, tipProps.bottom * tipProps.ratio + 40, cornerSize, cornerSize, 0, 0)
-
-        noStroke()
-        fill(0, 255)
-
-        textSize(16)
-
-        text('将食指靠近嘴角并开始说话（支持英文）', posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
-
+        
 
 
 
@@ -747,6 +915,8 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             posY - (imageHeight - windowHeight) / 2
         )
 
+
+        let pointList = []
 
         if (true) {
 
@@ -761,7 +931,7 @@ function newControl(posX, posY, windowWidth, windowHeight) {
                 lipIndicator.activeTest(tempFaceDetection[61], windowRatio, videoRatio);
 
                 lipIndicator.display();
-
+                pointList.push([lipIndicator.x, lipIndicator.y])
 
             }
 
@@ -777,17 +947,29 @@ function newControl(posX, posY, windowWidth, windowHeight) {
 
                 handIndicator.display();
 
+                if (handIndicator.active) {
+                    pointList.push([handIndicator.x, handIndicator.y])
+                }
+                
+
 
             }
         }
 
+        mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight, pointList)
+
         pop()
 
+        noStroke()
+        //fill(255, 255)
+        //rect(posX + padding, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 10 + 25 * (1 - tipProps.ratio), windowWidth - padding * 2, tipProps.bottom * tipProps.ratio + 40, cornerSize, cornerSize, 0, 0)
 
+        noStroke()
+        fill(0, 255)
 
+        textSize(16)
 
-
-
+        text(tipProps.text, posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
 
 
         //激活状态切换

@@ -12,6 +12,10 @@ let wProp = {
     }
 }
 
+let controlPanelY = 0;
+
+
+
 
 var lerpRatio2 = 0.2
 var lerpRatio2Min = 0.01
@@ -19,16 +23,16 @@ var lerpRatio2Max = 0.5
 var lerpRatio2Step = 0.01
 
 var dotSize = 16
-var dotSizeMin = 8
-var dotSizeMax = 40
-var dotSizeStep = 0.5
+var dotSizeMin = 14
+var dotSizeMax = 50
+var dotSizeStep = 0.1
 
 var gridSize = 10
 var gridSizeMin = 4
 var gridSizeMax = 40
 var gridSizeStep = 0.5
 
-var moveSpace = 3
+var moveSpace = 0
 var moveSpaceMin = 0;
 var moveSpaceMax = 30;
 var moveSpaceStep = 0.1
@@ -47,6 +51,13 @@ var typePadding = 40;
 var typePaddingMin = 0;
 var typePaddingMax = 200;
 var typePaddingStep = 1;
+
+var debug = 0.3;
+var debugMin = 0;
+var debugMax = 1;
+var debugStep = 0.01;
+
+let panelSwitch = false;
 
 
 
@@ -77,7 +88,7 @@ class dot {
 
     }
 
-    updateAndDisplay() {
+    update() {
 
 
         this.xInput = this.originX * (1 - this.state) + this.targetX * this.state;
@@ -85,12 +96,10 @@ class dot {
 
         this.x = this.p.lerp(this.x, this.xInput, lerpRatio2);
         this.y = this.p.lerp(this.y, this.yInput, lerpRatio2);
-
-
-        this.p.push()
-
         //间隔移动距离
         this.distance = this.p.dist(this.x, this.y, this.lastX, this.lastY);
+
+        this.p.push()
 
         if (this.distance != 0) {
             this.rotation = this.p.atan2(this.y - this.lastY, this.x - this.lastX);
@@ -98,7 +107,19 @@ class dot {
         this.p.translate(this.x, this.y);
         this.p.rotate(this.rotation);
         this.p.fill(this.p.color(this.fill));
-        this.p.ellipse(0, 0, this.size + this.distance * 1, this.size);
+        //this.p.ellipse(0, 0, this.size + this.distance * 1, this.size);
+
+        this.cornerRatio = 1
+
+        this.p.rect(
+            -this.size / 2,
+            -this.size / 2,
+            this.size + this.distance * 1,
+            this.size, this.size / 2 * this.cornerRatio,
+            this.size / 2 * this.cornerRatio,
+            this.size / 2 * this.cornerRatio,
+            this.size / 2 * this.cornerRatio
+        );
 
         this.p.pop()
 
@@ -111,13 +132,15 @@ class dot {
 
     }
 
+
+
 }
 
 let sketch2 = function (p) {
 
     let myDot = new dot(0, 0, p);
     //创建一个数量500的myDots数组并存放dot对象
-    let myDots = Array.from({ length: 10000 }, () => new dot(p.random(0, p.windowWidth), p.random(0, p.windowHeight), p));
+    let myDots = Array.from({ length: 10000 }, () => new dot(p.random(0, p.windowWidth), p.random(0, wProp.w2.height), p));
 
 
     //定义显示网格点阵字体的函数
@@ -127,6 +150,7 @@ let sketch2 = function (p) {
         let padding = typePadding
 
         let gridSizeHere = gridSize
+        let gridSizeYHere = gridSize * 1.1
 
         let moveSpaceHere = moveSpace
         //let posX = 40;
@@ -146,10 +170,17 @@ let sketch2 = function (p) {
         let letterArray = words.split('');
         //累加每个字符的最大宽度
         let totalWidth = 0;
+
+        let totalWidth2 = 0;
+
         let cumulateWidth = 0;
 
         //校准换行的位置
         let lineFeed = []
+        //储存各行的宽度
+        let lineWidth = []
+
+        let currentLine = 0;
 
         if (letterArray.length > 0) {
             for (let i = 0; i < letterArray.length; i++) {
@@ -178,14 +209,23 @@ let sketch2 = function (p) {
                 if ((rightest + totalWidth) * gridSizeHere > p.windowWidth - padding * 2 && wordsNum != lastWordsNum) {
 
                     lineFeed.push(wordsNum)
+                    lineWidth[currentLine] = cumulateWidth - blank
+            
+                    currentLine++
                     totalWidth -= cumulateWidth - 1
                     lastWordsNum = wordsNum
                 }
 
+               
+                lineWidth[currentLine] = rightest + totalWidth
+
+                
                 totalWidth += rightest + blank;
+                totalWidth2 += rightest + blank;
             }
 
             totalWidth -= blank;
+            totalWidth2 -= blank;
         }
 
         //posX = (p.windowWidth - totalWidth * gridSizeHere) / 2;
@@ -193,21 +233,25 @@ let sketch2 = function (p) {
 
         //开始绘制
         let currentRight = 0;
+        let currentRight2 = 0;
+
         let currentIndex = 0;
 
-        let currentLine = 0;
+        currentLine = 0;
 
         wordsNum = 0
 
-        
-        if (gridSizeHere * 7 * (lineFeed.length + 1) + lineFeed.length * lineSpace + padding * 2 > wProp.w2.height ) {
-            
+
+        if (gridSizeHere * 7 * (lineFeed.length + 1) + lineFeed.length * lineSpace + padding * 2 > wProp.w2.height) {
+
         }
-        
+
         //纵向居中
-        posY = wProp.w2.height / 2 - gridSizeHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        posY = wProp.w2.height / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
         //纵向置底
-        //posY = wProp.w2.height - gridSizeHere * 7 * (lineFeed.length + 1) - lineFeed.length * lineSpace - padding
+        //posY = wProp.w2.height - gridSizeYHere * 7 * (lineFeed.length + 1) - lineFeed.length * lineSpace - padding
+
+        controlPanelY = posY + gridSizeYHere * 7 * (lineFeed.length + 1) + lineFeed.length * lineSpace + padding
 
         for (let i = 0; i < letterArray.length; i++) {
 
@@ -217,7 +261,7 @@ let sketch2 = function (p) {
                 wordsNum++
             }
 
-            
+
 
 
             if (lineFeed[currentLine] == wordsNum && wordsNum != 0) {
@@ -225,7 +269,7 @@ let sketch2 = function (p) {
                 currentLine++
                 currentRight = -blank
 
-                posY += gridSizeHere * 7 + lineSpace
+                posY += gridSizeYHere * 7 + lineSpace
                 //posY += gridSizeHere + lineSpace
             }
 
@@ -251,22 +295,45 @@ let sketch2 = function (p) {
 
                 for (let x = x0 + 0.5; x < x1; x++) {
                     for (let y = y0 + 0.5; y < y1; y++) {
+                        let y00 = y
+                        if (lipsInput.length > 0) {
+
+                            x00 = (currentRight2 + x) / totalWidth2
+                            //console.log(x00)
+                            x00left = Math.floor(x00 * (lipsInput.length - 1))
+                            x00right = Math.ceil(x00 * (lipsInput.length - 1))
+                            xNow = x00 * (lipsInput.length - 1) - x00left
+
+                            if (lipsInput[x00left].height0 != undefined && lipsInput[x00right].height0 != undefined) {
+                                y00 = lerp(pickY(y, lipsInput[x00left].posY0, lipsInput[x00left].img.height, lipsInput[x00left].height0), pickY(y, lipsInput[x00right].posY0, lipsInput[x00right].img.height, lipsInput[x00right].height0), xNow)
+                            }
+                        }
+
+                        let y01 = lerp(y, y00, 1)
 
 
 
+                        let lineWidthHere = lineWidth[currentLine] * gridSizeHere
+                        if (currentLine > 0) {
+                            lineWidthHere = (lineWidth[currentLine]-3) * gridSizeHere
+                        }
+                        //左对齐
+                        myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
+                        //居中
+                        myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere/2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
+                        //console.log(lineWidth)
 
 
-
-                        myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX +1*moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
                         //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX;
-                        myDots[currentIndex].targetY = y * gridSizeHere + posY + 2*moveSpaceHere * sin(p.frameCount / 15 + currentIndex / 5 * moveControl);
+                        myDots[currentIndex].targetY = y01 * gridSizeYHere + posY + 2 * moveSpaceHere * sin(p.frameCount / 15 + currentIndex / 5 * moveControl);
 
                         //myDots[currentIndex].targetY = y * gridSizeHere + posY;
                         myDots[currentIndex].state = ratioControl
 
                         myDots[currentIndex].size = dotSize
 
-                        myDots[currentIndex].updateAndDisplay();
+                        myDots[currentIndex].update();
+
                         currentIndex++;
                     }
                 }
@@ -279,13 +346,16 @@ let sketch2 = function (p) {
 
             }
             currentRight += rightest + blank;
+            currentRight2 += rightest + blank;
 
 
         }
 
-        for (let i = 0; i < myDots.length; i++) {
-            myDots[i].state = 0;
-        }
+    }
+
+
+    function pickY(yInput, posY0, imageHeight, height) {
+        return map(yInput, 0, 7, posY0 / height * 7, (posY0 + imageHeight) / height * 7)
 
 
     }
@@ -293,10 +363,15 @@ let sketch2 = function (p) {
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.frameRate(60)
-        gui = createGui('p5.gui');
-        gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl', 'ratioControl', 'typePadding')
+        p.pixelDensity(0.5)
         
-        wProp.w2.height = p.windowHeight
+        if (panelSwitch) {
+            gui = createGui('p5.gui');
+            gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl', 'ratioControl', 'typePadding', 'debug')
+        }
+        
+
+        //wProp.w2.height = p.windowHeight
 
 
     }
@@ -339,11 +414,13 @@ let sketch2 = function (p) {
         //console.log(p.frameRate().toFixed(0));
 
         Show(textInput);
+
+        canvas2.style.filter = 'blur(' + 8 * (1 - debug) + 'px)';
     }
 
     p.windowResized = function () {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
-        wProp.w2.height = p.windowHeight
+        //wProp.w2.height = p.windowHeight
     }
 
 }
@@ -351,6 +428,8 @@ let sketch2 = function (p) {
 
 
 let myp5 = new p5(sketch2, 'canvas2');
+
+let canvas2 = document.getElementById('canvas2');
 
 
 

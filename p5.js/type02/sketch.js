@@ -66,7 +66,7 @@ function preload() {
   }
 }
 
-let imageMask = []
+
 
 
 
@@ -74,18 +74,19 @@ let imageMask = []
 function setup() {
 
   startP5jsWebcam()
-  //pixelDensity(1)
+  if (pixelDensityControl != 0) {
+    pixelDensity(pixelDensityControl)
+  }
+  
 
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
   font = loadFont('assets/OPlusSans3-Light.ttf');
-
+  noSmooth()
 
   textFont(font);
 
-  for (let i = 0; i < 3; i++) {
-    imageMask[i] = createGraphics(windowWidth, windowHeight)
-  }
+
 
 
   frameRate(60)
@@ -195,6 +196,8 @@ function windowsUpdate() {
 
 }
 
+
+
 function LipsPreview(lipsInput) {
   let step = imageStep
   let posX = 10
@@ -225,7 +228,7 @@ function LipsPreview(lipsInput) {
     widthMin = lipsInput[0].img.width
 
 
-    for (let i = 0; i < lipsInput.length; i += step) {
+    for (let i = 0; i < lipsInput.length; i += 1) {
       if (lipsInput[i].img.width < widthMin) {
         widthMin = lipsInput[i].img.width
       }
@@ -235,7 +238,7 @@ function LipsPreview(lipsInput) {
 
     }
 
-    for (let i = 0; i < lipsInput.length; i += step) {
+    for (let i = 0; i < lipsInput.length; i += 1) {
       lipsInput[i].posX0 = width
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
 
@@ -243,6 +246,10 @@ function LipsPreview(lipsInput) {
       unit = 3 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
+    }
+
+    for (let i = 0; i < lipsInput.length; i ++) {
+      lipsInput[i].height0 = height
     }
   }
 
@@ -291,7 +298,7 @@ function LipsPreview(lipsInput) {
   for (let i = 0; i < lipsInput.length; i += step) {
     unit = lipsInput[i].width0
 
-    let unit0 = unit 
+    let unit0 = unit + 1
 
     image(lipsInput[i].img,
 
@@ -307,7 +314,16 @@ function LipsPreview(lipsInput) {
       lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
       0,
       unit * lipsInput[i].scaleX,
-      lipsInput[i].img.height)
+      lipsInput[i].img.height
+    )
+    
+    mask2(
+      posX + lipsInput[i].posX0,
+
+      posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
+      unit0 * lipsInput[i].scaleX,
+      lipsInput[i].img.height * lipsInput[i].scaleY,
+    )
 
   }
 

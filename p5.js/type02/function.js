@@ -140,7 +140,7 @@ function uploadVideo() {
         isWaiting = true
 
         let URL0 = 'http://127.0.0.1:5000/upload_video'
-        let URL1 = 'http://192.168.1.9:5000/upload_video'
+        let URL1 = 'http://192.168.1.10:5000/upload_video'
 
         // 使用fetch API发送POST请求到Flask后端
         fetch(URL0, {
@@ -154,6 +154,10 @@ function uploadVideo() {
                 console.log(data);
                 textInput = data
                 isWaiting = false;
+                tipProps.text = '识别结果：' + data
+                if (data == '') {
+                    tipProps.text = '未识别到任何内容，请尝试用更加标准的口型说话并确保画面中只出现一人'
+                }
                 
             })
             .catch((error) => {
@@ -896,6 +900,7 @@ function drawMeshTypeAdvanceV31(posX, posY, recordData, words, color) {
                     vertex(posX + recordData[x00right].posX0 + makeup, posY + recordData[x00right].posY0 + y11);
                     vertex(posX + recordData[x00right].posX0 + makeup, posY + recordData[x00right].posY0 + y10);
                     endShape(CLOSE);
+
                     for (x = x00right; x < x10left; x++) {
                         y00 = pickY(recordData[x], y0)
                         y01 = pickY(recordData[x], y1)
@@ -908,6 +913,7 @@ function drawMeshTypeAdvanceV31(posX, posY, recordData, words, color) {
                         vertex(posX + recordData[x + 1].posX0 + makeup, posY + recordData[x + 1].posY0 + y10);
                         endShape(CLOSE);
                     }
+                    
                     x10lerp = x10 * (recordData.length - 1) - x10left;
                     y00 = pickY(recordData[x10left], y0)
                     y01 = pickY(recordData[x10left], y1)
