@@ -8,7 +8,7 @@ let wProp = {
         heightReady: 20,
     },
     w2: {
-        height: 400,
+        height: 600,
     }
 }
 
@@ -57,7 +57,7 @@ var debugMin = 0;
 var debugMax = 1;
 var debugStep = 0.01;
 
-let panelSwitch = false;
+let panelSwitch = true;
 
 
 
@@ -318,7 +318,7 @@ let sketch2 = function (p) {
                             lineWidthHere = (lineWidth[currentLine]-3) * gridSizeHere
                         }
                         //左对齐
-                        myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
+                        //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
                         //居中
                         myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere/2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
                         //console.log(lineWidth)
@@ -413,6 +413,10 @@ let sketch2 = function (p) {
         //打印帧率(取整数)
         //console.log(p.frameRate().toFixed(0));
 
+
+
+        //lowRateTest()
+
         Show(textInput);
 
         canvas2.style.filter = 'blur(' + 8 * (1 - debug) + 'px)';
@@ -423,8 +427,37 @@ let sketch2 = function (p) {
         //wProp.w2.height = p.windowHeight
     }
 
+    function lowRateTest() {
+        if (rateList.length > lowRateTimer) {
+            let beReload = true
+            rateList.shift()
+            rateList.push(p.frameRate())
+
+            for (i=0; i<rateList.length; i++) {
+                if (rateList[i] >lowRateLimit) {
+                    beReload = false
+                }
+            }
+
+            if(beReload) {
+                location.reload()
+                //避免重复刷新
+                rateList = []
+            }
+            
+
+
+        } else {
+            rateList.push(p.frameRate())
+        }
+    }
+
+    
 }
 
+let lowRateLimit = 20
+let lowRateTimer = 5
+let rateList = []
 
 
 let myp5 = new p5(sketch2, 'canvas2');

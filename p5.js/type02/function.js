@@ -62,6 +62,7 @@ function LipsLoadingAnimation() {
         isWaitingAnimating = true;
         for (let i = 0; i < lipsInput.length; i++) {
             LipsAnimation[i] = gsap.timeline({ repeat: -1, repeatDelay: 0, delay: i * 0.008 });
+            /*
             LipsAnimation[i].to(lipsInput[i], {
                 scaleX: 10,
                 duration: 1.4,
@@ -74,6 +75,7 @@ function LipsLoadingAnimation() {
                 delay: 0.5,
                 ease: "power2.inOut"
             });
+            */
 
         }
     }
@@ -191,6 +193,7 @@ class LipsData {
 
         this.img = video.get(detections[61].x * video.width, detections[0].y * video.height, detections[291].x * video.width - detections[61].x * video.width, detections[17].y * video.height - detections[0].y * video.height);
 
+        
         this.posX0 = 0
         this.width0 = 0
         this.posY0 = 0
@@ -965,7 +968,7 @@ async function startP5jsWebcam() {
     const constraints = {
         video: {
             deviceId: videoDevices[cameraIndex].deviceId,
-            frameRate: 60,
+            frameRate: 30,
             width: cameraWidth,
             height: cameraHeight
         }

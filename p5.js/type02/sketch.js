@@ -298,8 +298,9 @@ function LipsPreview(lipsInput) {
   for (let i = 0; i < lipsInput.length; i += step) {
     unit = lipsInput[i].width0
 
-    let unit0 = unit + 1
+    let unit0 = unit +1
 
+    
     image(lipsInput[i].img,
 
       //旧版：posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
@@ -307,23 +308,28 @@ function LipsPreview(lipsInput) {
       posX + lipsInput[i].posX0,
 
       posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
-      unit0 * lipsInput[i].scaleX,
+      unit0 * lipsInput[i].scaleX*imageStep,
       lipsInput[i].img.height * lipsInput[i].scaleY,
 
 
       lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
       0,
-      unit * lipsInput[i].scaleX,
+      unit * lipsInput[i].scaleX*imageStep,
       lipsInput[i].img.height
     )
     
+    
+
+    /*
     mask2(
       posX + lipsInput[i].posX0,
 
       posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
-      unit0 * lipsInput[i].scaleX,
+      unit0 * lipsInput[i].scaleX*imageStep,
       lipsInput[i].img.height * lipsInput[i].scaleY,
+      [lipsInput[i].inTopY, lipsInput[i].inBottomY],
     )
+    */
 
   }
 

@@ -3,18 +3,18 @@
 let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
 let cameraIndex = 0;
 let cameraWidth = 1920;
-let cameraHeight = cameraWidth * 0.75;
+let cameraHeight = cameraWidth *0.75;
 
 let pixelDensityControl = 0;
 
-let imageStep = 2;
+let imageStep = 1;
 
 
 let icon;
 let sound;
 
 let lerpRatio = 0.3;
-let timeoutThreshold = 6
+let timeoutThreshold = 10
 
 let timeLimit = 3;
 
@@ -721,7 +721,7 @@ function mask(posX, posY, width, height, points) {
     
 }
 
-function mask2(posX, posY, width, height) {
+function mask2(posX, posY, width, height,pointYs) {
     //填充改色---暂时
     fill(255,255)
     //fill(255, 255)
@@ -752,6 +752,7 @@ function mask2(posX, posY, width, height) {
 
 
     beginContour();
+    
     vertex(posX + r, posY); // 左上角
     bezierVertex(posX + cornerRatio * r, posY, posX, posY + cornerRatio * r, posX, posY + r);
     vertex(posX, posY + height - r); // 左边
@@ -762,8 +763,19 @@ function mask2(posX, posY, width, height) {
     bezierVertex(posX + width, posY + cornerRatio * r, posX + width - cornerRatio * r, posY, posX + width - r, posY);
     endContour(CLOSE);
 
+    
+    
     endShape(CLOSE)
 
+    //fill(255, 200)
+    let size = 3
+
+    if (false) {
+        if (pointYs != undefined) {
+            ellipse(posX + width / 2, posY + pointYs[0], size, size)
+            ellipse(posX + width / 2, posY + pointYs[1], size, size)
+        }
+    }
 
 
 

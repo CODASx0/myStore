@@ -69,7 +69,7 @@ function startWebcam() {
             var constraints = {
                 video: {
                     deviceId: { exact: videoDevices[cameraIndex] },
-                    frameRate: 60 ,
+                    frameRate: 30 ,
                     width: cameraWidthHere,
                     height: cameraHeightHere
                 }
@@ -160,4 +160,10 @@ async function predictWebcam() {
 
 }
 
+//定时重启
 
+/* 
+setInterval(function () {
+    location.reload();
+}, 5000);
+*/
