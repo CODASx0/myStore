@@ -10,8 +10,8 @@ let runningMode = "VIDEO";
 
 const videoWidth = 480;
 
-const cameraWidthHere = cameraWidth / 2;
-const cameraHeightHere = cameraHeight / 2;
+const cameraWidthHere = cameraWidth / 4;
+const cameraHeightHere = cameraHeight / 4;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
 
@@ -21,8 +21,8 @@ faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
         modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
         delegate: "GPU"
     },
-    outputFaceBlendshapes: true,
-    outputFacialTransformationMatrixes: true,
+    outputFaceBlendshapes: false,
+    outputFacialTransformationMatrixes: false,
     runningMode,
     numFaces: 1
 });

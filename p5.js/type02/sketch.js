@@ -200,6 +200,9 @@ function windowsUpdate() {
 
 function LipsPreview(lipsInput) {
   let step = imageStep
+ 
+  let targetHeight = 100;
+
   let posX = 10
   let posX0 = 0
   let unit = 0
@@ -307,9 +310,9 @@ function LipsPreview(lipsInput) {
       //新版：
       posX + lipsInput[i].posX0,
 
-      posY + lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY),
+      posY + (lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY))/height*targetHeight,
       unit0 * lipsInput[i].scaleX*imageStep,
-      lipsInput[i].img.height * lipsInput[i].scaleY,
+      lipsInput[i].img.height * lipsInput[i].scaleY / height * targetHeight,
 
 
       lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
