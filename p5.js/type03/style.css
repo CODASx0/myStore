@@ -1,0 +1,81 @@
+body {
+
+
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+
+}
+
+#canvas {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+
+}
+
+#output_canvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    z-index: 1;
+    opacity: 0;
+}
+
+#webcam {
+
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    clear: both;
+    display: block;
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+
+    z-index: 2;
+
+    border: 0px #ffffff solid;
+    border-radius: 0px;
+    opacity: 0;
+
+}
+
+.effect {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 0;
+    opacity: 1;
+    filter: contrast(16);
+
+}
+
+#canvas2 {
+
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+    opacity: 1;
+    filter: blur(0px);
+
+}
+
+#canvas3 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+    opacity: 2;
+
+}

@@ -3,7 +3,7 @@
 let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
 let cameraIndex = 0;
 let cameraWidth = 1920;
-let cameraHeight = cameraWidth *0.75;
+let cameraHeight = cameraWidth *9/16;
 
 let pixelDensityControl = 0;
 

@@ -10,8 +10,8 @@ let runningMode = "VIDEO";
 
 const videoWidth = 480;
 
-const cameraWidthHere = cameraWidth / 4;
-const cameraHeightHere = cameraHeight / 4;
+const cameraWidthHere = cameraWidth / 2;
+const cameraHeightHere = cameraHeight / 2;
 
 const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
 
