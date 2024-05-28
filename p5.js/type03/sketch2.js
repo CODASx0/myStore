@@ -8,7 +8,7 @@ let wProp = {
         heightReady: 20,
     },
     w2: {
-        height: 600,
+        height: 1920*0.63,
     }
 }
 
@@ -99,6 +99,23 @@ class dot {
         //间隔移动距离
         this.distance = this.p.dist(this.x, this.y, this.lastX, this.lastY);
 
+       
+
+
+
+
+
+
+    }
+
+    updateFinal() {
+        //更新上一次的位置
+        this.lastX = this.x;
+        this.lastY = this.y;
+    }
+
+
+    display() { 
         this.p.push()
 
         if (this.distance != 0) {
@@ -111,6 +128,10 @@ class dot {
 
         this.cornerRatio = 1
 
+
+        this.p.ellipse(0, 0, this.size, this.size);
+        /*
+
         this.p.rect(
             -this.size / 2,
             -this.size / 2,
@@ -121,15 +142,8 @@ class dot {
             this.size / 2 * this.cornerRatio
         );
 
+        */
         this.p.pop()
-
-
-
-
-        //更新上一次的位置
-        this.lastX = this.x;
-        this.lastY = this.y;
-
     }
 
 
@@ -333,6 +347,11 @@ let sketch2 = function (p) {
                         myDots[currentIndex].size = dotSize
 
                         myDots[currentIndex].update();
+
+                        myDots[currentIndex].display();
+
+
+                        myDots[currentIndex].updateFinal();
 
                         currentIndex++;
                     }

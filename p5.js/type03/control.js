@@ -636,11 +636,14 @@ let pW = 0
 let pH = 0
 let r = 100;
 
-function mask(posX, posY, width, height, points) {
-    let lerpRatioHere = lerpRatio2
+function mask(posX, posY, width, height, points,radiusList,lerpRatio,alpha) {
+    let lerpRatioHere = lerpRatio
+
+    let radius0 = radiusList[0]
+    let radius1 = radiusList[1]
     
     //填充改色---暂时
-    fill(255,255)
+    fill(255,alpha)
     //fill(255, 255)
     noStroke()
 
@@ -664,14 +667,14 @@ function mask(posX, posY, width, height, points) {
         pY = lerp(pY, pointList[0][1], lerpRatioHere)
         pW = lerp(pW, 0, lerpRatioHere)
         pH = lerp(pH, 0, lerpRatioHere)
-        r = lerp(r, 80, lerpRatioHere)
+        r = lerp(r, radius0, lerpRatioHere)
         
     } else if (pointList.length == 2) {
         pW = lerp(pW,abs(pointList[0][0] - pointList[1][0]), lerpRatioHere)
         pH = lerp(pH,abs(pointList[0][1] - pointList[1][1]), lerpRatioHere)
         pX = lerp(pX, (pointList[0][0] + pointList[1][0]) / 2 - abs(pointList[0][0] - pointList[1][0]) / 2, lerpRatioHere)
         pY = lerp(pY, (pointList[0][1] + pointList[1][1]) / 2 - abs(pointList[0][1] - pointList[1][1]) / 2, lerpRatioHere)
-        r = lerp(r, 40, lerpRatioHere)
+        r = lerp(r, radius1, lerpRatioHere)
 
     }
 
@@ -968,7 +971,8 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             }
         }
 
-        mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight, pointList)
+        mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight, pointList, [80, 40], 0.3, 120)
+        
 
         pop()
 
