@@ -13,12 +13,24 @@ let wProp = {
 }
 
 let newWP = {
+    posY:20,
+    padding: 20,
+    p1: {
+        height:50,
+    },
+    
     w1: {
         posX: 0,
         posY: 0,
-        width: 400,
-        height: 300,
-    }
+        width: 160,
+        height: 120,
+    },
+    w2: {
+        width: 600,
+        widthO: 600,
+        height: 120,
+        widthX:1
+    },
 }
 
 let controlPanelY = 0;
@@ -26,7 +38,7 @@ let controlPanelY = 0;
 
 
 
-var lerpRatio2 = 0.2
+var lerpRatio2 = 0.08
 var lerpRatio2Min = 0.01
 var lerpRatio2Max = 0.5
 var lerpRatio2Step = 0.01
@@ -41,12 +53,12 @@ var gridSizeMin = 4
 var gridSizeMax = 40
 var gridSizeStep = 0.5
 
-var moveSpace = 0
+var moveSpace = 4
 var moveSpaceMin = 0;
 var moveSpaceMax = 30;
 var moveSpaceStep = 0.1
 
-var moveControl = 0.4;
+var moveControl = 0.2;
 var moveControlMin = 0;
 var moveControlMax = 2;
 var moveControlStep = 0.01
@@ -61,7 +73,7 @@ var typePaddingMin = 0;
 var typePaddingMax = 200;
 var typePaddingStep = 1;
 
-var debug = 0.3;
+var debug = 0;
 var debugMin = 0;
 var debugMax = 1;
 var debugStep = 0.01;
@@ -163,7 +175,7 @@ let sketch2 = function (p) {
 
     let myDot = new dot(0, 0, p);
     //创建一个数量500的myDots数组并存放dot对象
-    let myDots = Array.from({ length: 10000 }, () => new dot(p.random(0, p.windowWidth), p.random(0, wProp.w2.height), p));
+    let myDots = Array.from({ length: 10000 }, () => new dot(p.windowWidth/2, p.windowHeight/2, p));
 
 
     //定义显示网格点阵字体的函数
@@ -270,7 +282,12 @@ let sketch2 = function (p) {
         }
 
         //纵向居中
-        posY = wProp.w2.height / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        //posY = wProp.w2.height / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+
+        //全屏
+        posY = p.windowHeight / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+
+
         //纵向置底
         //posY = wProp.w2.height - gridSizeYHere * 7 * (lineFeed.length + 1) - lineFeed.length * lineSpace - padding
 
@@ -411,7 +428,7 @@ let sketch2 = function (p) {
 
         p.fill(255);
 
-        p.rect(0, wProp.w1.height, p.windowWidth, wProp.w2.height);
+        p.rect(0, 0, p.windowWidth, p.windowHeight);
 
         //p.fill(255 / 2 -50);
 

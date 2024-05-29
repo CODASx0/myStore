@@ -199,8 +199,8 @@ class LipsData {
         this.posY0 = 0
 
         //动效相关参数
-        this.scaleY = 0.01;
-        this.scaleX = 5;
+        this.scaleY = 1;
+        this.scaleX = 1;
 
     }
 

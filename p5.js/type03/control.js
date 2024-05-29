@@ -18,6 +18,9 @@ let timeoutThreshold = 10
 
 let timeLimit = 3;
 
+let distanceRatio = 0.2;
+let indicatorRadiusRatio = 0.6;
+
 
 const positionProps = {
     origin: 1,
@@ -30,85 +33,90 @@ let tipProps = {
     text: '将食指靠近嘴角并开始说话（支持英文）'
 }
 
+const windowStyle = {
+    smallWidth: 600,
+    largeWidth: 600,
+}
+
 const indicatorStyle = {
     notActive: {
-        radius: 100,
+        radius: 0.01*indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0,
+        strokeWeight: 0 * indicatorRadiusRatio,
         positionRatio: positionProps.origin
 
     },
 
     lipNotActive: {
-        radius: 200,
+        radius: 200 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0,
+        strokeWeight: 0 * indicatorRadiusRatio,
         positionRatio: positionProps.origin
     },
 
     active: {
-        radius: 40,
+        radius: 40 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0.8)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0,
+        strokeWeight: 0 * indicatorRadiusRatio,
         positionRatio: positionProps.origin
 
     },
 
     lipActive: {
-        radius: 30,
+        radius: 30 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0.5)',
         stroke: 'rgba(255, 255, 255, 0.2)',
-        strokeWeight: 10,
+        strokeWeight: 10 * indicatorRadiusRatio,
         positionRatio: positionProps.origin
     },
 
     ready: {
-        radius: 20,
+        radius: 20 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 0, 1)',
         stroke: 'rgba(255, 255, 255, 0)',
-        strokeWeight: 0,
+        strokeWeight: 0 * indicatorRadiusRatio,
         positionRatio: positionProps.half
     },
 
     lipReady: {
-        radius: 20,
+        radius: 20 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0.4)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 10,
+        strokeWeight: 10 * indicatorRadiusRatio,
         positionRatio: positionProps.origin
     },
 
     recording: {
-        radius: 20,
+        radius: 20 * indicatorRadiusRatio,
         fill: 'rgba(0, 255, 0, 0.8)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 0,
+        strokeWeight: 0 * indicatorRadiusRatio,
         positionRatio: positionProps.target
     },
 
     steady: {
-        radius: 20,
+        radius: 20 * indicatorRadiusRatio,
         fill: 'rgba(0, 255, 0, 0.8)',
         stroke: 'rgba(255, 255, 255, 1)',
-        strokeWeight: 0,
+        strokeWeight: 0 * indicatorRadiusRatio,
         positionRatio: positionProps.half
     },
 
     lipRecording: {
-        radius: 60,
+        radius: 80 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0.1)',
         stroke: 'rgba(255, 255, 255, 0.9)',
-        strokeWeight: 4,
+        strokeWeight: 4 * indicatorRadiusRatio,
         positionRatio: positionProps.origin,
 
     },
 
 
     waiting: {
-        radius: 36,
+        radius: 36 * indicatorRadiusRatio,
         fill: 'rgba(255, 20,20, 0.6)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 0,
@@ -116,7 +124,7 @@ const indicatorStyle = {
     },
 
     lipWaiting: {
-        radius: 40,
+        radius: 10 * indicatorRadiusRatio,
         fill: 'rgba(255, 0, 0, 0.4)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 8,
@@ -134,7 +142,7 @@ function indicatorUpdater() {
 
 
     if (lipIndicator.state == 'waiting' && !isWaiting) {
-        if (distance > 50) {
+        if (distance > 50*distanceRatio) {
             handIndicator.state = 'active'
             lipIndicator.state = 'active'
         }
@@ -147,16 +155,16 @@ function indicatorUpdater() {
         } else if (lipIndicator.lastState == 'waiting') {
             //退出判断
         }
-        else if (distance < 40) {
+        else if (distance < 40*distanceRatio) {
             handIndicator.state = 'recording'
             lipIndicator.state = 'recording'
 
         }
-        else if (distance < 80 && isRecording) {
+        else if (distance < 80*distanceRatio && isRecording) {
             handIndicator.state = 'steady'
             lipIndicator.state = 'steady'
         }
-        else if (distance < 120 && !isRecording) {
+        else if (distance < 120*distanceRatio && !isRecording) {
             handIndicator.state = 'ready'
             lipIndicator.state = 'ready'
         }
@@ -236,7 +244,15 @@ function indicatorUpdater() {
 
                     text: '唇语识别：将食指靠近嘴角并开始说话（支持英文）'
                 })
+
+
             }
+
+            w2Tl.clear()
+            w2Tl.to(newWP.w2, {
+                width: windowStyle.largeWidth,
+                widthX:1,
+            })
 
         }
         if (handIndicator.state == 'notActive') {
@@ -261,10 +277,31 @@ function indicatorUpdater() {
             })
 
             if (handIndicator.lastState == 'ready') {
+
                 sound.leave.play()
+
+                w2Tl.clear()
+                w2Tl.to(newWP.w2, {
+                    width: windowStyle.largeWidth,
+                })
+
             } else if (handIndicator.lastState == 'recording') {
                 sound.end.play()
-            } 9
+
+                w2Tl.clear()
+                w2Tl.to(newWP.w2, {
+                    duration: 1,
+                    width: windowStyle.largeWidth,
+                })
+            } else {
+                w2Tl.clear()
+                w2Tl.to(newWP.w2, {
+                    duration: 1,
+                    width: windowStyle.largeWidth,
+                })
+            }
+
+
 
 
         }
@@ -295,6 +332,12 @@ function indicatorUpdater() {
                 sound.enter.play()
             }
 
+            w2Tl.clear()
+            w2Tl.to(newWP.w2, {
+                width: windowStyle.smallWidth, 
+                widthX:0.01,
+            })
+
         }
         if (handIndicator.state == 'recording') {
             tl.clear()
@@ -319,6 +362,14 @@ function indicatorUpdater() {
 
 
                 text: "松开即可结束",
+            })
+
+
+            w2Tl.clear()
+            w2Tl.to(newWP.w2, {
+                widthX: 1,
+                duration: 1,
+                ease:"sin.out"
             })
  
 
@@ -367,7 +418,11 @@ function indicatorUpdater() {
                 text: '等待结果中',
             })
 
-
+            w2Tl.clear()
+            w2Tl.to(newWP.w2, {
+                duration: 1,
+                width: windowStyle.largeWidth,
+            })
 
 
 
@@ -627,6 +682,7 @@ let handIndicator = new indicator('hand');
 let tl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 let lipTl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 let lipTl2 = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
+let w2Tl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
 let tipTl = gsap.timeline({ defaults: { duration: 0.5, ease: "expo.out" } });
 
@@ -785,7 +841,7 @@ function mask2(posX, posY, width, height,pointYs) {
 }
 
 function newControl(posX, posY, windowWidthInput, windowHeightInput) {
-    let heightSub = 100;
+    let heightSub = 40;
 
     let windowWidth = windowWidthInput
     let windowHeight = windowHeightInput + heightSub
@@ -917,10 +973,12 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
             }
         }
 
-        //mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight, pointList, [80, 40], 0.3, 120)
         
 
+       // mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight - heightSub, pointList, [50, 40], 0.3, 200)
+        
         windowHeight = windowHeight - heightSub
+        
 
         pop()
 
@@ -928,13 +986,14 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
         //fill(255, 255)
         //rect(posX + padding, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 10 + 25 * (1 - tipProps.ratio), windowWidth - padding * 2, tipProps.bottom * tipProps.ratio + 40, cornerSize, cornerSize, 0, 0)
 
-        noStroke()
-        fill(0, 255)
+        if (false) {
+            noStroke()
+            fill(0, 255)
 
-        textSize(16)
+            textSize(16)
 
-        text(tipProps.text, posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
-
+            text(tipProps.text, posX + padding + 10, posY + windowHeight - padding - tipProps.bottom * tipProps.ratio + 32 + 50 * (1 - tipProps.ratio))
+        }
 
         //激活状态切换
         indicatorUpdater()

@@ -53,6 +53,7 @@ let windowsProp
 function preload() {
   icon = {
     arrow: loadImage('assets/icon/arrow.png'),
+    logo: loadImage('assets/icon/logo.png'),
   }
   soundFormats('wav');
   sound = {
@@ -77,7 +78,7 @@ function setup() {
   if (pixelDensityControl != 0) {
     pixelDensity(pixelDensityControl)
   }
-  
+
 
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.id("canvas");
@@ -110,8 +111,30 @@ function draw() {
   //控制方式还要修改
   //control()
   //newControl(0, wProp.w1.height + wProp.w2.height, windowWidth, windowHeight - wProp.w1.height - wProp.w2.height)
-  newControl(newWP.w1.posX, newWP.w1.posY, newWP.w1.width, newWP.w1.height)
+
   fill(0, 20)
+  rect(0, 0, windowWidth, windowHeight)
+
+  fill(255)
+  stroke(200)
+  strokeWeight(1)
+
+  rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5, newWP.posY, newWP.w1.width + newWP.w2.widthO + newWP.padding * 3, newWP.w1.height + newWP.p1.height + newWP.padding * 3)
+
+
+
+
+  newControl((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w1.width, newWP.w1.height, newWP.w2.width, newWP.w2.height)
+
+
+  //绘制w2
+
+  fill(0, 20)
+  rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding * 2 + newWP.w1.width, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w2.width, newWP.w2.height)
+
+  //绘制p1(logo)
+  image(icon.logo, (windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.padding, newWP.p1.height * 1013 / 373, newWP.p1.height)
+
   //rect(0, wProp.w1.height, windowWidth, wProp.w2.height)
 
 
@@ -200,15 +223,15 @@ function windowsUpdate() {
 
 function LipsPreview(lipsInput) {
   let step = imageStep
- 
-  let targetHeight = 100;
 
-  let posX = 10
+  let targetHeight = newWP.w1.height;
+
+  let posX = (windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding * 2 + newWP.w1.width
   let posX0 = 0
   let unit = 0
 
   //暂时修改 let posY = windowsProp.window2.posY + windowsBase.state * 40
-  let posY = 20 + wProp.w1.height + wProp.w2.height
+  let posY = newWP.posY + newWP.p1.height + newWP.padding * 2
   //posY = 10
 
 
@@ -218,7 +241,9 @@ function LipsPreview(lipsInput) {
   let height = 0
   let width = 0
 
-  let padding = 20
+  let padding = 0
+
+  let widthX = newWP.w2.widthX
 
 
   fill(255)
@@ -245,16 +270,18 @@ function LipsPreview(lipsInput) {
       lipsInput[i].posX0 = width
       lipsInput[i].posY0 = posY0 + lipsInput[i].centerY - lipsInput[0].centerY,
 
-      height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
+        height = Math.max(posY0 + lipsInput[i].centerY - lipsInput[0].centerY + lipsInput[i].img.height, height)
       unit = 3 * step + (lipsInput[i].img.width - widthMin) * ratio
       lipsInput[i].width0 = unit
       width += unit
     }
 
-    for (let i = 0; i < lipsInput.length; i ++) {
+    for (let i = 0; i < lipsInput.length; i++) {
       lipsInput[i].height0 = height
     }
   }
+
+  let widthRatio = newWP.w2.width / width
 
 
 
@@ -301,27 +328,27 @@ function LipsPreview(lipsInput) {
   for (let i = 0; i < lipsInput.length; i += step) {
     unit = lipsInput[i].width0
 
-    let unit0 = unit +1
+    let unit0 = unit + 1
 
-    
+
     image(lipsInput[i].img,
 
       //旧版：posX + lipsInput[i].posX0 - lipsInput[i].scaleX * unit0 * 0.5,
       //新版：
-      posX + lipsInput[i].posX0,
+      posX + lipsInput[i].posX0 * widthRatio * widthX,
 
-      posY + (lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY))/height*targetHeight,
-      unit0 * lipsInput[i].scaleX*imageStep,
+      posY + (lipsInput[i].posY0 + lipsInput[i].img.height * 0.5 * (1 - lipsInput[i].scaleY)) / height * targetHeight,
+      (unit * lipsInput[i].scaleX * imageStep * widthRatio + 1) * widthX,
       lipsInput[i].img.height * lipsInput[i].scaleY / height * targetHeight,
 
 
       lipsInput[i].img.width / 2 - unit0 * 0.5 * lipsInput[i].scaleX,
       0,
-      unit * lipsInput[i].scaleX*imageStep,
+      unit * lipsInput[i].scaleX * imageStep,
       lipsInput[i].img.height
     )
-    
-    
+
+
 
     /*
     mask2(
@@ -487,17 +514,21 @@ function ImagePreview(ratioInput) {
 function recordDetection() {
   if (isRecording) {
     lipsInput.push(new LipsData(JSON.parse(JSON.stringify(detections)), videoIn));
+    /*
     gsap.to(lipsInput[lipsInput.length - 1], {
-      duration: 2.5,
+      duration: 2,
       scaleY: 1,
 
-      ease: "elastic.out(1,0.3)",
+      ease: "elastic.out(1.6,0.7)",
+      //ease: "power1.inOut",
     })
+    
     gsap.to(lipsInput[lipsInput.length - 1], {
       scaleX: 1,
-      duration: 1,
+      duration: 0.1,
       ease: "power1.out",
     })
+    */
   }
 }
 
