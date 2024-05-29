@@ -8,7 +8,16 @@ let wProp = {
         heightReady: 20,
     },
     w2: {
-        height: 1920*0.63,
+        height: 400,
+    }
+}
+
+let newWP = {
+    w1: {
+        posX: 0,
+        posY: 0,
+        width: 400,
+        height: 300,
     }
 }
 
@@ -57,7 +66,7 @@ var debugMin = 0;
 var debugMax = 1;
 var debugStep = 0.01;
 
-let panelSwitch = true;
+let panelSwitch = false;
 
 
 

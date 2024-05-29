@@ -109,8 +109,8 @@ function draw() {
 
   //控制方式还要修改
   //control()
-  newControl(0, wProp.w1.height + wProp.w2.height, windowWidth, windowHeight - wProp.w1.height - wProp.w2.height)
-
+  //newControl(0, wProp.w1.height + wProp.w2.height, windowWidth, windowHeight - wProp.w1.height - wProp.w2.height)
+  newControl(newWP.w1.posX, newWP.w1.posY, newWP.w1.width, newWP.w1.height)
   fill(0, 20)
   //rect(0, wProp.w1.height, windowWidth, wProp.w2.height)
 

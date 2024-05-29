@@ -2,8 +2,8 @@
 
 let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
 let cameraIndex = 0;
-let cameraWidth = 1920;
-let cameraHeight = cameraWidth *9/16;
+let cameraWidth = 1280;
+let cameraHeight = cameraWidth *0.75;
 
 let pixelDensityControl = 0;
 
@@ -784,7 +784,14 @@ function mask2(posX, posY, width, height,pointYs) {
 
 }
 
-function newControl(posX, posY, windowWidth, windowHeight) {
+function newControl(posX, posY, windowWidthInput, windowHeightInput) {
+    let heightSub = 100;
+
+    let windowWidth = windowWidthInput
+    let windowHeight = windowHeightInput + heightSub
+    //下沉消除
+    
+
     let widthtemp = 80;
     let padding = 20;
 
@@ -826,81 +833,20 @@ function newControl(posX, posY, windowWidth, windowHeight) {
         scale(-1, 1)
 
 
-        image(videoIn, 0, 0, windowWidth, windowHeight,
+        image(videoIn, 0, 0, windowWidth, windowHeight - heightSub,
             (imageWidth - windowWidth) / 2 / imageWidth * videoIn.width,
             (imageHeight - windowHeight) / 2 / imageHeight * videoIn.height,
             windowWidth / imageWidth * videoIn.width,
-            windowHeight / imageHeight * videoIn.height
+            windowHeight / imageHeight * videoIn.height - heightSub / imageHeight * videoIn.height 
         );
 
 
 
 
-        videoElement.style.width = "50px";
 
-        fill(240, 20)
-        rect(0, 0, windowWidth, windowHeight)
+       // videoElement.style.width = "50px";
 
-
-
-        /*-----------位置错误----------------
-
-        //以lipIndicator与handIndicator为两端的图片裁切
-        let rectLeft = max(lipIndicator.x, handIndicator.x) - widthtemp;
-        let rectTop = min(lipIndicator.y, handIndicator.y) - widthtemp;
-        let rectWidth = abs(lipIndicator.x - handIndicator.x) + widthtemp * 2;
-        let rectHeight = abs(lipIndicator.y - handIndicator.y) + widthtemp * 2;
-
-        //tint(255, 100)
-        image(videoIn,
-            imageWidth - rectLeft - widthtemp * 2,
-            rectTop,
-            rectWidth,
-            rectHeight,
-            (imageWidth - rectLeft - 2 * widthtemp) / imageWidth * videoIn.width,
-            (rectTop) / imageHeight * videoIn.height,
-            rectWidth / imageWidth * videoIn.width,
-            rectHeight / imageHeight * videoIn.height
-        )
-        fill(220, 100)
-
-        rect(
-            imageWidth - rectLeft - widthtemp * 2,
-            rectTop,
-            rectWidth,
-            rectHeight
-        )
-
-        translate(
-            -(imageWidth - windowWidth) / 2,0
-            
-        )
-
-        widthtemp = 40;
-
-
-        image(videoIn,
-            imageWidth - lipIndicator.x - widthtemp,
-            lipIndicator.y - widthtemp,
-            widthtemp * 2, widthtemp * 2,
-            (imageWidth - lipIndicator.x - widthtemp) / imageWidth * videoIn.width,
-            (lipIndicator.y - widthtemp) / imageHeight * videoIn.height,
-            widthtemp * 2 / imageWidth * videoIn.width,
-            widthtemp * 2 / imageHeight * videoIn.height
-        )
-
-        image(videoIn,
-            imageWidth - handIndicator.x - widthtemp,
-            handIndicator.y - widthtemp,
-            widthtemp * 2, widthtemp * 2,
-            (imageWidth - handIndicator.x - widthtemp) / imageWidth * videoIn.width,
-            (handIndicator.y - widthtemp) / imageHeight * videoIn.height,
-            widthtemp * 2 / imageWidth * videoIn.width,
-            widthtemp * 2 / imageHeight * videoIn.height
-        )
-        */
-
-
+        
 
         pop()
 
@@ -971,8 +917,10 @@ function newControl(posX, posY, windowWidth, windowHeight) {
             }
         }
 
-        mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight, pointList, [80, 40], 0.3, 120)
+        //mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight, pointList, [80, 40], 0.3, 120)
         
+
+        windowHeight = windowHeight - heightSub
 
         pop()
 
