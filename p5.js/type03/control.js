@@ -40,7 +40,7 @@ const windowStyle = {
 
 const indicatorStyle = {
     notActive: {
-        radius: 0.01*indicatorRadiusRatio,
+        radius: 0.001*indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 0 * indicatorRadiusRatio,
@@ -335,7 +335,7 @@ function indicatorUpdater() {
             w2Tl.clear()
             w2Tl.to(newWP.w2, {
                 width: windowStyle.smallWidth, 
-                widthX:0.01,
+                widthX:0.001,
             })
 
         }

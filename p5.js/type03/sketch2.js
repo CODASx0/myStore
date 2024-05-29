@@ -360,12 +360,12 @@ let sketch2 = function (p) {
                         //左对齐
                         //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
                         //居中
-                        myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere/2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
+                        myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere/2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 30 + currentIndex / 5 * moveControl);
                         //console.log(lineWidth)
 
 
                         //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX;
-                        myDots[currentIndex].targetY = y01 * gridSizeYHere + posY + 2 * moveSpaceHere * sin(p.frameCount / 15 + currentIndex / 5 * moveControl);
+                        myDots[currentIndex].targetY = y01 * gridSizeYHere + posY + 2 * moveSpaceHere * sin(p.frameCount / 30 + currentIndex / 5 * moveControl);
 
                         //myDots[currentIndex].targetY = y * gridSizeHere + posY;
                         myDots[currentIndex].state = ratioControl
