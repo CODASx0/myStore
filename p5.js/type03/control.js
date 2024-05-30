@@ -20,6 +20,7 @@ let timeLimit = 3;
 
 let distanceRatio = 0.2;
 let indicatorRadiusRatio = 0.6;
+let frameRateGlobal = 30;
 
 
 const positionProps = {

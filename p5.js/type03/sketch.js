@@ -90,7 +90,7 @@ function setup() {
 
 
 
-  frameRate(60)
+  frameRate(frameRateGlobal)
 
   smoothX = mouseX;
   smoothY = mouseY;

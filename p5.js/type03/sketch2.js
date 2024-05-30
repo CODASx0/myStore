@@ -407,7 +407,7 @@ let sketch2 = function (p) {
 
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
-        p.frameRate(60)
+        p.frameRate(frameRateGlobal)
         p.pixelDensity(0.5)
         
         if (panelSwitch) {
