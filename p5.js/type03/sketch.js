@@ -116,8 +116,8 @@ function draw() {
   rect(0, 0, windowWidth, windowHeight)
 
   fill(255)
-  stroke(200)
-  strokeWeight(1)
+  //stroke(200)
+  //strokeWeight(1)
 
   rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5, newWP.posY, newWP.w1.width + newWP.w2.widthO + newWP.padding * 3, newWP.w1.height + newWP.p1.height + newWP.padding * 3)
 

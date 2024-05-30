@@ -7,6 +7,7 @@ body {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    cursor: none;
 
 }
 
@@ -17,7 +18,7 @@ body {
     top: 0px;
     left: 0px;
     z-index: 1;
-filter: contrast(1);
+    filter: contrast(1);
 }
 
 #output_canvas {
