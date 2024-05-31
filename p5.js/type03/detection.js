@@ -18,7 +18,7 @@ const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdeli
 //创建面部识别器
 faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
     baseOptions: {
-        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
+        modelAssetPath: `./models/face_landmarker.task`,
         delegate: "GPU"
     },
     outputFaceBlendshapes: false,
@@ -30,7 +30,7 @@ faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
 // 创建手部识别器
 handLandmarker = await HandLandmarker.createFromOptions(filesetResolver, {
     baseOptions: {
-        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+        modelAssetPath: `./models/hand_landmarker.task`,
         delegate: "GPU"
     },
     runningMode,
@@ -65,13 +65,14 @@ function startWebcam() {
                 }
             });
             // 选择第二个摄像头
-            
+
             var constraints = {
                 video: {
                     deviceId: { exact: videoDevices[cameraIndex] },
-                    frameRate: 30 ,
+                    frameRate: 30,
                     width: cameraWidthHere,
-                    height: cameraHeightHere
+                    height: cameraHeightHere,
+
                 }
             };
 
@@ -79,7 +80,7 @@ function startWebcam() {
 
             navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
                 //videoDetection = stream;
-                
+
                 video.srcObject = stream;
                 video.addEventListener("loadeddata", predictWebcam);
 
@@ -89,7 +90,7 @@ function startWebcam() {
                     chunks.push(event.data);
                 };
 
-                recorder.onstop = () => { 
+                recorder.onstop = () => {
                     uploadVideo();
                 }
 
@@ -116,7 +117,7 @@ const drawingUtils = new DrawingUtils(canvasCtx);
 
 async function predictWebcam() {
     const radio = video.videoHeight / video.videoWidth;
-    
+
     video.style.width = videoWidth + "px";
     video.style.height = videoWidth * radio + "px";
     canvasElement.style.width = videoWidth + "px";
@@ -124,39 +125,41 @@ async function predictWebcam() {
     canvasElement.width = video.videoWidth;
     canvasElement.height = video.videoHeight;
 
-    
+
 
     let startTimeMs = performance.now();
 
     if (lastVideoTime !== video.currentTime) {
         lastVideoTime = video.currentTime;
-        results = await faceLandmarker.detectForVideo(video, startTimeMs);
-        
-        resultsHand = await handLandmarker.detectForVideo(video, startTimeMs);
-        
+        [results, resultsHand] = await Promise.all([
+            faceLandmarker.detectForVideo(video, startTimeMs),
+            handLandmarker.detectForVideo(video, startTimeMs)
+        ]);
     }
 
     if (results.faceLandmarks) {
         for (const landmarks of results.faceLandmarks) {
             detections = landmarks;
 
-            //drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: "#FFFFFF", lineWidth: 0.1 });
-            //drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#FFFFFF", lineWidth: 2 });
-            //drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "#FFFFFF", lineWidth: 2 });
-
         }
 
     }
 
-    if (resultsHand.landmarks) { 
+    if (resultsHand.landmarks) {
         for (const landmarks of resultsHand.landmarks) {
             handDetections = landmarks;
-            
-            
-        }  
+
+        }
     }
 
-    window.requestAnimationFrame(predictWebcam);
+    if (!lipIndicator.active) {
+        setTimeout(predictWebcam, 1000 / 10);
+    } else if (handIndicator.active && handIndicator.state != 'active') {
+        setTimeout(predictWebcam, 1000 / 30); // 1000毫秒等于1秒
+    } else {
+        setTimeout(predictWebcam, 1000 / 15); // 1000毫秒等于1秒
+    }
+
 
 }
 

@@ -11,7 +11,7 @@ let tempInput;
 
 
 let canvas;
-let videoElement = document.getElementById('webcam')
+
 
 
 let font;
@@ -108,48 +108,38 @@ function draw() {
 
   clear()
 
-  //控制方式还要修改
-  //control()
-  //newControl(0, wProp.w1.height + wProp.w2.height, windowWidth, windowHeight - wProp.w1.height - wProp.w2.height)
 
+
+  //全局阴影
   fill(0, 20)
   rect(0, 0, windowWidth, windowHeight)
+
+
+
+  //绘制左上角指示
+
+
+  //绘制顶部窗口
 
   fill(255)
   //stroke(200)
   //strokeWeight(1)
-
   rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5, newWP.posY, newWP.w1.width + newWP.w2.widthO + newWP.padding * 3, newWP.w1.height + newWP.p1.height + newWP.padding * 3)
-
-
   fill(0, 20)
-
-rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w1.width, newWP.w1.height)
+  rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w1.width, newWP.w1.height)
   newControl((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w1.width, newWP.w1.height, newWP.w2.width, newWP.w2.height)
 
 
-  //绘制w2
-
-  
+    //绘制w2
   rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding * 2 + newWP.w1.width, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w2.width, newWP.w2.height)
+  LipsPreview(lipsInput)
 
   //绘制p1(logo)
   image(icon.logo, (windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.padding, newWP.p1.height * 1013 / 373, newWP.p1.height)
 
-  //rect(0, wProp.w1.height, windowWidth, wProp.w2.height)
-
-
-
-  //windowRectBasic(windowsProp.window2.posX, windowsProp.window2.posY, windowsProp.window2.width, windowsProp.window2.height, 6 + 40 * windowsBase.state)
-
-  //预览方式还要改
-  //ImagePreview(windowsBase.state)
-
-  //嘴唇预览还要改
-  LipsPreview(lipsInput)
+  
 
   //console.log(videoIn.height / videoIn.width)
-
 
 
   waitingTest()
@@ -172,10 +162,12 @@ function waitingTest() {
   }
 
   if (isWaiting) {
+    /*
     if (frameCount % 45 == 0) {
       //生成省略号
       textInput += '.'
     }
+    */
   }
   lastIsWaiting = isWaiting
 }

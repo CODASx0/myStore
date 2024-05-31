@@ -970,7 +970,7 @@ async function startP5jsWebcam() {
             deviceId: videoDevices[cameraIndex].deviceId,
             frameRate: 30,
             width: cameraWidth,
-            height: cameraHeight
+            height: cameraHeight,
         }
     };
 

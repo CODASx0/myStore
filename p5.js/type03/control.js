@@ -3,7 +3,7 @@
 let controlInput = [0, 0, 0, 0, 0, 0, 0, 0]
 let cameraIndex = 0;
 let cameraWidth = 1280;
-let cameraHeight = cameraWidth *0.75;
+let cameraHeight = cameraWidth * 0.75;
 
 let pixelDensityControl = 0;
 
@@ -41,7 +41,7 @@ const windowStyle = {
 
 const indicatorStyle = {
     notActive: {
-        radius: 0.001*indicatorRadiusRatio,
+        radius: 200 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 0 * indicatorRadiusRatio,
@@ -58,7 +58,7 @@ const indicatorStyle = {
     },
 
     active: {
-        radius: 40 * indicatorRadiusRatio,
+        radius: 30 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0.8)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 0 * indicatorRadiusRatio,
@@ -83,7 +83,7 @@ const indicatorStyle = {
     },
 
     lipReady: {
-        radius: 20 * indicatorRadiusRatio,
+        radius: 40 * indicatorRadiusRatio,
         fill: 'rgba(255, 255, 255, 0.4)',
         stroke: 'rgba(255, 255, 255, 1)',
         strokeWeight: 10 * indicatorRadiusRatio,
@@ -125,7 +125,7 @@ const indicatorStyle = {
     },
 
     lipWaiting: {
-        radius: 10 * indicatorRadiusRatio,
+        radius: 20 * indicatorRadiusRatio,
         fill: 'rgba(255, 0, 0, 0.4)',
         stroke: 'rgba(255, 255, 255, 0)',
         strokeWeight: 8,
@@ -143,7 +143,7 @@ function indicatorUpdater() {
 
 
     if (lipIndicator.state == 'waiting' && !isWaiting) {
-        if (distance > 50*distanceRatio) {
+        if (distance > 50 * distanceRatio) {
             handIndicator.state = 'active'
             lipIndicator.state = 'active'
         }
@@ -156,16 +156,16 @@ function indicatorUpdater() {
         } else if (lipIndicator.lastState == 'waiting') {
             //退出判断
         }
-        else if (distance < 40*distanceRatio) {
+        else if (distance < 40 * distanceRatio) {
             handIndicator.state = 'recording'
             lipIndicator.state = 'recording'
 
         }
-        else if (distance < 80*distanceRatio && isRecording) {
+        else if (distance < 80 * distanceRatio && isRecording) {
             handIndicator.state = 'steady'
             lipIndicator.state = 'steady'
         }
-        else if (distance < 120*distanceRatio && !isRecording) {
+        else if (distance < 160 * distanceRatio && !isRecording) {
             handIndicator.state = 'ready'
             lipIndicator.state = 'ready'
         }
@@ -233,7 +233,7 @@ function indicatorUpdater() {
             })
 
 
-            
+
 
             if (handIndicator.lastState == 'ready') {
                 sound.leave.play()
@@ -252,7 +252,7 @@ function indicatorUpdater() {
             w2Tl.clear()
             w2Tl.to(newWP.w2, {
                 width: windowStyle.largeWidth,
-                widthX:1,
+                widthX: 1,
             })
 
         }
@@ -266,7 +266,7 @@ function indicatorUpdater() {
                 fill: indicatorStyle.notActive.fill,
                 postionRatio: indicatorStyle.notActive.positionRatio,
                 rotationDelta: 0,
-                imageTint: 255,
+                imageTint: 245,
 
             })
 
@@ -274,7 +274,7 @@ function indicatorUpdater() {
                 ratio: 1,
                 duration: 1,
                 ease: "expo.out",
-                
+
             })
 
             if (handIndicator.lastState == 'ready') {
@@ -327,7 +327,7 @@ function indicatorUpdater() {
 
                 text: '请继续靠近'
             })
-  
+
 
             if (handIndicator.lastState == 'active') {
                 sound.enter.play()
@@ -335,8 +335,8 @@ function indicatorUpdater() {
 
             w2Tl.clear()
             w2Tl.to(newWP.w2, {
-                width: windowStyle.smallWidth, 
-                widthX:0.001,
+                width: windowStyle.smallWidth,
+                widthX: 0.8,
             })
 
         }
@@ -370,9 +370,9 @@ function indicatorUpdater() {
             w2Tl.to(newWP.w2, {
                 widthX: 1,
                 duration: 1,
-                ease:"sin.out"
+                ease: "sin.out"
             })
- 
+
 
         }
 
@@ -666,6 +666,17 @@ class indicator {
             pop()
         }
 
+        if (this.type == 'lip') {
+            let lineLength = this.imageWidth / 2
+            if (this.active) {
+                stroke(255)
+                strokeWeight(3 * indicatorRadiusRatio)
+                line(this.xNow, this.yNow + lineLength * indicatorRadiusRatio, this.xNow, this.yNow - lineLength * indicatorRadiusRatio)
+                line(this.xNow + lineLength * indicatorRadiusRatio, this.yNow, this.xNow - lineLength * indicatorRadiusRatio, this.yNow)
+            }
+
+        }
+
 
 
 
@@ -693,14 +704,14 @@ let pW = 0
 let pH = 0
 let r = 100;
 
-function mask(posX, posY, width, height, points,radiusList,lerpRatio,alpha) {
+function mask(posX, posY, width, height, points, radiusList, lerpRatio, alpha) {
     let lerpRatioHere = lerpRatio
 
     let radius0 = radiusList[0]
     let radius1 = radiusList[1]
-    
+
     //填充改色---暂时
-    fill(255,alpha)
+    fill(255, alpha)
     //fill(255, 255)
     noStroke()
 
@@ -709,26 +720,26 @@ function mask(posX, posY, width, height, points,radiusList,lerpRatio,alpha) {
     vertex(posX + width, posY)
     vertex(posX + width, posY + height)
     vertex(posX, posY + height)
-    
+
 
     let pointList = points
 
-     // 圆角的半径
+    // 圆角的半径
 
     //console.log(pointList.length)
 
 
 
-    if (pointList.length == 1) { 
+    if (pointList.length == 1) {
         pX = lerp(pX, pointList[0][0], lerpRatioHere)
         pY = lerp(pY, pointList[0][1], lerpRatioHere)
         pW = lerp(pW, 0, lerpRatioHere)
         pH = lerp(pH, 0, lerpRatioHere)
         r = lerp(r, radius0, lerpRatioHere)
-        
+
     } else if (pointList.length == 2) {
-        pW = lerp(pW,abs(pointList[0][0] - pointList[1][0]), lerpRatioHere)
-        pH = lerp(pH,abs(pointList[0][1] - pointList[1][1]), lerpRatioHere)
+        pW = lerp(pW, abs(pointList[0][0] - pointList[1][0]), lerpRatioHere)
+        pH = lerp(pH, abs(pointList[0][1] - pointList[1][1]), lerpRatioHere)
         pX = lerp(pX, (pointList[0][0] + pointList[1][0]) / 2 - abs(pointList[0][0] - pointList[1][0]) / 2, lerpRatioHere)
         pY = lerp(pY, (pointList[0][1] + pointList[1][1]) / 2 - abs(pointList[0][1] - pointList[1][1]) / 2, lerpRatioHere)
         r = lerp(r, radius1, lerpRatioHere)
@@ -737,14 +748,14 @@ function mask(posX, posY, width, height, points,radiusList,lerpRatio,alpha) {
 
 
 
-    
-    let x = pX-r
-    let y = pY-r
-    let w = pW+2*r;
-    let h = pH+2*r;
+
+    let x = pX - r
+    let y = pY - r
+    let w = pW + 2 * r;
+    let h = pH + 2 * r;
     let cornerRatio = 0.4
 
-    if (x + w > posX + width) { 
+    if (x + w > posX + width) {
         x = posX + width - w
         w = posX + width - x
 
@@ -763,7 +774,7 @@ function mask(posX, posY, width, height, points,radiusList,lerpRatio,alpha) {
     }
 
 
-    
+
     beginContour();
     vertex(x + r, y); // 左上角
     bezierVertex(x + cornerRatio * r, y, x, y + cornerRatio * r, x, y + r);
@@ -777,13 +788,13 @@ function mask(posX, posY, width, height, points,radiusList,lerpRatio,alpha) {
 
     endShape(CLOSE)
 
-    
-    
+
+
 }
 
-function mask2(posX, posY, width, height,pointYs) {
+function mask2(posX, posY, width, height, pointYs) {
     //填充改色---暂时
-    fill(255,255)
+    fill(255, 255)
     //fill(255, 255)
     noStroke()
     let r;
@@ -812,7 +823,7 @@ function mask2(posX, posY, width, height,pointYs) {
 
 
     beginContour();
-    
+
     vertex(posX + r, posY); // 左上角
     bezierVertex(posX + cornerRatio * r, posY, posX, posY + cornerRatio * r, posX, posY + r);
     vertex(posX, posY + height - r); // 左边
@@ -823,8 +834,8 @@ function mask2(posX, posY, width, height,pointYs) {
     bezierVertex(posX + width, posY + cornerRatio * r, posX + width - cornerRatio * r, posY, posX + width - r, posY);
     endContour(CLOSE);
 
-    
-    
+
+
     endShape(CLOSE)
 
     //fill(255, 200)
@@ -847,7 +858,7 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
     let windowWidth = windowWidthInput
     let windowHeight = windowHeightInput + heightSub
     //下沉消除
-    
+
 
     let widthtemp = 80;
     let padding = 20;
@@ -894,21 +905,21 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
             (imageWidth - windowWidth) / 2 / imageWidth * videoIn.width,
             (imageHeight - windowHeight) / 2 / imageHeight * videoIn.height,
             windowWidth / imageWidth * videoIn.width,
-            windowHeight / imageHeight * videoIn.height - heightSub / imageHeight * videoIn.height 
+            windowHeight / imageHeight * videoIn.height - heightSub / imageHeight * videoIn.height
         );
 
 
 
 
 
-       // videoElement.style.width = "50px";
+        // videoElement.style.width = "50px";
 
         fill(0, 40)
         rect(0, 0, windowWidth, windowHeight - heightSub, 0, 0, 0, 0)
 
         pop()
 
-        
+
 
 
 
@@ -917,14 +928,14 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
         stroke(255, 255)
         strokeWeight(1)
         fill(0, 20)
-        
 
-        
-        
+
+
+
         //rect(posX + padding, posY + padding, windowWidth - padding * 2, windowHeight - padding * 2 - tipProps.bottom * tipProps.ratio, cornerSize, cornerSize, cornerSize, cornerSize)
 
 
-        
+
 
 
 
@@ -939,6 +950,7 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
         let pointList = []
 
         if (true) {
+
 
             if (tempFaceDetection != undefined) {
                 //右嘴角
@@ -970,18 +982,18 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
                 if (handIndicator.active) {
                     pointList.push([handIndicator.x, handIndicator.y])
                 }
-                
+
 
 
             }
         }
 
-        
 
-       // mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight - heightSub, pointList, [50, 40], 0.3, 200)
-        
+
+        // mask((imageWidth - windowWidth) / 2, (imageHeight - windowHeight) / 2, windowWidth, windowHeight - heightSub, pointList, [50, 40], 0.3, 200)
+
         windowHeight = windowHeight - heightSub
-        
+
 
         pop()
 

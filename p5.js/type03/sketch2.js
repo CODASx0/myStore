@@ -13,6 +13,7 @@ let wProp = {
 }
 
 let newWP = {
+    posX: 20,
     posY: 20,
     padding: 20,
     p1: {
@@ -109,18 +110,22 @@ class dot {
         this.targetSize = 0;
 
         this.state = 0;
+        this.type = 'font'
 
     }
 
-    update() {
+    update(lerpRatio) {
 
 
         this.xInput = this.originX * (1 - this.state) + this.targetX * this.state;
         this.yInput = this.originY * (1 - this.state) + this.targetY * this.state;
 
-        this.x = this.p.lerp(this.x, this.xInput, lerpRatio2);
-        this.y = this.p.lerp(this.y, this.yInput, lerpRatio2);
-        this.size = this.p.lerp(this.size, this.targetSize, lerpRatio2);
+        this.x = this.p.lerp(this.x, this.xInput, lerpRatio);
+
+        this.y = this.p.lerp(this.y, this.yInput, lerpRatio);
+
+
+        this.size = this.p.lerp(this.size, this.targetSize, lerpRatio);
         //间隔移动距离
         this.distance = this.p.dist(this.x, this.y, this.lastX, this.lastY);
 
@@ -178,24 +183,85 @@ class dot {
 
 let sketch2 = function (p) {
 
+    function mySin(index) {
+        let x0 = 1
+        let x1 = 0
+        let x2 = 5
+        let x3 = 12
+
+        let xNow = index % (x0 + x1 + x2 + x3)
+        if (xNow < x0) {
+            return -cos(xNow / x0 * PI) * 0.5 + 0.5
+        } else if (xNow < x0 + x1) {
+            return 1
+        } else if (xNow < x0 + x1 + x2) {
+            return cos((xNow - x0 - x1) / x2 * PI) * 0.5 + 0.5
+        } else {
+            return 0
+        }
+    }
+
 
     //创建一个状态指示器
-    let myIndicators = Array.from({ length: 4 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
+    let myIndicators = Array.from({ length: 3 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
 
     function indicatorDisplay() {
-        let radius = 20
-        for (let i = 0; i < myIndicators.length; i++) {
-            if (handIndicator.state == 'recording') { 
-                myIndicators[i].targetSize = 20
-                myIndicators[i].targetX = p.windowWidth / 2 + radius * cos(p.frameCount / 30 + i * PI / 2)
-                myIndicators[i].targetY = p.windowHeight / 2 + radius * sin(p.frameCount / 30 + i * PI / 2)
 
-                myIndicators[i].update
+        for (let i = 0; i < myIndicators.length; i++) {
+
+            myIndicators[i].fill = 'rgba(' + 40 + ',' + 40 + ',' + 0 + ', 255)'
+
+            if (lipIndicator.state == 'recording' || lipIndicator.state == 'steady') {
+
+
+                let rRadius = 20
+
+                myIndicators[i].targetSize = (tempInput.inBottomY - tempInput.inTopY) + 20
+
+                myIndicators[i].targetX = p.windowWidth / 2 - rRadius * (i - 1)
+                myIndicators[i].targetY = p.windowHeight / 2
+                myIndicators[i].state = 1
+
+
+                myIndicators[i].update(i * 0.2 + 0.4)
                 myIndicators[i].display()
                 myIndicators[i].updateFinal()
-       
+
+            } else if (lipIndicator.state == 'waiting') {
+
+                let rRadius = 20
+
+                myIndicators[i].state = 1
 
 
+
+                myIndicators[i].targetX = p.windowWidth / 2 + rRadius * cos(p.frameCount / 30 + i * p.TWO_PI / 3) * 2 - rRadius * (i - 1)
+                myIndicators[i].targetY = p.windowHeight / 2 + rRadius * sin(p.frameCount / 30 + i * p.TWO_PI / 3) / 2
+
+                myIndicators[i].targetSize = p.noise(myIndicators[i].targetX * 0.01, myIndicators[i].targetY * 0.01) * 100
+
+                myIndicators[i].update(lerpRatio2)
+                myIndicators[i].display()
+                myIndicators[i].updateFinal()
+
+            } else {
+
+                let rRadius = 20
+
+
+                myIndicators[i].targetX = p.windowWidth / 2 + rRadius * cos(p.frameCount / 30 + i * p.TWO_PI / 3) * 2 - rRadius * (i - 1)
+                myIndicators[i].targetY = p.windowHeight / 2 + rRadius * sin(p.frameCount / 30 + i * p.TWO_PI / 3)
+
+
+                myIndicators[i].state = 0.5
+
+                myIndicators[i].targetSize = 0
+
+                myIndicators[i].update(lerpRatio2)
+
+
+                myIndicators[i].display()
+                myIndicators[i].updateFinal()
             }
 
         }
@@ -203,7 +269,7 @@ let sketch2 = function (p) {
 
 
     //创建一个数量500的myDots数组并存放dot对象
-    let myDots = Array.from({ length: 10000 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
+    let myDots = Array.from({ length: 2000 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
 
 
     //定义显示网格点阵字体的函数
@@ -310,10 +376,10 @@ let sketch2 = function (p) {
         }
 
         //纵向居中
-        //posY = wProp.w2.height / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        //posY = wProp.w2.height / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2 + gridSizeHere * 7 / 2
 
         //全屏
-        posY = p.windowHeight / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2
+        posY = p.windowHeight / 2 - gridSizeYHere * 7 * (lineFeed.length + 1) / 2 - lineFeed.length * lineSpace / 2 + gridSizeHere * 7 / 2
 
 
         //纵向置底
@@ -379,6 +445,7 @@ let sketch2 = function (p) {
 
                         let y01 = lerp(y, y00, 1)
 
+                        let yScale = 1.2
 
 
                         let lineWidthHere = lineWidth[currentLine] * gridSizeHere
@@ -391,16 +458,17 @@ let sketch2 = function (p) {
                         myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere / 2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 30 + currentIndex / 5 * moveControl);
                         //console.log(lineWidth)
 
+                        yScale = (1.2 - 0.8 * mySin(-myDots[currentIndex].targetX * 0.01 + p.frameCount / 20))
 
                         //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX;
-                        myDots[currentIndex].targetY = y01 * gridSizeYHere + posY + 0.5 * moveSpaceHere * sin(p.frameCount / 30 + currentIndex / 5 * moveControl);
+                        myDots[currentIndex].targetY = (- gridSizeYHere * 7 / 2 + y01 * gridSizeYHere) * yScale + posY + 0.5 * moveSpaceHere * sin(p.frameCount / 30 + currentIndex / 5 * moveControl);
 
                         //myDots[currentIndex].targetY = y * gridSizeHere + posY;
-                        myDots[currentIndex].state = ratioControl
+                        myDots[currentIndex].state = ratioControl * (1 - 0.1 * mySin(-myDots[currentIndex].targetX * 0.01 + p.frameCount / 20))
 
-                        myDots[currentIndex].targetSize = dotSize
+                        myDots[currentIndex].targetSize = dotSize + 20 * mySin(-myDots[currentIndex].targetX * 0.01 + p.frameCount / 20)
 
-                        myDots[currentIndex].update();
+                        myDots[currentIndex].update(lerpRatio2);
 
                         myDots[currentIndex].display();
 
@@ -429,8 +497,12 @@ let sketch2 = function (p) {
         for (let i = currentIndex; i < myDots.length; i++) {
 
             myDots[i].state = 0;
+            myDots[i].targetSize = 0;
+            myDots[i].targetX = p.windowWidth / 2;
+            myDots[i].targetY = p.windowHeight / 2;
 
-            myDots[i].update();
+            myDots[i].update(lerpRatio2);
+            myDots[i].display();
             myDots[i].updateFinal();
 
         }
@@ -446,7 +518,7 @@ let sketch2 = function (p) {
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.frameRate(frameRateGlobal)
-        p.pixelDensity(0.5)
+        p.pixelDensity(1)
 
         if (panelSwitch) {
             gui = createGui('p5.gui');
@@ -498,10 +570,11 @@ let sketch2 = function (p) {
 
 
 
-        lowRateTest()
+
 
         Show(textInput);
-        //indicatorDisplay()
+        indicatorDisplay()
+        lowRateTest()
 
         canvas2.style.filter = 'blur(' + 8 * (1 - debug) + 'px)';
     }
@@ -512,10 +585,12 @@ let sketch2 = function (p) {
     }
 
     function lowRateTest() {
-        
 
-        //console.log(p.frameRate())
-        if (rateList.length > lowRateTimer && lipIndicator.active == false) {
+
+
+        const ifActive = !lipIndicator.active
+
+        if (rateList.length > lowRateTimer) {
             let beReload = true
             rateList.shift()
             rateList.push(p.frameRate())
@@ -526,10 +601,13 @@ let sketch2 = function (p) {
                 }
             }
 
-            if (beReload) {
-                location.reload()
+            if (beReload && ifActive) {
+
+                location.reload(true)
                 //避免重复刷新
                 rateList = []
+
+                console.log('low rate detected')
             }
 
         } else {
@@ -547,9 +625,9 @@ let lowRateTimer = 5
 let rateList = []
 
 
-let myp5 = new p5(sketch2, 'canvas2');
+let myp5 = new p5(sketch2, 'canvas2', { willReadFrequently: true });
 
-let canvas2 = document.getElementById('canvas2');
+let canvas2 = document.getElementById('canvas2', { willReadFrequently: true });
 
 
 
