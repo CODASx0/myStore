@@ -98,7 +98,7 @@ class dot {
 
         this.size = 0
         this.lastSize = 0
-        this.fill = 'rgba(0, 0, 0, 1)'
+        this.fill = 'rgba(20, 19, 0, 1)'
 
 
 
@@ -203,42 +203,42 @@ let sketch2 = function (p) {
 
 
     //创建一个状态指示器
-    let myIndicators = Array.from({ length: 3 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
+    let myIndicators = Array.from({ length: 20 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
 
     function indicatorDisplay() {
 
         for (let i = 0; i < myIndicators.length; i++) {
 
-            myIndicators[i].fill = 'rgba(' + 40 + ',' + 40 + ',' + 0 + ', 255)'
+            myIndicators[i].fill = 'rgba(' + 80 + ',' + 76 + ',' + 0 + ', 255)'
 
             if (lipIndicator.state == 'recording' || lipIndicator.state == 'steady') {
 
 
-                let rRadius = 20
+                let rRadius = 15
 
-                myIndicators[i].targetSize = (tempInput.inBottomY - tempInput.inTopY) + 20
+                myIndicators[i].targetSize = (tempInput.inBottomY - tempInput.inTopY)*1.5 + 20
 
-                myIndicators[i].targetX = p.windowWidth / 2 - rRadius * (i - 1)
+                myIndicators[i].targetX = p.windowWidth / 2 - rRadius * (i - (myIndicators.length-1)/2)
                 myIndicators[i].targetY = p.windowHeight / 2
                 myIndicators[i].state = 1
 
 
-                myIndicators[i].update(i * 0.2 + 0.4)
+                myIndicators[i].update(i * 0.01+ 0.1)
                 myIndicators[i].display()
                 myIndicators[i].updateFinal()
 
-            } else if (lipIndicator.state == 'waiting') {
+            } else if (isWaiting) {
 
-                let rRadius = 20
+                let rRadius =80
 
                 myIndicators[i].state = 1
 
 
 
-                myIndicators[i].targetX = p.windowWidth / 2 + rRadius * cos(p.frameCount / 30 + i * p.TWO_PI / 3) * 2 - rRadius * (i - 1)
-                myIndicators[i].targetY = p.windowHeight / 2 + rRadius * sin(p.frameCount / 30 + i * p.TWO_PI / 3) / 2
+                myIndicators[i].targetX = p.windowWidth / 2 + rRadius * cos(p.frameCount / 20 + i * p.TWO_PI /30)  
+                myIndicators[i].targetY = p.windowHeight / 2 + rRadius * sin(p.frameCount / 16 + i * p.TWO_PI /30) /6
 
-                myIndicators[i].targetSize = p.noise(myIndicators[i].targetX * 0.01, myIndicators[i].targetY * 0.01) * 100
+                myIndicators[i].targetSize = 30+ 1* i
 
                 myIndicators[i].update(lerpRatio2)
                 myIndicators[i].display()
@@ -246,14 +246,14 @@ let sketch2 = function (p) {
 
             } else {
 
-                let rRadius = 20
+                let rRadius = 120
 
 
-                myIndicators[i].targetX = p.windowWidth / 2 + rRadius * cos(p.frameCount / 30 + i * p.TWO_PI / 3) * 2 - rRadius * (i - 1)
-                myIndicators[i].targetY = p.windowHeight / 2 + rRadius * sin(p.frameCount / 30 + i * p.TWO_PI / 3)
+                myIndicators[i].targetX = p.windowWidth / 2 + rRadius * cos(p.frameCount / 20 + i * p.TWO_PI / 30)
+                myIndicators[i].targetY = p.windowHeight / 2 + rRadius * sin(p.frameCount / 16 + i * p.TWO_PI / 30) /6
 
 
-                myIndicators[i].state = 0.5
+                myIndicators[i].state = 0.2
 
                 myIndicators[i].targetSize = 0
 

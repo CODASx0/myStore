@@ -14,7 +14,7 @@ let icon;
 let sound;
 
 let lerpRatio = 0.3;
-let timeoutThreshold = 10
+let timeoutThreshold = 16
 
 let timeLimit = 3;
 
@@ -660,6 +660,9 @@ class indicator {
             rotate(this.imageRotation)
 
             tint(this.imageTint, 255)
+            if (!this.active) { 
+                tint(255, 241, 0, 255)
+            }
             image(icon.arrow, -this.imageWidth / 2, -this.imageWidth / 2, this.imageWidth, this.imageWidth)
             noTint()
 

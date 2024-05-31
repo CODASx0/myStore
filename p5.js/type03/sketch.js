@@ -54,6 +54,8 @@ function preload() {
   icon = {
     arrow: loadImage('assets/icon/arrow.png'),
     logo: loadImage('assets/icon/logo.png'),
+    czsl: loadImage('assets/icon/czsl.png'),
+    czzy: loadImage('assets/icon/czzy.png'),
   }
   soundFormats('wav');
   sound = {
@@ -117,11 +119,18 @@ function draw() {
 
 
   //绘制左上角指示
+  fill(255)
+  //rect(newWP.posX, newWP.posY, newWP.padding * 2 + newWP.p1.height * 1370 / 512, newWP.padding * 2 + newWP.p1.height)
+  image(icon.czzy, newWP.posX + newWP.padding, newWP.posY + newWP.padding, newWP.p1.height * 1370 / 512, newWP.p1.height)
+  
+  //左下角
+  
+  //rect(newWP.posX, windowHeight - newWP.p1.height - newWP.padding * 2-newWP.posY, newWP.padding * 2 + newWP.p1.height * 1339 / 513, newWP.padding * 2 + newWP.p1.height)
+  image(icon.czsl, newWP.posX + newWP.padding, windowHeight - newWP.p1.height - newWP.padding -newWP.posY, newWP.p1.height * 1339 / 513, newWP.p1.height)
+  
 
 
   //绘制顶部窗口
-
-  fill(255)
   //stroke(200)
   //strokeWeight(1)
   rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5, newWP.posY, newWP.w1.width + newWP.w2.widthO + newWP.padding * 3, newWP.w1.height + newWP.p1.height + newWP.padding * 3)
@@ -136,6 +145,7 @@ function draw() {
 
   //绘制p1(logo)
   image(icon.logo, (windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.padding, newWP.p1.height * 1013 / 373, newWP.p1.height)
+  //image(icon.logo, (windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding + newWP.w1.width, newWP.posY + newWP.padding, newWP.p1.height * 1013 / 373, newWP.p1.height)
 
   
 

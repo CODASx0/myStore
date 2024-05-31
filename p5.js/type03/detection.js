@@ -153,20 +153,13 @@ async function predictWebcam() {
     }
 
     if (!lipIndicator.active) {
-        setTimeout(predictWebcam, 1000 / 10);
+        setTimeout(predictWebcam, 1000 / 6);
     } else if (handIndicator.active && handIndicator.state != 'active') {
         setTimeout(predictWebcam, 1000 / 30); // 1000毫秒等于1秒
     } else {
-        setTimeout(predictWebcam, 1000 / 15); // 1000毫秒等于1秒
+        setTimeout(predictWebcam, 1000 / 12); // 1000毫秒等于1秒
     }
 
 
 }
 
-//定时重启
-
-/* 
-setInterval(function () {
-    location.reload();
-}, 5000);
-*/
