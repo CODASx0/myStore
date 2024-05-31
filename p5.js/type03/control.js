@@ -903,7 +903,8 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
 
        // videoElement.style.width = "50px";
 
-        
+        fill(0, 40)
+        rect(0, 0, windowWidth, windowHeight - heightSub, 0, 0, 0, 0)
 
         pop()
 
@@ -916,6 +917,7 @@ function newControl(posX, posY, windowWidthInput, windowHeightInput) {
         stroke(255, 255)
         strokeWeight(1)
         fill(0, 20)
+        
 
         
         

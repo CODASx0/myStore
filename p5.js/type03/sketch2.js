@@ -183,7 +183,20 @@ let sketch2 = function (p) {
     let myIndicators = Array.from({ length: 4 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
 
     function indicatorDisplay() {
+        let radius = 20
         for (let i = 0; i < myIndicators.length; i++) {
+            if (handIndicator.state == 'recording') { 
+                myIndicators[i].targetSize = 20
+                myIndicators[i].targetX = p.windowWidth / 2 + radius * cos(p.frameCount / 30 + i * PI / 2)
+                myIndicators[i].targetY = p.windowHeight / 2 + radius * sin(p.frameCount / 30 + i * PI / 2)
+
+                myIndicators[i].update
+                myIndicators[i].display()
+                myIndicators[i].updateFinal()
+       
+
+
+            }
 
         }
     }
@@ -488,6 +501,7 @@ let sketch2 = function (p) {
         lowRateTest()
 
         Show(textInput);
+        //indicatorDisplay()
 
         canvas2.style.filter = 'blur(' + 8 * (1 - debug) + 'px)';
     }
