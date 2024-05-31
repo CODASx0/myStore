@@ -122,14 +122,15 @@ function draw() {
   rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5, newWP.posY, newWP.w1.width + newWP.w2.widthO + newWP.padding * 3, newWP.w1.height + newWP.p1.height + newWP.padding * 3)
 
 
+  fill(0, 20)
 
-
+rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w1.width, newWP.w1.height)
   newControl((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w1.width, newWP.w1.height, newWP.w2.width, newWP.w2.height)
 
 
   //绘制w2
 
-  fill(0, 20)
+  
   rect((windowWidth - newWP.w1.width - newWP.w2.widthO - newWP.padding * 3) * 0.5 + newWP.padding * 2 + newWP.w1.width, newWP.posY + newWP.p1.height + newWP.padding * 2, newWP.w2.width, newWP.w2.height)
 
   //绘制p1(logo)

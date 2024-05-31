@@ -13,12 +13,12 @@ let wProp = {
 }
 
 let newWP = {
-    posY:20,
+    posY: 20,
     padding: 20,
     p1: {
-        height:50,
+        height: 50,
     },
-    
+
     w1: {
         posX: 0,
         posY: 0,
@@ -29,7 +29,7 @@ let newWP = {
         width: 600,
         widthO: 600,
         height: 120,
-        widthX:1
+        widthX: 1
     },
 }
 
@@ -95,7 +95,8 @@ class dot {
         this.lastY = y;
 
 
-        this.size = 16
+        this.size = 0
+        this.lastSize = 0
         this.fill = 'rgba(0, 0, 0, 1)'
 
 
@@ -104,6 +105,8 @@ class dot {
         this.originY = y;
         this.targetX = x;
         this.targetY = y;
+
+        this.targetSize = 0;
 
         this.state = 0;
 
@@ -117,10 +120,11 @@ class dot {
 
         this.x = this.p.lerp(this.x, this.xInput, lerpRatio2);
         this.y = this.p.lerp(this.y, this.yInput, lerpRatio2);
+        this.size = this.p.lerp(this.size, this.targetSize, lerpRatio2);
         //间隔移动距离
         this.distance = this.p.dist(this.x, this.y, this.lastX, this.lastY);
 
-       
+
 
 
 
@@ -133,10 +137,11 @@ class dot {
         //更新上一次的位置
         this.lastX = this.x;
         this.lastY = this.y;
+        this.lastSize = this.size;
     }
 
 
-    display() { 
+    display() {
         this.p.push()
 
         if (this.distance != 0) {
@@ -173,13 +178,22 @@ class dot {
 
 let sketch2 = function (p) {
 
-    let myDot = new dot(0, 0, p);
+
+    //创建一个状态指示器
+    let myIndicators = Array.from({ length: 4 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
+
+    function indicatorDisplay() {
+        for (let i = 0; i < myIndicators.length; i++) {
+
+        }
+    }
+
+
     //创建一个数量500的myDots数组并存放dot对象
-    let myDots = Array.from({ length: 10000 }, () => new dot(p.windowWidth/2, p.windowHeight/2, p));
+    let myDots = Array.from({ length: 10000 }, () => new dot(p.windowWidth / 2, p.windowHeight / 2, p));
 
 
     //定义显示网格点阵字体的函数
-
     function Show(words) {
         //定义网格间距
         let padding = typePadding
@@ -245,16 +259,16 @@ let sketch2 = function (p) {
 
                     lineFeed.push(wordsNum)
                     lineWidth[currentLine] = cumulateWidth - blank
-            
+
                     currentLine++
                     totalWidth -= cumulateWidth - 1
                     lastWordsNum = wordsNum
                 }
 
-               
+
                 lineWidth[currentLine] = rightest + totalWidth
 
-                
+
                 totalWidth += rightest + blank;
                 totalWidth2 += rightest + blank;
             }
@@ -264,6 +278,7 @@ let sketch2 = function (p) {
         }
 
         //posX = (p.windowWidth - totalWidth * gridSizeHere) / 2;
+
 
 
         //开始绘制
@@ -355,22 +370,22 @@ let sketch2 = function (p) {
 
                         let lineWidthHere = lineWidth[currentLine] * gridSizeHere
                         if (currentLine > 0) {
-                            lineWidthHere = (lineWidth[currentLine]-3) * gridSizeHere
+                            lineWidthHere = (lineWidth[currentLine] - 3) * gridSizeHere
                         }
                         //左对齐
                         //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX + 1 * moveSpaceHere * cos(p.frameCount / 15 + currentIndex / 5 * moveControl);
                         //居中
-                        myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere/2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 30 + currentIndex / 5 * moveControl);
+                        myDots[currentIndex].targetX = windowWidth / 2 - lineWidthHere / 2 + x * gridSizeHere + currentRight * gridSizeHere + 1 * moveSpaceHere * cos(p.frameCount / 30 + currentIndex / 5 * moveControl);
                         //console.log(lineWidth)
 
 
                         //myDots[currentIndex].targetX = x * gridSizeHere + currentRight * gridSizeHere + posX;
-                        myDots[currentIndex].targetY = y01 * gridSizeYHere + posY + 2 * moveSpaceHere * sin(p.frameCount / 30 + currentIndex / 5 * moveControl);
+                        myDots[currentIndex].targetY = y01 * gridSizeYHere + posY + 0.5 * moveSpaceHere * sin(p.frameCount / 30 + currentIndex / 5 * moveControl);
 
                         //myDots[currentIndex].targetY = y * gridSizeHere + posY;
                         myDots[currentIndex].state = ratioControl
 
-                        myDots[currentIndex].size = dotSize
+                        myDots[currentIndex].targetSize = dotSize
 
                         myDots[currentIndex].update();
 
@@ -396,6 +411,16 @@ let sketch2 = function (p) {
 
         }
 
+
+        //其他点初始化
+        for (let i = currentIndex; i < myDots.length; i++) {
+
+            myDots[i].state = 0;
+
+            myDots[i].update();
+            myDots[i].updateFinal();
+
+        }
     }
 
 
@@ -409,12 +434,12 @@ let sketch2 = function (p) {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.frameRate(frameRateGlobal)
         p.pixelDensity(0.5)
-        
+
         if (panelSwitch) {
             gui = createGui('p5.gui');
             gui.addGlobals('lerpRatio2', 'dotSize', 'gridSize', 'moveSpace', 'moveControl', 'ratioControl', 'typePadding', 'debug')
         }
-        
+
 
         //wProp.w2.height = p.windowHeight
 
@@ -460,7 +485,7 @@ let sketch2 = function (p) {
 
 
 
-        //lowRateTest()
+        lowRateTest()
 
         Show(textInput);
 
@@ -473,34 +498,37 @@ let sketch2 = function (p) {
     }
 
     function lowRateTest() {
-        if (rateList.length > lowRateTimer) {
+        
+
+        //console.log(p.frameRate())
+        if (rateList.length > lowRateTimer && lipIndicator.active == false) {
             let beReload = true
             rateList.shift()
             rateList.push(p.frameRate())
 
-            for (i=0; i<rateList.length; i++) {
-                if (rateList[i] >lowRateLimit) {
+            for (i = 0; i < rateList.length; i++) {
+                if (rateList[i] > lowRateLimit) {
                     beReload = false
                 }
             }
 
-            if(beReload) {
+            if (beReload) {
                 location.reload()
                 //避免重复刷新
                 rateList = []
             }
-            
-
 
         } else {
             rateList.push(p.frameRate())
         }
+
+
     }
 
-    
+
 }
 
-let lowRateLimit = 20
+let lowRateLimit = 30
 let lowRateTimer = 5
 let rateList = []
 

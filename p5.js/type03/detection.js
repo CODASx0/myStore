@@ -1,4 +1,4 @@
-import { FaceLandmarker, HandLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+import { FaceLandmarker, HandLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
 
 
 
@@ -13,7 +13,7 @@ const videoWidth = 480;
 const cameraWidthHere = cameraWidth / 2;
 const cameraHeightHere = cameraHeight / 2;
 
-const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
+const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
 
 //创建面部识别器
 faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
