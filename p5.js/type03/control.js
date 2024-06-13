@@ -856,7 +856,7 @@ function mask2(posX, posY, width, height, pointYs) {
 }
 
 function newControl(posX, posY, windowWidthInput, windowHeightInput) {
-    let heightSub = 40;
+    let heightSub = 60;
 
     let windowWidth = windowWidthInput
     let windowHeight = windowHeightInput + heightSub
